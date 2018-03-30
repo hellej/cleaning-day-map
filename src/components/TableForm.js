@@ -55,7 +55,7 @@ const FormTitle = styled.div`
 `
 
 
-const TableForm = ({ title, phonenum, openhours, location, description, handleChange, handleSubmit }) => {
+const TableForm = ({ title, phonenum, openhours, location, description, handleChange, handleSubmit, toggleParentVisibility }) => {
   return (
     <FormContainer display=''>
       <FormTitle> Add New Vendor Table </FormTitle>
@@ -96,7 +96,7 @@ const TableForm = ({ title, phonenum, openhours, location, description, handleCh
           onChange={handleChange}
         />
         <Button type='submit'> Add Table </Button>
-        <Button cancel> Cancel </Button>
+        <Button cancel onClick={toggleParentVisibility()}> Cancel </Button>
 
       </form>
     </FormContainer>

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Map from './components/Map'
 import TableForm from './components/TableForm'
 
+import Togglable from './components/Togglable'
 
 
 class MapApp extends Component {
@@ -22,7 +23,10 @@ class MapApp extends Component {
         <div style={{ position: 'relative', width: 'device-width', height: 500 }}>
           <Map />
           <div style={{ ...blockStyle, display: "none" }}> Text </div>
-          <div style={blockStyle}> <TableForm /> </div>
+          <div style={blockStyle}>
+            <Togglable buttonLabel='CREATE NEW' ref={component => this.blogForm = component}>
+              <TableForm />
+            </Togglable></div>
         </div>
 
       </div>
