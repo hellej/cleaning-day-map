@@ -1,5 +1,7 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { Button } from './Buttons'
+
 
 const TablesContainer = styled.div`
   width: 220px;
@@ -14,7 +16,10 @@ const TablesContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
-
+const Title = styled.div`
+padding: 7px 0px 7px 10px;
+font-size: 17px;
+`
 const StyledTable = styled.div`
   padding: 5px 0px 5px 10px;
   border-radius: 7px; 
@@ -23,18 +28,16 @@ const StyledTable = styled.div`
 const Paragraph = styled.div`
   padding: 0px;
 `
-const Title = styled.div`
-  padding: 7px 0px 7px 10px;
-  font-size: 17px;
-`
 
-const Tables = ({ tables }) => {
+
+const Tables = ({ tables, toggleParentVisibility }) => {
   let display = tables.length === 0 ? 'none' : ''
 
   return (
     <TablesContainer display={display}>
       <Title>Filtered Tables:</Title>
       {tables.map(table => <Table key={table.properties.title} table={table} />)}
+      <Button cancel onClick={toggleParentVisibility()}> Cancel </Button>
     </TablesContainer>
   )
 }

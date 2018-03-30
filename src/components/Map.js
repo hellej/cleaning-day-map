@@ -4,6 +4,7 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { tables } from './../tables'
 import Tables from './Tables'
 import { getUniqueFeatures } from './mapboxhelper'
+import Togglable from './Togglable'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
 
@@ -66,7 +67,7 @@ class Map extends React.Component {
   render() {
     // const { lng, lat, map } = this.state
 
-    const style = {
+    const mapstyle = {
       position: 'absolute',
       top: 0,
       bottom: 0,
@@ -85,8 +86,12 @@ class Map extends React.Component {
 
     return (
       <div>
-        <div style={blockStyle}> <Tables tables={this.state.tables} /> </div>
-        <div style={style} className='Map' ref={el => this.mapContainer = el}> </div>
+        <div style={blockStyle}>
+          <Togglable buttonLabel='Filter Tables' ref={component => this.tables = component}>
+            <Tables tables={this.state.tables} />
+          </Togglable>
+        </div>
+        <div style={mapstyle} className='Map' ref={el => this.mapContainer = el}> </div>
       </div>
     )
   }

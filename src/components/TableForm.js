@@ -1,6 +1,8 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
+import { Button } from './Buttons'
+
 const FormContainer = styled.div`
   width: 220px;
   border-radius: 7px;
@@ -25,32 +27,8 @@ const Input = styled.input`
   background-color: white;
 `
 
-const Button = styled.button`
-  display: inline-block;
-  background-color: #4CAF50; /* Green */
-  border: none;
-  border-radius: 8px;
-  color: white;
-  font-size: 14px;
-  padding: 8px 16px;
-  margin: 10px 10px 4px 4px;
-  text-align: center;
-  text-decoration: none;
-  -webkit-transition-duration: 0.2s; /* Safari */
-  transition-duration: 0.2s;
-  cursor: pointer;
-  &:hover { 
-    background-color: #555555;
-    color: white;
-  }
-  ${props => props.cancel && css`
-  background: palevioletred;
-  color: white;
-  `}
-`
-
 const FormTitle = styled.div`
-  padding: 5px 0px 7px 0px;
+  padding: 4px 0px 11px 0px;
   font-size: 17px;
 `
 
@@ -65,6 +43,13 @@ const TableForm = ({ title, phonenum, openhours, location, description, handleCh
           type='text'
           name='title'
           value={title}
+          onChange={handleChange}
+        />
+        <Input
+          placeholder='Description'
+          type='text'
+          name='url'
+          value={description}
           onChange={handleChange}
         />
         <Input
@@ -86,13 +71,6 @@ const TableForm = ({ title, phonenum, openhours, location, description, handleCh
           type='text'
           name='url'
           value={location}
-          onChange={handleChange}
-        />
-        <Input
-          placeholder='Description'
-          type='text'
-          name='url'
-          value={description}
           onChange={handleChange}
         />
         <Button type='submit'> Add Table </Button>

@@ -7,7 +7,6 @@ import Togglable from './components/Togglable'
 
 class MapApp extends Component {
 
-
   render() {
     const blockStyle = {
       display: 'inline-block',
@@ -19,16 +18,13 @@ class MapApp extends Component {
 
     return (
       <div style={{ padding: 5 }}>
-
         <div style={{ position: 'relative', width: 'device-width', height: 500 }}>
           <Map />
-          <div style={{ ...blockStyle, display: "none" }}> Text </div>
-          <div style={blockStyle}>
-            <Togglable buttonLabel='CREATE NEW' ref={component => this.blogForm = component}>
+          <div style={{ ...blockStyle, display: '' }}>
+            <Togglable buttonLabel='Create New' ref={component => this.blogForm = component}>
               <TableForm />
             </Togglable></div>
         </div>
-
       </div>
     )
   }

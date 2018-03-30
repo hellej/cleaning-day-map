@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from './Buttons'
 
 
 class Togglable extends React.Component {
@@ -30,7 +31,7 @@ class Togglable extends React.Component {
     return (
       <div>
         <div style={hideWhenVisible}>
-          <button className='button button5' onClick={this.toggleVisibility}>{this.props.buttonLabel}</button>
+          <Button standard onClick={this.toggleVisibility}>{this.props.buttonLabel}</Button>
         </div>
         <div style={showWhenVisible}>
           {childrenWithExtraProp}
