@@ -17,7 +17,7 @@ class MapApp extends Component {
       <div style={{ padding: 5 }}>
         Hello world
         <div style={{ position: 'relative', width: 'device-width', height: 500 }}>
-          <div style={blockStyle}> Text </div>
+          <div style={{ ...blockStyle, display: "none" }}> Text </div>
           <Map />
         </div>
         Below map

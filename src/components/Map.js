@@ -1,8 +1,8 @@
 import React from 'react'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
-import Fly from "./../components/Mapcontrols"
-import { shops } from './../shops'
+import { tables } from './../tables'
+import Tables from './Tables'
 
 import { getUniqueFeatures } from './mapboxhelper'
 
@@ -17,7 +17,8 @@ class Map extends React.Component {
     this.state = {
       map: null,
       lng: 5,
-      lat: 34
+      lat: 34,
+      tables: []
     }
   }
 
@@ -33,7 +34,6 @@ class Map extends React.Component {
     })
 
     console.log('map mounted: ', map)
-    console.log('shops: ', shops)
 
     map.on('click', (e) => {
       console.log(e.lngLat)
@@ -41,8 +41,8 @@ class Map extends React.Component {
     })
 
     map.on('load', () => {
-      map.addSource('shops', { type: 'geojson', data: shops })
-      map.addLayer({ id: 'shops', source: 'shops', type: 'circle' })
+      map.addSource('tables', { type: 'geojson', data: tables })
+      map.addLayer({ id: 'tables', source: 'tables', type: 'circle' })
       map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true
@@ -52,10 +52,10 @@ class Map extends React.Component {
       this.setState({ map: map })
     })
 
-    map.on('moveend', function () {
-      const features = map.queryRenderedFeatures({ layers: ['shops'] })
-      const uniqueFeatures = getUniqueFeatures(features, "title")
-      console.log('features: ', uniqueFeatures)
+    map.on('moveend', () => {
+      const tablefeatures = map.queryRenderedFeatures({ layers: ['tables'] })
+      const uniqueTableFeatures = getUniqueFeatures(tablefeatures, "title")
+      this.setState({ tables: uniqueTableFeatures })
     })
   }
 
@@ -65,7 +65,7 @@ class Map extends React.Component {
   }
 
   render() {
-    const { lng, lat, map } = this.state
+    // const { lng, lat, map } = this.state
 
     const style = {
       position: 'absolute',
@@ -76,7 +76,7 @@ class Map extends React.Component {
       width: '100%',
       height: '100%'
     }
-    const coordStyle = {
+    const blockStyle = {
       display: 'inline-block',
       position: 'absolute',
       top: 0,
@@ -86,14 +86,10 @@ class Map extends React.Component {
 
     return (
       <div>
-        {/* <div style={coordStyle}>
-          <div>{`Longitude: ${lng} Latitude: ${lat}`}</div>
-          <Fly map={map} />
-        </div> */}
+        <div style={blockStyle}> <Tables tables={this.state.tables} /> </div>
         <div style={style} className='Map' ref={el => this.mapContainer = el}> </div>
       </div>
     )
-
   }
 }
 

@@ -1,5 +1,5 @@
 
-export const shops = {
+export const tables = {
   "type": "FeatureCollection",
   "features": [
     {
@@ -12,6 +12,8 @@ export const shops = {
         "title": "Vaatteita ja kenkiä",
         "description": "Paljon erilaisia 6-10 v lasten pieneksi jääneitä vaatteita",
         "openhours": "10-14",
+        "phonenum": "0452342344",
+        "image":"url?",
         "likes": 2
       }
     },
@@ -25,6 +27,8 @@ export const shops = {
         "title": "Tavaroita",
         "description": "Paljon vanhoja CD:itä ja kasetteja, myös pari vanhaa radiota ",
         "openhours": "10-14",
+        "phonenum": "0452342344",
+        "image":"url?",
         "likes": 1
       }
     },
@@ -38,6 +42,8 @@ export const shops = {
         "title": "Kirjoja",
         "description": "Muutama keittokirja ja hieman iäkkäämpiä lastenkirjoja (esim. Viisikoita ym)",
         "openhours": "10-14",
+        "phonenum": "0452342344",
+        "image":"url?",
         "likes": 0
       }
     },
