@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Map from './components/Map'
+import TableForm from './components/TableForm'
+
+
 
 class MapApp extends Component {
 
@@ -15,12 +18,13 @@ class MapApp extends Component {
 
     return (
       <div style={{ padding: 5 }}>
-        Hello world
+
         <div style={{ position: 'relative', width: 'device-width', height: 500 }}>
-          <div style={{ ...blockStyle, display: "none" }}> Text </div>
           <Map />
+          <div style={{ ...blockStyle, display: "none" }}> Text </div>
+          <div style={blockStyle}> <TableForm /> </div>
         </div>
-        Below map
+
       </div>
     )
   }

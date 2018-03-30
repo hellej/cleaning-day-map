@@ -3,7 +3,6 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 import { tables } from './../tables'
 import Tables from './Tables'
-
 import { getUniqueFeatures } from './mapboxhelper'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'

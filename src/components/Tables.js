@@ -4,17 +4,19 @@ import styled from 'styled-components'
 const TablesContainer = styled.div`
   width: 220px;
   border-radius: 7px;
-  margin: 5px;
-  padding: 4px;
-  background: white;
-  opacity: 0.9;
-  border: 2px solid black;
+  margin: 15px;
+  padding: 10px;
+  background: #f7f7f7;
+  opacity: 0.95;
   font-size: 14px;
+
+  // border: 2px solid white;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
 
 const StyledTable = styled.div`
-  padding: 5px;
+  padding: 10px;
   border-radius: 7px; 
   &:hover { background: #e8e8e8; }
 `
