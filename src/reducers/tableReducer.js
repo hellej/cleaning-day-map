@@ -1,5 +1,7 @@
+import { tables } from './../tables'
 
-const initialBlogs = []
+
+const initialTables = tables.features
 
 
 const tableReducer = (store = initialTables, action) => {
@@ -29,4 +31,7 @@ const tableReducer = (store = initialTables, action) => {
 export const tablesInitialization = (tables) => {
   return { type: 'INIT_TABLES', tables }
 }
+
+
+export default tableReducer
 

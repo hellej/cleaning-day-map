@@ -59,7 +59,6 @@ class Map extends React.Component {
     })
   }
 
-
   componentWillUnmount() {
     this.state.map.remove()
   }
@@ -85,14 +84,7 @@ class Map extends React.Component {
     }
 
     return (
-      <div>
-        <div style={blockStyle}>
-          <Togglable buttonLabel='Filter Tables' ref={component => this.tables = component}>
-            <Tables tables={this.state.tables} />
-          </Togglable>
-        </div>
-        <div style={mapstyle} className='Map' ref={el => this.mapContainer = el}> </div>
-      </div>
+      <div style={mapstyle} className='Map' ref={el => this.mapContainer = el}> </div>
     )
   }
 }

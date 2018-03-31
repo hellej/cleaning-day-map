@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { Button } from './Buttons'
 
@@ -34,6 +34,7 @@ const FormTitle = styled.div`
 
 
 const TableForm = ({ title, phonenum, openhours, location, description, handleChange, handleSubmit, toggleParentVisibility }) => {
+  console.log('this.tableform: ', this.tableForm)
   return (
     <FormContainer display=''>
       <FormTitle> Add New Vendor Table </FormTitle>
