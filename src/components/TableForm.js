@@ -6,9 +6,8 @@ import { Button } from './Buttons'
 const FormContainer = styled.div`
   width: 220px;
   border-radius: 7px;
-  margin: 4px;
   padding: 15px;
-  background: #f9f9f9;
+  background: white;
   opacity: 0.95;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
@@ -18,7 +17,7 @@ const Input = styled.input`
   width: 100%;
   padding: 9px 16px;
   margin: 8px 0;
-  font-size: 14px;
+  font-size: 12px;
   display: inline-block;
   border: 1px solid black;
   border-radius: 4px;
@@ -26,18 +25,17 @@ const Input = styled.input`
   background-color: white;
 `
 
-const FormTitle = styled.div`
-padding: 4px 0px 11px 0px;
-  font-size: 16px;
-  font-weight: bold;
-`
 
+const TableForm = ({ title, phonenum, openhours, location, description,
+  handleChange, handleSubmit, toggleParentVisibility, history }) => {
 
-const TableForm = ({ title, phonenum, openhours, location, description, handleChange, handleSubmit, toggleParentVisibility }) => {
+  const handleClick = (e) => {
+    e.preventDefault()
+    history.push('/')
+  }
 
   return (
     <FormContainer display=''>
-      <FormTitle> Add New Vendor Table </FormTitle>
       <form onSubmit={handleSubmit}>
         <Input
           placeholder='Title'
@@ -74,9 +72,10 @@ const TableForm = ({ title, phonenum, openhours, location, description, handleCh
           value={location}
           onChange={handleChange}
         />
-        <Button type='submit'> Add Table </Button>
-        <Button cancel onClick={toggleParentVisibility()}> Cancel </Button>
-
+        <div style={{ marginTop: 8 }}>
+          <Button submit type='submit'> Add Table </Button>
+          <Button cancel onClick={handleClick}> Cancel </Button>
+        </div>
       </form>
     </FormContainer>
   )

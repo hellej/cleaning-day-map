@@ -6,7 +6,6 @@ import { Button } from './Buttons'
 const TablesContainer = styled.div`
   width: 220px;
   border-radius: 7px;
-  margin: 4px;
   padding: 7px 7px 9px 7px;
   background: #f7f7f7;
   opacity: 0.95;
@@ -14,11 +13,6 @@ const TablesContainer = styled.div`
   // border: 2px solid white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
-`
-const Title = styled.div`
-padding: 7px 0px 11px 10px;
-font-size: 16px;
-font-weight: bold;
 `
 const StyledTable = styled.div`
   padding: 5px 0px 5px 10px;
@@ -30,14 +24,17 @@ const Paragraph = styled.div`
 `
 
 
-const Tables = ({ tables, toggleParentVisibility }) => {
+const Tables = ({ tables, toggleParentVisibility, history }) => {
   let display = tables.length === 0 ? 'none' : ''
+  const handleClick = (e) => {
+    e.preventDefault()
+    history.push('/')
+  }
 
   return (
     <TablesContainer display={display}>
-      <Title>Filtered Tables:</Title>
+      <Button cancel onClick={handleClick}> Close </Button>
       {tables.map(table => <Table key={table.properties.title} table={table} />)}
-      <Button cancel onClick={toggleParentVisibility()}> Cancel </Button>
     </TablesContainer>
   )
 }

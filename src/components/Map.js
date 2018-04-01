@@ -76,10 +76,6 @@ class Map extends React.Component {
 }
 
 
-const mapDispatchToProps = {
-  setTablesList
-}
-
-const ConnectedMap = connect(null, mapDispatchToProps)(Map)
+const ConnectedMap = connect(null, { setTablesList })(Map)
 
 export default ConnectedMap
