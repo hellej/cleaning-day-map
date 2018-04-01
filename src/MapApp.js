@@ -22,7 +22,7 @@ class MapApp extends Component {
     console.log('tables: ', this.props.tables)
 
     return (
-      <div style={{ position: 'relative', width: 'device-width', height: 500, padding: 5 }}>
+      <div style={{ position: 'relative', width: 'device-width', height: 500 }}>
         <Map />
         <span style={blockStyle}>
           <Togglable buttonLabel='Filter Tables' ref={component => this.tables = component}>

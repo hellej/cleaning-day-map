@@ -2,9 +2,7 @@ import React from 'react'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 import { tables } from './../tables'
-import Tables from './Tables'
 import { getUniqueFeatures } from './mapboxhelper'
-import Togglable from './Togglable'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
 
@@ -74,13 +72,6 @@ class Map extends React.Component {
       left: 0,
       width: '100%',
       height: '100%'
-    }
-    const blockStyle = {
-      display: 'inline-block',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      zIndex: 1
     }
 
     return (

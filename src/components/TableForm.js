@@ -6,11 +6,10 @@ import { Button } from './Buttons'
 const FormContainer = styled.div`
   width: 220px;
   border-radius: 7px;
-  margin: 15px;
+  margin: 4px;
   padding: 15px;
   background: #f9f9f9;
   opacity: 0.95;
-  // border: 2px solid white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
@@ -28,13 +27,14 @@ const Input = styled.input`
 `
 
 const FormTitle = styled.div`
-  padding: 4px 0px 11px 0px;
-  font-size: 17px;
+padding: 4px 0px 11px 0px;
+  font-size: 16px;
+  font-weight: bold;
 `
 
 
 const TableForm = ({ title, phonenum, openhours, location, description, handleChange, handleSubmit, toggleParentVisibility }) => {
-  console.log('this.tableform: ', this.tableForm)
+
   return (
     <FormContainer display=''>
       <FormTitle> Add New Vendor Table </FormTitle>
