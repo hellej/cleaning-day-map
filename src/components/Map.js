@@ -1,11 +1,12 @@
 import React from 'react'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
+import { connect } from 'react-redux'
 
 import { tables } from './../tables'
 import { getUniqueFeatures } from './mapboxhelper'
+import { setTablesList } from './../reducers/tableReducer'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
-
 
 
 class Map extends React.Component {
@@ -13,10 +14,7 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      map: null,
-      lng: 5,
-      lat: 34,
-      tables: []
+      map: null
     }
   }
 
@@ -35,7 +33,6 @@ class Map extends React.Component {
 
     map.on('click', (e) => {
       console.log(e.lngLat)
-      this.setState({ lng: e.lngLat.lng, lat: e.lngLat.lat })
     })
 
     map.on('load', () => {
@@ -53,7 +50,7 @@ class Map extends React.Component {
     map.on('moveend', () => {
       const tablefeatures = map.queryRenderedFeatures({ layers: ['tables'] })
       const uniqueTableFeatures = getUniqueFeatures(tablefeatures, "title")
-      this.setState({ tables: uniqueTableFeatures })
+      this.props.setTablesList(uniqueTableFeatures)
     })
   }
 
@@ -62,8 +59,6 @@ class Map extends React.Component {
   }
 
   render() {
-    // const { lng, lat, map } = this.state
-
     const mapstyle = {
       position: 'absolute',
       top: 0,
@@ -80,4 +75,11 @@ class Map extends React.Component {
   }
 }
 
-export default Map
+
+const mapDispatchToProps = {
+  setTablesList
+}
+
+const ConnectedMap = connect(null, mapDispatchToProps)(Map)
+
+export default ConnectedMap

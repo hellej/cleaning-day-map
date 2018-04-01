@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 import MapApp from './MapApp'
 
@@ -14,7 +15,7 @@ const reducer = combineReducers({
   tables: tableReducer
 })
 
-const store = createStore(reducer)
+const store = createStore(reducer, composeWithDevTools())
 
 
 const render = () => {

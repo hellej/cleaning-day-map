@@ -10,6 +10,9 @@ const tableReducer = (store = initialTables, action) => {
     case 'INIT_TABLES':
       return action.tables
 
+    case 'SET_TABLES':
+      return action.tables
+
     // case 'LIKE_TABLE':
     //   const old = store.filter(b => b.id !== action.id)
     //   const liked = store.find(b => b.id === action.id)
@@ -30,6 +33,10 @@ const tableReducer = (store = initialTables, action) => {
 
 export const tablesInitialization = (tables) => {
   return { type: 'INIT_TABLES', tables }
+}
+
+export const setTablesList = (tables) => {
+  return { type: 'SET_TABLES', tables }
 }
 
 
