@@ -8,11 +8,17 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import MapApp from './MapApp'
 
 
+import mapFilteredTablesReducer from './reducers/mapFilteredTablesReducer'
+import textFilteredTablesReducer from './reducers/textFilteredTablesReducer'
+import tablesReducer from './reducers/tablesReducer'
+import filterReducer from './reducers/filterReducer'
 
-import tableReducer from './reducers/tableReducer'
 
 const reducer = combineReducers({
-  tables: tableReducer
+  tables: tablesReducer,
+  mapFiltTables: mapFilteredTablesReducer,
+  textFiltTables: textFilteredTablesReducer,
+  filter: filterReducer
 })
 
 const store = createStore(reducer, composeWithDevTools())

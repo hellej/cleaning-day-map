@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { tables } from './../tables'
 import { getUniqueFeatures } from './mapboxhelper'
-import { setTablesList } from './../reducers/tableReducer'
+import { setMapFiltTablesList } from './../reducers/mapFilteredTablesReducer'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
 
@@ -14,8 +14,14 @@ class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      map: null
+      mapRef: null
     }
+  }
+
+  queryRenderedFeatures = () => {
+    const tablefeatures = this.state.mapRef.queryRenderedFeatures({ layers: ['tables'] })
+    const uniqueTableFeatures = getUniqueFeatures(tablefeatures, 'title')
+    this.props.setMapFiltTablesList(uniqueTableFeatures)
   }
 
   componentDidMount() {
@@ -39,23 +45,33 @@ class Map extends React.Component {
       map.addSource('tables', { type: 'geojson', data: tables })
       map.addLayer({ id: 'tables', source: 'tables', type: 'circle' })
       map.addControl(new MapboxGl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true
+        positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
-      this.setState({ map: map })
+      this.setState({ mapRef: map })
     })
 
     map.on('moveend', () => {
-      const tablefeatures = map.queryRenderedFeatures({ layers: ['tables'] })
-      const uniqueTableFeatures = getUniqueFeatures(tablefeatures, "title")
-      this.props.setTablesList(uniqueTableFeatures)
+      this.queryRenderedFeatures()
     })
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.textFiltTables.length === this.props.textFiltTables.length) { return }
+
+    if (this.props.textFiltTables.length > 0) {
+      this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],
+        this.props.textFiltTables.map(table => table.properties.description), true, false])
+    } else {
+      this.state.mapRef.setFilter('tables', ['==', 'asdf', ''])
+    }
+    setTimeout(() => {
+      this.queryRenderedFeatures()
+    }, 300)
+  }
+
+
   componentWillUnmount() {
-    this.state.map.remove()
+    this.state.mapRef.remove()
   }
 
   render() {
@@ -70,12 +86,12 @@ class Map extends React.Component {
     }
 
     return (
-      <div style={mapstyle} className='Map' ref={el => this.mapContainer = el}> </div>
+      <div style={mapstyle} className='Map' ref={el => { this.mapContainer = el }}> </div>
     )
   }
 }
 
 
-const ConnectedMap = connect(null, { setTablesList })(Map)
+const ConnectedMap = connect(null, { setMapFiltTablesList })(Map)
 
 export default ConnectedMap

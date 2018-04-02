@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Button } from './Buttons'
+import { Input } from './FormComponents'
+
 
 const FormContainer = styled.div`
   width: 220px;
@@ -11,18 +13,6 @@ const FormContainer = styled.div`
   opacity: 0.95;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
-`
-
-const Input = styled.input`
-  width: 100%;
-  padding: 9px 16px;
-  margin: 8px 0;
-  font-size: 12px;
-  display: inline-block;
-  border: 1px solid black;
-  border-radius: 4px;
-  box-sizing: border-box;
-  background-color: white;
 `
 
 
@@ -79,7 +69,6 @@ const TableForm = ({ title, phonenum, openhours, location, description,
       </form>
     </FormContainer>
   )
-
 }
 
 

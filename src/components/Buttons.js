@@ -23,6 +23,12 @@ ${props => props.cancel && css`
 background: #ff89ac;
 color: white;
 `}
+${props => props.cancelsmall && css`
+padding: 4px 9px;
+margin: auto;
+background: #ff89ac;
+color: white;
+`}
 ${props => props.submit && css`
 background: green;
 color: white;
