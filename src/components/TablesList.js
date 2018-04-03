@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
+import { zoomToFeature } from './../reducers/mapControlReducer'
 
 
 import { Button } from './Buttons'
@@ -49,14 +50,14 @@ const TablesList = (props) => {
         <Input filterinput placeholder='Type to search' value={filter} onChange={props.handleFilterChange} />
         <Button cancelsmall onClick={handleCloseClick}> Close </Button>
       </StyledFilterDiv>
-      {tables.map(table => <Table key={table.properties.title} table={table} />)}
+      {tables.map(table => <Table key={table.properties.title} table={table} handleClick={props.zoomToFeature} />)}
     </StyledTablesListContainer>
   )
 }
 
-const Table = ({ table }) => {
+const Table = ({ table, handleClick }) => {
   return (
-    <StyledTableDiv onClick={() => console.log('Table div click', table.geometry)}>
+    <StyledTableDiv onClick={() => handleClick(table)}>
       <b>{table.properties.title}</b> {table.properties.likes} likes
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
@@ -66,6 +67,8 @@ const Table = ({ table }) => {
 
 
 const mapStateToProps = (state) => ({ filter: state.filter })
+const mapDispatchToProps = { handleFilterChange, zoomToFeature }
 
-const connectedTablesList = connect(mapStateToProps, { handleFilterChange })(TablesList)
+
+const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)
 export default connectedTablesList

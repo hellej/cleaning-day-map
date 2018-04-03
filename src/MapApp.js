@@ -43,12 +43,10 @@ const getCommonObjects = (array1, array2) => {
   return array1.filter(obj1 => array2.some(obj2 => obj1.title === obj2.title))
 }
 
-const mapStateToProps = (state) => {
-  return {
-    textFiltTables: state.textFiltTables,
-    textMapFiltTables: getCommonObjects(state.mapFiltTables, state.textFiltTables)
-  }
-}
+const mapStateToProps = (state) => ({
+  textFiltTables: state.textFiltTables,
+  textMapFiltTables: getCommonObjects(state.mapFiltTables, state.textFiltTables)
+})
 
 
 const ConnectedMapApp = connect(mapStateToProps, null)(MapApp)

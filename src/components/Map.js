@@ -56,6 +56,13 @@ class Map extends React.Component {
 
   componentDidUpdate(prevProps) {
 
+    if (this.state.mapRef === null) { return }
+
+    if (JSON.stringify(this.props.mapControl) !== JSON.stringify(prevProps.mapControl)) {
+      this.state.mapRef.flyTo({ center: this.props.mapControl.center, zoom: 13 })
+    }
+
+
     if (prevProps.textFiltTables.length !== this.props.textFiltTables.length) {
       if (this.props.textFiltTables.length > 0) {
         this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],
@@ -89,6 +96,9 @@ class Map extends React.Component {
 }
 
 
-const ConnectedMap = connect(null, { setMapFiltTablesList })(Map)
+
+const mapStateToProps = (state) => ({ mapControl: state.mapControl })
+
+const ConnectedMap = connect(mapStateToProps, { setMapFiltTablesList })(Map)
 
 export default ConnectedMap
