@@ -24,15 +24,16 @@ background: #ff89ac;
 color: white;
 `}
 ${props => props.cancelsmall && css`
-padding: 4px 9px;
-margin: auto;
 background: #ff89ac;
 color: white;
+font-size: 13px;
+padding: 4px 9px;
+margin: auto;
 `}
 ${props => props.submit && css`
 background: green;
-color: white;
 border: none;
+color: white;
 &:hover { background: grey; color: white;}
 `}
 `

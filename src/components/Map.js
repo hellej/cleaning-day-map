@@ -35,38 +35,35 @@ class Map extends React.Component {
       zoom: 10
     })
 
-    console.log('map mounted: ', map)
-
     map.on('click', (e) => {
       console.log(e.lngLat)
     })
 
     map.on('load', () => {
+      this.setState({ mapRef: map })
       map.addSource('tables', { type: 'geojson', data: tables })
       map.addLayer({ id: 'tables', source: 'tables', type: 'circle' })
       map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
-      this.setState({ mapRef: map })
     })
 
     map.on('moveend', () => {
+      if (this.state.mapRef === null) { return }
       this.queryRenderedFeatures()
     })
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.textFiltTables.length === this.props.textFiltTables.length) { return }
 
-    if (this.props.textFiltTables.length > 0) {
-      this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],
-        this.props.textFiltTables.map(table => table.properties.description), true, false])
-    } else {
-      this.state.mapRef.setFilter('tables', ['==', 'asdf', ''])
+    if (prevProps.textFiltTables.length !== this.props.textFiltTables.length) {
+      if (this.props.textFiltTables.length > 0) {
+        this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],
+          this.props.textFiltTables.map(table => table.properties.description), true, false])
+      } else { this.state.mapRef.setFilter('tables', ['==', 'asdf', '']) }
+      setTimeout(() => { this.queryRenderedFeatures() }, 300)
     }
-    setTimeout(() => {
-      this.queryRenderedFeatures()
-    }, 300)
+
   }
 
 

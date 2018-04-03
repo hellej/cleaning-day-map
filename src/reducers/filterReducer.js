@@ -12,10 +12,6 @@ const filterReducer = (store = initialFilter, action) => {
 }
 
 
-export const setFilter = (filter) => {
-  return { type: 'SET_FILTER', filter }
-}
-
 export const handleFilterChange = (e) => {
   return { type: 'SET_FILTER', filter: e.target.value }
 }
