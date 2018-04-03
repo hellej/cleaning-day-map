@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { tables } from './../tables'
 import { getUniqueFeatures } from './mapboxhelper'
 import { setMapFiltTablesList } from './../reducers/mapFilteredTablesReducer'
+import { setPopup } from './../components/mapboxhelper'
 
 const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
 
@@ -26,6 +27,7 @@ class Map extends React.Component {
 
   componentDidMount() {
 
+
     MapboxGl.accessToken = accessToken
 
     const map = new MapboxGl.Map({
@@ -35,9 +37,7 @@ class Map extends React.Component {
       zoom: 10
     })
 
-    map.on('click', (e) => {
-      console.log(e.lngLat)
-    })
+
 
     map.on('load', () => {
       this.setState({ mapRef: map })
@@ -46,7 +46,12 @@ class Map extends React.Component {
       map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
+      
+      map.on('click', 'tables', (e) => { setPopup(e, map) })
+      map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
+      map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
     })
+
 
     map.on('moveend', () => {
       if (this.state.mapRef === null) { return }
@@ -58,11 +63,12 @@ class Map extends React.Component {
 
     if (this.state.mapRef === null) { return }
 
+    // FLY TO FEATURE 
     if (JSON.stringify(this.props.mapControl) !== JSON.stringify(prevProps.mapControl)) {
       this.state.mapRef.flyTo({ center: this.props.mapControl.center, zoom: 13 })
     }
 
-
+    // UPDATE FILTERED TABLES
     if (prevProps.textFiltTables.length !== this.props.textFiltTables.length) {
       if (this.props.textFiltTables.length > 0) {
         this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],

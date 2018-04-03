@@ -1,4 +1,5 @@
 
+import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 
 export const getUniqueFeatures = (array, comparatorProperty) => {
@@ -15,4 +16,22 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
     }
   })
   return uniqueFeatures
+}
+
+
+export const setPopup = (e, map) => {
+
+  const table = e.features[0]
+  var coordinates = table.geometry.coordinates.slice();
+
+  const popup = `
+      <div onClick=(console.log("popup clicked"))>
+      <div class="popupTitle"> ${table.properties.title} </div>
+        ${table.properties.description}
+      </div>
+    `
+  new MapboxGl.Popup({ closeOnClick: true })
+    .setLngLat(coordinates)
+    .setHTML(popup)
+    .addTo(map)
 }
