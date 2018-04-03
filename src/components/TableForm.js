@@ -8,13 +8,19 @@ import { Input } from './FormComponents'
 const FormContainer = styled.div`
   width: 220px;
   border-radius: 7px;
-  padding: 15px;
+  padding: 15px 15px 12px 15px;
   background: white;
   opacity: 0.95;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
-
+const StyledButtonDiv = styled.div`
+  margin: 8px 18px 0px 8px;
+  display: flex;
+  align-items: center;
+  padding: 5px 0px 5px 0px;
+  border-radius: 7px; 
+`
 
 const TableForm = ({ title, phonenum, openhours, location, description,
   handleChange, handleSubmit, toggleParentVisibility, history }) => {
@@ -62,10 +68,10 @@ const TableForm = ({ title, phonenum, openhours, location, description,
           value={location}
           onChange={handleChange}
         />
-        <div style={{ marginTop: 8 }}>
+        <StyledButtonDiv>
           <Button submit type='submit'> Add Table </Button>
-          <Button cancel onClick={handleClick}> Cancel </Button>
-        </div>
+          <Button cancelsmall onClick={handleClick}> Cancel </Button>
+        </StyledButtonDiv>
       </form>
     </FormContainer>
   )

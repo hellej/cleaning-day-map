@@ -9,8 +9,8 @@ import TablesList from './components/TablesList'
 
 
 const mapContainerStyle = { position: 'relative', width: 'device-width', height: 500 }
-const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 0 }
-const toolStyle = { position: 'absolute', zIndex: 1, top: 45, left: 10 }
+const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 0, left: 10 }
+const toolStyle = { position: 'absolute', zIndex: 1, top: 40, left: 10 }
 
 
 class MapApp extends Component {
@@ -38,11 +38,9 @@ class MapApp extends Component {
 
 
 
-
 const getCommonObjects = (array1, array2) => {
   return array1.filter(obj1 => array2.some(obj2 => obj1.title === obj2.title))
 }
-
 
 const mapStateToProps = (state) => ({
   textFiltTables: state.textFiltTables,
