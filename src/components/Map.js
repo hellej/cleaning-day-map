@@ -3,32 +3,23 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
 
 import { tables } from './../tables'
-import { getUniqueFeatures } from './mapboxhelper'
+import { getUniqueFeatures, renderPopup, getRenderedFeaturesFromQuery } from './mapboxhelper'
 import { setMapFiltTablesList } from './../reducers/mapFilteredTablesReducer'
-import { setPopup } from './../components/mapboxhelper'
 
-const accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
+MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
 
 
 class Map extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       mapRef: null
     }
   }
 
-  queryRenderedFeatures = () => {
-    const tablefeatures = this.state.mapRef.queryRenderedFeatures({ layers: ['tables'] })
-    const uniqueTableFeatures = getUniqueFeatures(tablefeatures, 'title')
-    this.props.setMapFiltTablesList(uniqueTableFeatures)
-  }
 
   componentDidMount() {
-
-
-    MapboxGl.accessToken = accessToken
 
     const map = new MapboxGl.Map({
       container: this.mapContainer,
@@ -38,7 +29,6 @@ class Map extends React.Component {
     })
 
 
-
     map.on('load', () => {
       this.setState({ mapRef: map })
       map.addSource('tables', { type: 'geojson', data: tables })
@@ -46,8 +36,8 @@ class Map extends React.Component {
       map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
-      
-      map.on('click', 'tables', (e) => { setPopup(e, map) })
+
+      map.on('click', 'tables', (e) => { renderPopup(e, map) })
       map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
       map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
     })
@@ -55,12 +45,12 @@ class Map extends React.Component {
 
     map.on('moveend', () => {
       if (this.state.mapRef === null) { return }
-      this.queryRenderedFeatures()
+      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(this.state.mapRef))
     })
   }
 
-  componentDidUpdate(prevProps) {
 
+  componentDidUpdate(prevProps) {
     if (this.state.mapRef === null) { return }
 
     // FLY TO FEATURE 
@@ -74,7 +64,9 @@ class Map extends React.Component {
         this.state.mapRef.setFilter('tables', ['match', ['get', 'description'],
           this.props.textFiltTables.map(table => table.properties.description), true, false])
       } else { this.state.mapRef.setFilter('tables', ['==', 'asdf', '']) }
-      setTimeout(() => { this.queryRenderedFeatures() }, 300)
+      setTimeout(() => {
+        this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(this.state.mapRef))
+      }, 300)
     }
 
   }

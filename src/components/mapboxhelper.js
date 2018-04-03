@@ -1,12 +1,14 @@
 
+import React from 'react'
+import ReactDOM from 'react-dom'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
+
+import Popup from './Popup'
+
 
 
 export const getUniqueFeatures = (array, comparatorProperty) => {
   var existingFeatureKeys = {}
-  // Because features come from tiled vector data, feature geometries may be split
-  // or duplicated across tile boundaries and, as a result, features may appear
-  // multiple times in query results.
   var uniqueFeatures = array.filter(function (el) {
     if (existingFeatureKeys[el.properties[comparatorProperty]]) {
       return false
@@ -18,20 +20,29 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
   return uniqueFeatures
 }
 
+export const getRenderedFeaturesFromQuery = (map) => {
+  const tablefeatures = map.queryRenderedFeatures({ layers: ['tables'] })
+  return getUniqueFeatures(tablefeatures, 'title')
+}
 
-export const setPopup = (e, map) => {
 
+
+let popupObj = null
+
+export const renderPopup = (e, map) => {
+  
+  if (popupObj) { popupObj.remove() }
+  
   const table = e.features[0]
-  var coordinates = table.geometry.coordinates.slice();
+  var coordinates = table.geometry.coordinates.slice()
+  const popup = `<div id="popup"> </div>`
 
-  const popup = `
-      <div onClick=(console.log("popup clicked"))>
-      <div class="popupTitle"> ${table.properties.title} </div>
-        ${table.properties.description}
-      </div>
-    `
-  new MapboxGl.Popup({ closeOnClick: true })
+  popupObj = new MapboxGl.Popup({ closeOnClick: true })
+
+  popupObj
     .setLngLat(coordinates)
     .setHTML(popup)
     .addTo(map)
+
+  ReactDOM.render(<Popup table={table} />, document.getElementById('popup'))
 }
