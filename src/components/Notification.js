@@ -5,8 +5,11 @@ const StyledNotificationDiv = styled.div`
 border-radius: 5px;
 display: inline-block;
 color: white;
-font-size: 15px;
+font-size: 14px;
+font-weight: 300;
+letter-spacing: 1px;
 padding: 12px 20px;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 ${props => props.type === 'info' && css`
 background: blue;
 `}

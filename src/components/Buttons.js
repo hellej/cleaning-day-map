@@ -53,6 +53,7 @@ cursor: pointer;
 display: inline-block;
 font-size: 14px;
 font-weight: 400;
+letter-spacing: 1px;
 margin: 4px 5px 4px 5px;
 padding: 6px 13px;
 text-align: center;
@@ -65,4 +66,12 @@ transition-duration: 0.2s;
   border-color: black;
   background: black;
 }
+`
+
+export const StyledNavLinkContainer = styled.div`
+  background: rgba(255, 255, 255,.9);
+  border-radius: 20px;
+  padding: 2px;
+  margin: 3px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `

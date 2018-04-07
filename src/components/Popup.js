@@ -3,11 +3,19 @@ import styled from 'styled-components'
 
 
 const StyledPopupTitle = styled.div`
-font-weight: bold;
+font-weight: normal;
+font-size: 13px;
+color: white
+letter-spacing: 1px;
+margin-bottom: 4px;
+line-height: 130%;
 `
 const StyledPopupDescription = styled.div`
 font-size: 13px;
 line-height: 120%;
+color: white;
+font-weight: 300;
+letter-spacing: 0.6px;
 `
 
 

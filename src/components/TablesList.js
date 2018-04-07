@@ -14,6 +14,7 @@ const StyledTablesListContainer = styled.div`
   padding: 7px 7px 9px 7px;
   background: rgba(255,255,255,.9);
   font-size: 13px;
+  letter-spacing: 0.2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
@@ -38,8 +39,7 @@ class TablesList extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const locationChanged = nextProps.location !== this.props.location
-    console.log('changed: ', locationChanged)
-    this.props.history.push('/')
+    if (locationChanged) { this.props.history.push('/') }
   }
 
   handleCloseClick = (e) => {
@@ -48,7 +48,7 @@ class TablesList extends React.Component {
   }
 
   render() {
-    const { tables, history, filter } = this.props
+    const { tables, filter } = this.props
     return (
       <StyledTablesListContainer>
         <StyledFilterDiv>

@@ -26,8 +26,7 @@ class TableForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const locationChanged = nextProps.location !== this.props.location
-    console.log('changed: ', locationChanged)
-    this.props.history.push('/')
+    if (locationChanged) { this.props.history.push('/') }
   }
 
   handleCloseClick = (e) => {
