@@ -6,11 +6,13 @@ import { StyledNavLink } from './components/Buttons'
 import Map from './components/Map'
 import TableForm from './components/TableForm'
 import TablesList from './components/TablesList'
+import Notification from './components/Notification'
 
 
 const mapContainerStyle = { position: 'relative', width: 'device-width', height: 500 }
 const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 0, left: 10 }
-const toolStyle = { position: 'absolute', zIndex: 1, top: 40, left: 10 }
+const toolStyle = { position: 'absolute', zIndex: 1, top: 43, left: 10 }
+const notifStyle = { position: 'absolute', zIndex: 2, bottom: 8, left: 10 }
 
 
 class MapApp extends Component {
@@ -30,6 +32,7 @@ class MapApp extends Component {
             <Route path='/addtable' render={({ history }) =>
               <TableForm history={history} />} />
           </div>
+          <div style={notifStyle}><Notification notif={this.props.notification} /> </div>
         </div>
       </Router>
     )
@@ -43,6 +46,7 @@ const getCommonObjects = (array1, array2) => {
 }
 
 const mapStateToProps = (state) => ({
+  notification: state.notification,
   textFiltTables: state.textFiltTables,
   textMapFiltTables: getCommonObjects(state.mapFiltTables, state.textFiltTables)
 })
