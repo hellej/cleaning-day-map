@@ -27,10 +27,10 @@ class MapApp extends Component {
             <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
           </div>
           <div style={toolStyle}>
-            <Route path='/filtertables' render={({ history }) =>
-              <TablesList tables={this.props.textMapFiltTables} history={history} />} />
-            <Route path='/addtable' render={({ history }) =>
-              <TableForm history={history} />} />
+            <Route path='/filtertables' render={({ history, location }) =>
+              <TablesList tables={this.props.textMapFiltTables} history={history} location={location} />} />
+            <Route path='/addtable' render={({ history, location }) =>
+              <TableForm history={history} location={location} visible={true} />} />
           </div>
           <div style={notifStyle}><Notification notif={this.props.notification} /> </div>
         </div>

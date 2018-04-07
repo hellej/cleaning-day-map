@@ -34,23 +34,31 @@ const StyledDescriptionDiv = styled.div`
 
 
 
-const TablesList = (props) => {
-  const { tables, history, filter } = props
+class TablesList extends React.Component {
 
-  const handleCloseClick = (e) => {
-    e.preventDefault()
-    history.push('/')
+  componentWillReceiveProps(nextProps) {
+    const locationChanged = nextProps.location !== this.props.location
+    console.log('changed: ', locationChanged)
+    this.props.history.push('/')
   }
 
-  return (
-    <StyledTablesListContainer>
-      <StyledFilterDiv>
-        <Input filterinput placeholder='Type to search' value={filter} onChange={props.handleFilterChange} />
-        <Button cancelsmall onClick={handleCloseClick}> Close </Button>
-      </StyledFilterDiv>
-      {tables.map(table => <Table key={table.properties.title} table={table} handleClick={props.zoomToFeature} />)}
-    </StyledTablesListContainer>
-  )
+  handleCloseClick = (e) => {
+    e.preventDefault()
+    this.props.history.push('/')
+  }
+
+  render() {
+    const { tables, history, filter } = this.props
+    return (
+      <StyledTablesListContainer>
+        <StyledFilterDiv>
+          <Input filterinput placeholder='Type to search' value={filter} onChange={this.props.handleFilterChange} />
+          <Button cancelsmall onClick={this.handleCloseClick}> Close </Button>
+        </StyledFilterDiv>
+        {tables.map(table => <Table key={table.properties.title} table={table} handleClick={this.props.zoomToFeature} />)}
+      </StyledTablesListContainer>
+    )
+  }
 }
 
 const Table = ({ table, handleClick }) => {

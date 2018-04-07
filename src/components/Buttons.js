@@ -25,7 +25,7 @@ color: white;
 ${props => props.cancel && css`
 border-color: red;
 color: red;
-font-size: 13px;
+font-size: 14px;
 padding: 5px 11px;
 &:hover { color: #d31723; border-color: #d31723; background: #f4f4f4} 
 `}
