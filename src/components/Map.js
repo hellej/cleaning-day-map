@@ -3,7 +3,7 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
 
 import { tables } from './../tables'
-import { getUniqueFeatures, renderPopup, getRenderedFeaturesFromQuery } from './mapboxhelper'
+import { renderPopup, getRenderedFeaturesFromQuery } from './mapboxhelper'
 import { setMapFiltTablesList } from './../reducers/mapFilteredTablesReducer'
 
 MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'

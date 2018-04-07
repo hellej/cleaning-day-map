@@ -12,10 +12,8 @@ const StyledTablesListContainer = styled.div`
   width: 220px;
   border-radius: 7px;
   padding: 7px 7px 9px 7px;
-  background: #f7f7f7;
-  opacity: 0.95;
+  background: rgba(255,255,255,.9);
   font-size: 13px;
-  // border: 2px solid white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
 `
