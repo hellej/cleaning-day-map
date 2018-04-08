@@ -9,6 +9,7 @@ import tablesReducer from './reducers/tablesReducer'
 import filterReducer from './reducers/filterReducer'
 import mapControlReducer from './reducers/mapControlReducer'
 import notificationReducer from './reducers/notificationReducer'
+import tableFormReducer from './reducers/tableFormReducer'
 
 
 const reducer = combineReducers({
@@ -17,7 +18,8 @@ const reducer = combineReducers({
   mapFiltTables: mapFilteredTablesReducer,
   textFiltTables: textFilteredTablesReducer,
   filter: filterReducer,
-  mapControl: mapControlReducer
+  mapControl: mapControlReducer,
+  tableform: tableFormReducer
 })
 
 const store = createStore(

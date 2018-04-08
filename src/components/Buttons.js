@@ -25,18 +25,11 @@ color: white;
 ${props => props.cancel && css`
 border-color: red;
 color: red;
-font-size: 14px;
-padding: 5px 11px;
-&:hover { color: #d31723; border-color: #d31723; background: #f4f4f4} 
-`}
-${props => props.cancelsmall && css`
-border-color: red;
-color: red;
 font-size: 13px;
 box-sizing:border-box;
 &:hover { box-shadow: inset 0 0 2px red; } 
 font-size: 13px;
-padding: 4px 9px;
+padding: 3px 7px;
 `}
 `
 

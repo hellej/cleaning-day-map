@@ -3,7 +3,7 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 const initialControl = { center: null, zoom: null, selectedtable: null, mouseontable: null }
 
 const mapControlReducer = (store = initialControl, action) => {
-  console.log('action: ', action)
+  // console.log('action: ', action)
 
   switch (action.type) {
     case 'ZOOM_TO':

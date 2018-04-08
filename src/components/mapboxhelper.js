@@ -50,3 +50,35 @@ export const renderPopup = (e, map) => {
 export const equalCenter = (camera1, camera2) => {
   return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) && camera1.zoom === camera2.zoom)
 }
+
+
+
+// export const createGeoJSONarray = (tables) => {
+
+//   let geojsontables = {
+//     "type": "FeatureCollection",
+//     "features": []
+//   }
+// }
+
+
+export const createGeoJSON = (table) => {
+
+  const geojson = {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [24.9698, 60.2178]
+    },
+    "properties": {
+      "title": "Vaatteita ja kenkiä",
+      "description": "Paljon erilaisia 6-10 v lasten pieneksi jääneitä vaatteita",
+      "openhours": "10-14",
+      "phonenum": "0452342344",
+      "image": "url?",
+      "likes": 2
+    }
+  }
+  return geojson
+
+}

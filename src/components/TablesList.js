@@ -7,6 +7,7 @@ import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../re
 import { Button, ZoomButton } from './Buttons'
 import { Input } from './FormComponents'
 
+
 const StyledTablesListContainer = styled.div`
   width: 220px;
   border-radius: 7px;
@@ -23,7 +24,7 @@ const StyledTableDiv = styled.div`
   cursor: pointer;
   margin-bottom: 4px;
   border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
-  &:hover { border: 2px solid rgba(237, 197, 0,.8); }
+  &:hover { ${props => props.selected ? '' : 'border: 2px solid rgba(237, 197, 0,.8);'} }
 `
 const StyledFilterDiv = styled.div`
   display: flex;
@@ -55,7 +56,7 @@ class TablesList extends React.Component {
       <StyledTablesListContainer>
         <StyledFilterDiv>
           <Input filterinput placeholder='Type to search' value={filter} onChange={this.props.handleFilterChange} />
-          <Button cancelsmall onClick={this.handleCloseClick}> Close </Button>
+          <Button cancel onClick={this.handleCloseClick}> Close </Button>
         </StyledFilterDiv>
         {tables.map(table =>
           <Table
@@ -73,7 +74,7 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, handleClick, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable } = props
+  const { table, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable } = props
 
   return (
     <StyledTableDiv
@@ -88,6 +89,7 @@ const Table = (props) => {
     </StyledTableDiv>
   )
 }
+
 
 
 

@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import { Button } from './Buttons'
-import { Input } from './FormComponents'
+import { Input, Textarea } from './FormComponents'
 import { showNotification } from './../reducers/notificationReducer'
+import { handleFormChange, handleSubmit } from './../reducers/tableFormReducer'
 
 const FormContainer = styled.div`
   width: 220px;
@@ -13,6 +14,7 @@ const FormContainer = styled.div`
   background: rgba(255,255,255,1);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
+  z-index: 2;
 `
 const StyledButtonDiv = styled.div`
   margin: 10px 12px 0px 8px;
@@ -34,8 +36,9 @@ class TableForm extends React.Component {
     this.props.history.push('/')
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = (e, form) => {
     e.preventDefault()
+    this.props.handleSubmit(form)
     this.props.showNotification({ type: 'success', text: 'Add new table not supported yet' }, 3)
     this.props.history.push('/')
   }
@@ -43,50 +46,53 @@ class TableForm extends React.Component {
 
   render() {
 
-    const { title, phonenum, openhours, description, loc,
-      handleChange } = this.props
+    console.log('form this.props: ', this.props)
+
+    const { handleFormChange, handleSubmit } = this.props
+    const { title, description, phonenum, openhours, location } = this.props.tableform
 
     return (
       <FormContainer display=''>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={(e) => this.handleSubmit(e, this.props.tableform)}>
           <Input
             placeholder='Title'
             type='text'
             name='title'
             value={title}
-            onChange={handleChange}
+            onChange={handleFormChange}
           />
-          <Input
+          <Textarea
+            height={80}
             placeholder='Description'
             type='text'
-            name='url'
+            name='description'
             value={description}
-            onChange={handleChange}
+            onChange={handleFormChange}
           />
           <Input
             placeholder='Phone Number'
             type='number'
-            name='author'
+            name='phonenum'
             value={phonenum}
-            onChange={handleChange}
+            onChange={handleFormChange}
           />
           <Input
             placeholder='Opening Hours'
             type='text'
-            name='url'
+            name='openhours'
             value={openhours}
-            onChange={handleChange}
+            onChange={handleFormChange}
           />
           <Input
             placeholder='Location'
             type='text'
-            name='url'
-            value={loc}
-            onChange={handleChange}
+            name='location'
+            value={location}
+            onChange={handleFormChange}
           />
           <StyledButtonDiv>
-            <Button submit type='submit' onClick={this.handleSubmit}> Add Table </Button>
-            <Button cancelsmall onClick={this.handleCloseClick}> Cancel </Button>
+            <Button submit type='submit'> Add Table </Button>
+            <Button cancel onClick={this.handleCloseClick}> Cancel </Button>
           </StyledButtonDiv>
         </form>
       </FormContainer>
@@ -95,6 +101,12 @@ class TableForm extends React.Component {
 }
 
 
-const connectedTableForm = connect(null, { showNotification })(TableForm)
+const mapStateToProps = (state) => ({
+  tableform: state.tableform
+})
+
+const mapDispatchToProps = { showNotification, handleFormChange, handleSubmit }
+
+const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)
 
 export default connectedTableForm

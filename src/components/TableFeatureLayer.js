@@ -8,11 +8,6 @@ import { unselectTable, selectTable } from './../reducers/mapControlReducer'
 
 class TableFeatureLayer extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-    }
-  }
 
   circleStyle = {
     'circle-color': 'white',
@@ -34,11 +29,12 @@ class TableFeatureLayer extends React.Component {
     const { tables, map } = this.props
 
     map.addSource('tables', { type: 'geojson', data: tables })
+    
     map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
-    map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
     map.addLayer({ id: 'mouseontable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
-    map.setFilter('selectedtable', ['==', '-', ''])
+    map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
     map.setFilter('mouseontable', ['==', '-', ''])
+    map.setFilter('selectedtable', ['==', '-', ''])
 
     map.on('click', (e) => { this.props.unselectTable() })
     map.on('click', 'tables', (e) => { renderPopup(e, map); this.props.selectTable(e.features[0]) })
