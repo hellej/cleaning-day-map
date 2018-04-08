@@ -2,8 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
-import { zoomToFeature } from './../reducers/mapControlReducer'
-
+import { zoomToFeature, selectTable } from './../reducers/mapControlReducer'
 
 import { Button } from './Buttons'
 import { Input } from './FormComponents'
@@ -21,6 +20,7 @@ const StyledTablesListContainer = styled.div`
 const StyledTableDiv = styled.div`
   padding: 5px 0px 5px 10px;
   border-radius: 7px; 
+  background: ${props => props.selected ? 'rgba(254, 214, 49,.5)' : 'rgba(255,255,255,0)'};
   &:hover { background: #e8e8e8; }
 `
 const StyledFilterDiv = styled.div`
@@ -32,7 +32,6 @@ const StyledFilterDiv = styled.div`
 const StyledDescriptionDiv = styled.div`
   padding: 0px;
 `
-
 
 
 class TablesList extends React.Component {
@@ -55,15 +54,22 @@ class TablesList extends React.Component {
           <Input filterinput placeholder='Type to search' value={filter} onChange={this.props.handleFilterChange} />
           <Button cancelsmall onClick={this.handleCloseClick}> Close </Button>
         </StyledFilterDiv>
-        {tables.map(table => <Table key={table.properties.title} table={table} handleClick={this.props.zoomToFeature} />)}
+        {tables.map(table =>
+          <Table
+            key={table.properties.title}
+            table={table}
+            selectTable={this.props.selectTable}
+            zoomToFeature={this.props.zoomToFeature}
+            selected={this.props.selectedtable === table.properties.title} />
+        )}
       </StyledTablesListContainer>
     )
   }
 }
 
-const Table = ({ table, handleClick }) => {
+const Table = ({ table, handleClick, zoomToFeature, selectTable, selected }) => {
   return (
-    <StyledTableDiv onClick={() => handleClick(table)}>
+    <StyledTableDiv selected={selected} onClick={() => { zoomToFeature(table); selectTable(table) }}>
       <b>{table.properties.title}</b> {table.properties.likes} likes
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
@@ -72,8 +78,8 @@ const Table = ({ table, handleClick }) => {
 
 
 
-const mapStateToProps = (state) => ({ filter: state.filter })
-const mapDispatchToProps = { handleFilterChange, zoomToFeature }
+const mapStateToProps = (state) => ({ filter: state.filter, selectedtable: state.mapControl.selectedtable })
+const mapDispatchToProps = { handleFilterChange, zoomToFeature, selectTable }
 
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)

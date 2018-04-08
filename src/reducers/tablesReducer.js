@@ -1,7 +1,7 @@
 import { tables } from './../tables'
 
 
-const initialTables = tables.features
+const initialTables = tables
 
 
 const tablesReducer = (store = initialTables, action) => {
@@ -13,10 +13,14 @@ const tablesReducer = (store = initialTables, action) => {
     case 'SET_TABLES':
       return action.tables
 
+
+
     default:
       return store
   }
 }
+
+
 
 
 export default tablesReducer

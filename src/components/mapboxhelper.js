@@ -37,7 +37,7 @@ export const renderPopup = (e, map) => {
   var coordinates = table.geometry.coordinates.slice()
   const popup = `<div id="popup"> </div>`
 
-  popupObj = new MapboxGl.Popup({ closeOnClick: true })
+  popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false })
 
   popupObj
     .setLngLat(coordinates)
@@ -48,5 +48,5 @@ export const renderPopup = (e, map) => {
 }
 
 export const equalCenter = (camera1, camera2) => {
-  return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) || camera1.zoom === camera2.zoom)
+  return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) && camera1.zoom === camera2.zoom)
 }

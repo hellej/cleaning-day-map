@@ -1,7 +1,7 @@
 import React from 'react'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
-import { resetMapControl } from './../reducers/mapControlReducer'
+import { setCamera, resetCamera, unselectTable } from './../reducers/mapControlReducer'
 import { equalCenter } from './mapboxhelper'
 
 MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
@@ -31,6 +31,8 @@ class Map extends React.Component {
     this.map.on("render", () => {
       if (!this.state.isReady) {
         this.setState({ isReady: true })
+        const camera = { zoom: this.map.getZoom(), center: this.map.getCenter() }
+        this.setState({ camera: camera })
       }
     })
 
@@ -50,9 +52,9 @@ class Map extends React.Component {
     if (!this.map) { return }
 
     // FLY TO FEATURE 
-    if (this.props.mapControl && !equalCenter(this.state.camera, this.props.mapControl)) {
+    if (this.props.mapControl.center && !equalCenter(this.state.camera, this.props.mapControl)) {
       this.map.flyTo({ center: this.props.mapControl.center, zoom: 13 })
-      this.props.resetMapControl()
+      this.props.resetCamera()
     }
 
   }
@@ -77,8 +79,6 @@ class Map extends React.Component {
     const children = React.Children.map(this.props.children, child =>
       React.cloneElement(child, { map: this.map }))
 
-    console.log('Map state: ', this.state)
-
     return (
       <div style={mapstyle} ref={el => { this.mapContainer = el }}>
         {this.state.isReady && this.map !== null && children}
@@ -91,6 +91,6 @@ class Map extends React.Component {
 
 const mapStateToProps = (state) => ({ mapControl: state.mapControl })
 
-const ConnectedMap = connect(mapStateToProps, { resetMapControl })(Map)
+const ConnectedMap = connect(mapStateToProps, { setCamera, resetCamera, unselectTable })(Map)
 
 export default ConnectedMap
