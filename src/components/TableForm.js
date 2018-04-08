@@ -43,8 +43,8 @@ class TableForm extends React.Component {
 
   render() {
 
-    const { title, phonenum, openhours, location, description,
-      handleChange, history } = this.props
+    const { title, phonenum, openhours, description, loc,
+      handleChange } = this.props
 
     return (
       <FormContainer display=''>
@@ -81,7 +81,7 @@ class TableForm extends React.Component {
             placeholder='Location'
             type='text'
             name='url'
-            value=''
+            value={loc}
             onChange={handleChange}
           />
           <StyledButtonDiv>

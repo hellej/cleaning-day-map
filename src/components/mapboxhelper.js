@@ -30,9 +30,9 @@ export const getRenderedFeaturesFromQuery = (map) => {
 let popupObj = null
 
 export const renderPopup = (e, map) => {
-  
+
   if (popupObj) { popupObj.remove() }
-  
+
   const table = e.features[0]
   var coordinates = table.geometry.coordinates.slice()
   const popup = `<div id="popup"> </div>`
@@ -45,4 +45,8 @@ export const renderPopup = (e, map) => {
     .addTo(map)
 
   ReactDOM.render(<Popup table={table} />, document.getElementById('popup'))
+}
+
+export const equalCenter = (camera1, camera2) => {
+  return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) || camera1.zoom === camera2.zoom)
 }

@@ -4,15 +4,16 @@ import { connect } from 'react-redux'
 
 import { StyledNavLink, StyledNavLinkContainer } from './components/Buttons'
 import Map from './components/Map'
+import TableFeatureLayer from './components/TableFeatureLayer'
 import TableForm from './components/TableForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
-
+import { tables } from './tables'
 
 const mapContainerStyle = { position: 'relative', width: 'device-width', height: 500 }
-const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 0, left: 10 }
-const toolStyle = { position: 'absolute', zIndex: 1, top: 52, left: 10 }
-const notifStyle = { position: 'absolute', zIndex: 2, bottom: 8, left: 10 }
+const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 4, left: 10 }
+const toolStyle = { position: 'absolute', zIndex: 1, top: 53, left: 10 }
+const notifStyle = { position: 'absolute', zIndex: 2, bottom: 12, left: 10 }
 
 
 class MapApp extends Component {
@@ -21,7 +22,9 @@ class MapApp extends Component {
     return (
       <Router>
         <div style={mapContainerStyle}>
-          <Map textFiltTables={this.props.textFiltTables} />
+          <Map>
+            <TableFeatureLayer tables={tables} textFiltTables={this.props.textFiltTables} />
+          </Map>
           <div style={navigationBarStyle}>
             <StyledNavLinkContainer>
               <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
