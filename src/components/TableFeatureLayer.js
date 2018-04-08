@@ -20,6 +20,11 @@ class TableFeatureLayer extends React.Component {
     'circle-stroke-width': 2
   }
   circleStyleSelect = {
+    'circle-color': '#ff89eb',
+    'circle-stroke-color': 'black',
+    'circle-stroke-width': 2
+  }
+  circleStyleMouseOn = {
     'circle-color': '#ffd800',
     'circle-stroke-color': 'black',
     'circle-stroke-width': 2
@@ -31,7 +36,9 @@ class TableFeatureLayer extends React.Component {
     map.addSource('tables', { type: 'geojson', data: tables })
     map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
     map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
+    map.addLayer({ id: 'mouseontable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
     map.setFilter('selectedtable', ['==', '-', ''])
+    map.setFilter('mouseontable', ['==', '-', ''])
 
     map.on('click', (e) => { this.props.unselectTable() })
     map.on('click', 'tables', (e) => { renderPopup(e, map); this.props.selectTable(e.features[0]) })
@@ -45,7 +52,7 @@ class TableFeatureLayer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { map, textFiltTables, selectedtable } = this.props
+    const { map, textFiltTables, selectedtable, mouseontable } = this.props
 
     // UPDATE FILTERED TABLES
     if (prevProps.textFiltTables.length !== textFiltTables.length) {
@@ -58,10 +65,15 @@ class TableFeatureLayer extends React.Component {
       }, 300)
     }
 
-    //COLOR SELECTED POINT
+    //COLOR SELECTED TABLE
     if (selectedtable) {
       map.setFilter('selectedtable', ['match', ['get', 'title'], selectedtable, true, false])
     } else { map.setFilter('selectedtable', ['==', '-', '']) }
+
+    //COLOR HOVERED TABLE
+    if (mouseontable) {
+      map.setFilter('mouseontable', ['match', ['get', 'title'], mouseontable, true, false])
+    } else { map.setFilter('mouseontable', ['==', '-', '']) }
 
   }
 
@@ -81,7 +93,11 @@ class TableFeatureLayer extends React.Component {
 }
 
 
-const mapStateToProps = (state) => ({ selectedtable: state.mapControl.selectedtable })
+const mapStateToProps = (state) => ({
+  selectedtable: state.mapControl.selectedtable,
+  mouseontable: state.mapControl.mouseontable,
+  textFiltTables: state.textFiltTables
+})
 const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable }
 
 const ConnectedTableFeatureLayer = connect(mapStateToProps, mapDispatchToProps)(TableFeatureLayer)

@@ -1,12 +1,12 @@
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
-const initialControl = { center: null, zoom: null, selectedtable: null }
+const initialControl = { center: null, zoom: null, selectedtable: null, mouseontable: null }
 
 const mapControlReducer = (store = initialControl, action) => {
+  console.log('action: ', action)
 
   switch (action.type) {
     case 'ZOOM_TO':
-      console.log('ACTION: ', action)
       const latlong = new MapboxGl.LngLat(action.center[0], action.center[1])
       return { center: latlong, zoom: action.zoom }
 
@@ -17,12 +17,16 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
     case 'SELECT_TABLE':
-      console.log('action: ', action)
       return { ...store, selectedtable: action.table.properties.title }
 
     case 'UNSELECT_TABLE':
-      console.log('action: ', action)
       return { ...store, selectedtable: null }
+
+    case 'MOUSEON_TABLE':
+      return { ...store, mouseontable: action.table.properties.title }
+
+    case 'MOUSEOUT_TABLE':
+      return { ...store, mouseontable: null }
 
     default:
       return store
@@ -58,5 +62,12 @@ export const unselectTable = () => {
   return { type: 'UNSELECT_TABLE' }
 }
 
+export const mouseOnTable = (table) => {
+  return { type: 'MOUSEON_TABLE', table }
+}
+
+export const mouseOutTable = () => {
+  return { type: 'MOUSEOUT_TABLE' }
+}
 
 export default mapControlReducer

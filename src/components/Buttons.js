@@ -40,6 +40,17 @@ padding: 4px 9px;
 `}
 `
 
+export const ZoomButton = styled.button`
+border-radius: 4px;
+border: 1px solid transparent;
+text-decoration: underline;
+background: none;
+padding: 1px 4px;
+cursor: pointer;
+&:hover { text-decoration: none;  border: 1px solid black; } 
+&:focus { outline: none; background: none} 
+`
+
 const activeClassName = 'active'
 
 export const StyledNavLink = styled(NavLink).attrs({

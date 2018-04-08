@@ -23,7 +23,7 @@ class MapApp extends Component {
       <Router>
         <div style={mapContainerStyle}>
           <Map>
-            <TableFeatureLayer tables={tables} textFiltTables={this.props.textFiltTables} />
+            <TableFeatureLayer tables={tables} />
           </Map>
           <div style={navigationBarStyle}>
             <StyledNavLinkContainer>
@@ -33,9 +33,9 @@ class MapApp extends Component {
           </div>
           <div style={toolStyle}>
             <Route path='/filtertables' render={({ history, location }) =>
-              <TablesList tables={this.props.textMapFiltTables} history={history} location={location} />} />
+              <TablesList history={history} location={location} />} />
             <Route path='/addtable' render={({ history, location }) =>
-              <TableForm history={history} location={location} visible={true} />} />
+              <TableForm history={history} location={location} />} />
           </div>
           <div style={notifStyle}><Notification notif={this.props.notification} /> </div>
         </div>
@@ -46,15 +46,8 @@ class MapApp extends Component {
 
 
 
-const getCommonObjects = (array1, array2) => {
-  return array1.filter(obj1 => array2.some(obj2 => obj1.title === obj2.title))
-}
 
-const mapStateToProps = (state) => ({
-  notification: state.notification,
-  textFiltTables: state.textFiltTables,
-  textMapFiltTables: getCommonObjects(state.mapFiltTables, state.textFiltTables)
-})
+const mapStateToProps = (state) => ({ notification: state.notification })
 
 const ConnectedMapApp = connect(mapStateToProps, null)(MapApp)
 

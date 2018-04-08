@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
-import { zoomToFeature, selectTable } from './../reducers/mapControlReducer'
+import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
 
-import { Button } from './Buttons'
+import { Button, ZoomButton } from './Buttons'
 import { Input } from './FormComponents'
 
 const StyledTablesListContainer = styled.div`
@@ -18,10 +18,12 @@ const StyledTablesListContainer = styled.div`
   display: ${props => props.display}
 `
 const StyledTableDiv = styled.div`
-  padding: 5px 0px 5px 10px;
+  padding: 3px 3px 3px 7px;
   border-radius: 7px; 
-  background: ${props => props.selected ? 'rgba(254, 214, 49,.5)' : 'rgba(255,255,255,0)'};
-  &:hover { background: #e8e8e8; }
+  cursor: pointer;
+  margin-bottom: 4px;
+  border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
+  &:hover { border: 2px solid rgba(237, 197, 0,.8); }
 `
 const StyledFilterDiv = styled.div`
   display: flex;
@@ -30,6 +32,7 @@ const StyledFilterDiv = styled.div`
   border-radius: 7px; 
 `
 const StyledDescriptionDiv = styled.div`
+  margin-top: 2px;
   padding: 0px;
 `
 
@@ -60,17 +63,27 @@ class TablesList extends React.Component {
             table={table}
             selectTable={this.props.selectTable}
             zoomToFeature={this.props.zoomToFeature}
-            selected={this.props.selectedtable === table.properties.title} />
+            selected={this.props.selectedtable === table.properties.title}
+            mouseOnTable={this.props.mouseOnTable}
+            mouseOutTable={this.props.mouseOutTable} />
         )}
       </StyledTablesListContainer>
     )
   }
 }
 
-const Table = ({ table, handleClick, zoomToFeature, selectTable, selected }) => {
+const Table = (props) => {
+  const { table, handleClick, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable } = props
+
   return (
-    <StyledTableDiv selected={selected} onClick={() => { zoomToFeature(table); selectTable(table) }}>
-      <b>{table.properties.title}</b> {table.properties.likes} likes
+    <StyledTableDiv
+      selected={selected}
+      onClick={() => selectTable(table)}
+      onMouseEnter={() => mouseOnTable(table)}
+      onMouseLeave={() => mouseOutTable()}>
+      <b>{table.properties.title} </b>
+      {table.properties.likes}{' '} likes {' '}
+      <ZoomButton onClick={() => zoomToFeature(table)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
   )
@@ -78,9 +91,31 @@ const Table = ({ table, handleClick, zoomToFeature, selectTable, selected }) => 
 
 
 
-const mapStateToProps = (state) => ({ filter: state.filter, selectedtable: state.mapControl.selectedtable })
-const mapDispatchToProps = { handleFilterChange, zoomToFeature, selectTable }
+const getCommonObjects = (array1, array2) => {
+  return array1.filter(obj1 => array2.some(obj2 => obj1.title === obj2.title))
+}
 
+const orderByLikes = (tables) => {
+  return tables.sort((a, b) => b.properties.likes - a.properties.likes)
+}
+
+const selectedFirst = (tables, selected) => {
+  if (selected) {
+    const selectedtable = tables.filter(table => table.properties.title === selected)
+    return selectedtable.concat(tables.filter(table => table.properties.title !== selected))
+  } else { return tables }
+}
+
+const mapStateToProps = (state) => ({
+  filter: state.filter,
+  selectedtable: state.mapControl.selectedtable,
+  tables: selectedFirst(
+    orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables)),
+    state.mapControl.selectedtable
+  )
+})
+
+const mapDispatchToProps = { handleFilterChange, zoomToFeature, selectTable, mouseOnTable, mouseOutTable }
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)
 export default connectedTablesList
