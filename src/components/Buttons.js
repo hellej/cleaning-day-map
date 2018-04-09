@@ -78,3 +78,38 @@ export const StyledNavLinkContainer = styled.div`
   padding: 2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
+
+export const LocationInput = styled.div`
+  border-radius: 4px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 300;    
+  margin: 8px 0;
+  letter-spacing: 3px;
+  line-height: 14px;
+  padding: 9px 16px;
+  background-color: white;
+  width: 100%;
+  text-align: left;
+  &:hover { letter-spacing: 5px; } 
+  // &:hover { box-shadow: inset 0 0 2px grey; } 
+  ${props => props.active && css`
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 3px;
+  cursor: default;
+  &:hover { letter-spacing: 3px; } 
+  &:hover { box-shadow: inset 0 0 2px grey; } 
+`}
+`
+
+export const StyledFormButtonDiv = styled.div`
+  margin: 10px 19px 0px 8px;
+  display: flex;
+  align-items: center;
+  padding: 5px 0px 5px 0px;
+  border-radius: 7px; 
+`

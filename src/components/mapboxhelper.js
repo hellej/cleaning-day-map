@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 import Popup from './Popup'
+import PopupNewTable from './PopupNewTable'
 
 
 
@@ -20,8 +21,8 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
   return uniqueFeatures
 }
 
-export const getRenderedFeaturesFromQuery = (map) => {
-  const tablefeatures = map.queryRenderedFeatures({ layers: ['tables'] })
+export const getRenderedFeaturesFromQuery = (map, id) => {
+  const tablefeatures = map.queryRenderedFeatures({ layers: [id] })
   return getUniqueFeatures(tablefeatures, 'title')
 }
 
@@ -29,22 +30,31 @@ export const getRenderedFeaturesFromQuery = (map) => {
 
 let popupObj = null
 
-export const renderPopup = (e, map) => {
+export const renderPopup = (feature, map, offset) => {
 
   if (popupObj) { popupObj.remove() }
 
-  const table = e.features[0]
-  var coordinates = table.geometry.coordinates.slice()
-  const popup = `<div id="popup"> </div>`
+  const coordinates = feature.geometry.coordinates.slice()
+  const newtablepopup = feature.properties ? false : true
 
-  popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false })
+  const popup = `<div id="popup" </div>`
+
+  newtablepopup ?
+    popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false, offset: offset, anchor: 'top' })
+    : popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: true, offset: offset })
 
   popupObj
     .setLngLat(coordinates)
     .setHTML(popup)
     .addTo(map)
 
-  ReactDOM.render(<Popup table={table} />, document.getElementById('popup'))
+  newtablepopup ?
+    ReactDOM.render(<PopupNewTable newtable={feature} />, document.getElementById('popup'))
+    : ReactDOM.render(<Popup table={feature} />, document.getElementById('popup'))
+}
+
+export const removePopup = () => {
+  if (popupObj) { popupObj.remove() }
 }
 
 export const equalCenter = (camera1, camera2) => {

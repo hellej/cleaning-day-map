@@ -37,12 +37,16 @@ class TableFeatureLayer extends React.Component {
     map.setFilter('selectedtable', ['==', '-', ''])
 
     map.on('click', (e) => { this.props.unselectTable() })
-    map.on('click', 'tables', (e) => { renderPopup(e, map); this.props.selectTable(e.features[0]) })
+    map.on('click', 'tables', (e) => {
+      const table = e.features[0]
+      renderPopup(table, map)
+      // this.props.selectTable(e.features[0])
+    })
     map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
     map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
 
     map.on('moveend', () => {
-      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map))
+      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
     })
 
   }
@@ -57,7 +61,7 @@ class TableFeatureLayer extends React.Component {
           textFiltTables.map(table => table.properties.description), true, false])
       } else { map.setFilter('tables', ['==', '-', '']) }
       setTimeout(() => {
-        this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map))
+        this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
       }, 300)
     }
 

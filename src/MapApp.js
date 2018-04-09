@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { StyledNavLink, StyledNavLinkContainer } from './components/Buttons'
 import Map from './components/Map'
 import TableFeatureLayer from './components/TableFeatureLayer'
+import NewTableFeatureLayer from './components/NewTableFeatureLayer'
 import TableForm from './components/TableForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
@@ -24,6 +25,7 @@ class MapApp extends Component {
         <div style={mapContainerStyle}>
           <Map>
             <TableFeatureLayer tables={tables} />
+            <NewTableFeatureLayer />
           </Map>
           <div style={navigationBarStyle}>
             <StyledNavLinkContainer>

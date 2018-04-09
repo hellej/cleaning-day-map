@@ -2,10 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
-import { Button } from './Buttons'
+import { Button, StyledFormButtonDiv, LocationInput } from './Buttons'
 import { Input, Textarea } from './FormComponents'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmit, setLocationInputActive, hideForm } from './../reducers/tableFormReducer'
 
 const FormContainer = styled.div`
   width: 220px;
@@ -31,29 +31,15 @@ class TableForm extends React.Component {
     if (locationChanged) { this.props.history.push('/') }
   }
 
-  handleCloseClick = (e) => {
-    e.preventDefault()
-    this.props.history.push('/')
-  }
-
-  handleSubmit = (e, form) => {
-    e.preventDefault()
-    this.props.handleSubmit(form)
-    this.props.showNotification({ type: 'success', text: 'Add new table not supported yet' }, 3)
-    this.props.history.push('/')
-  }
-
-
   render() {
 
-    console.log('form this.props: ', this.props)
-
-    const { handleFormChange, handleSubmit } = this.props
+    const { tableform, handleFormChange, handleSubmit,
+      history, setLocationInputActive, hideForm } = this.props
     const { title, description, phonenum, openhours, location } = this.props.tableform
 
     return (
-      <FormContainer display=''>
-        <form onSubmit={(e) => this.handleSubmit(e, this.props.tableform)}>
+      <FormContainer>
+        <form>
           <Input
             placeholder='Title'
             type='text'
@@ -62,13 +48,17 @@ class TableForm extends React.Component {
             onChange={handleFormChange}
           />
           <Textarea
-            height={80}
+            height={60}
             placeholder='Description'
             type='text'
             name='description'
             value={description}
             onChange={handleFormChange}
           />
+          <LocationInput active={location.active} onClick={setLocationInputActive}>
+            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat
+              : 'Add Location'}
+          </LocationInput>
           <Input
             placeholder='Phone Number'
             type='number'
@@ -83,29 +73,29 @@ class TableForm extends React.Component {
             value={openhours}
             onChange={handleFormChange}
           />
-          <Input
-            placeholder='Location'
-            type='text'
-            name='location'
-            value={location}
-            onChange={handleFormChange}
-          />
-          <StyledButtonDiv>
-            <Button submit type='submit'> Add Table </Button>
-            <Button cancel onClick={this.handleCloseClick}> Cancel </Button>
-          </StyledButtonDiv>
         </form>
+        <StyledFormButtonDiv>
+          <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Add Table </Button>
+          <Button cancel onClick={() => hideForm(history)}> Cancel </Button>
+        </StyledFormButtonDiv>
       </FormContainer>
     )
   }
 }
 
 
+
 const mapStateToProps = (state) => ({
   tableform: state.tableform
 })
 
-const mapDispatchToProps = { showNotification, handleFormChange, handleSubmit }
+const mapDispatchToProps = {
+  showNotification,
+  handleFormChange,
+  handleSubmit,
+  hideForm,
+  setLocationInputActive
+}
 
 const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)
 
