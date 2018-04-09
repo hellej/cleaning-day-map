@@ -1,9 +1,10 @@
 body {
   font-family: sans-serif;
   /* these will override browser defaults for margin & padding:  */
-  /* margin:0px;
-  padding:0px; */
+  margin:0px;
+  padding:0px;
 }
+
 
 .mapboxgl-ctrl-bottom-left {
   z-index: 1;

@@ -15,14 +15,11 @@ const FormContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
   z-index: 2;
+  max-height: 77vh;
+  overflow-y: scroll;
+  overflow-x: scroll;
 `
-const StyledButtonDiv = styled.div`
-  margin: 10px 12px 0px 8px;
-  display: flex;
-  align-items: center;
-  padding: 5px 0px 5px 0px;
-  border-radius: 7px; 
-`
+
 
 class TableForm extends React.Component {
 

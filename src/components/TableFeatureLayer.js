@@ -29,7 +29,7 @@ class TableFeatureLayer extends React.Component {
     const { tables, map } = this.props
 
     map.addSource('tables', { type: 'geojson', data: tables })
-    
+
     map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
     map.addLayer({ id: 'mouseontable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
     map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })

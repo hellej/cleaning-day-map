@@ -14,7 +14,7 @@ import { tables } from './tables'
 const mapContainerStyle = { position: 'relative', width: 'device-width', height: '100vh' }
 const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 4, left: 10 }
 const toolStyle = { position: 'absolute', zIndex: 1, top: 53, left: 10 }
-const notifStyle = { position: 'absolute', zIndex: 2, bottom: 12, left: 10 }
+const notifStyle = { position: 'absolute', zIndex: 2, bottom: 12, right: 7 }
 
 
 class MapApp extends Component {

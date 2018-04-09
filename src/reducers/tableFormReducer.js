@@ -12,7 +12,7 @@ const initialForm = {
     lngLat: null,
     confirmed: false,
     zoom: null
-}
+  }
 }
 
 
