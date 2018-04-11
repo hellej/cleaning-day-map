@@ -3,8 +3,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
-import Popup from './Popup'
-import PopupNewTable from './PopupNewTable'
+import Popup from './maplayers/Popup'
+import PopupNewTable from './maplayers/PopupNewTable'
 
 
 
@@ -33,10 +33,8 @@ let popupObj = null
 export const renderPopup = (feature, map, offset) => {
 
   if (popupObj) { popupObj.remove() }
-
   const coordinates = feature.geometry.coordinates.slice()
   const newtablepopup = feature.properties ? false : true
-
   const popup = `<div id="popup" </div>`
 
   newtablepopup ?

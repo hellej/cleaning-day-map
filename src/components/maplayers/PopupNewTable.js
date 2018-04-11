@@ -1,9 +1,9 @@
 import React from 'react'
-import store from './../store'
-
 import styled from 'styled-components'
-import { confirmLocation } from './../reducers/tableFormReducer'
-import { Button } from './Buttons'
+
+import store from './../../store'
+import { confirmLocation } from './../../reducers/tableFormReducer'
+import { Button } from './../Buttons'
 
 
 const StyledPopupDiv = styled.div`

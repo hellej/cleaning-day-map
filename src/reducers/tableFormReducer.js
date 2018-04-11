@@ -9,7 +9,7 @@ const initialForm = {
   openhours: '',
   location: {
     active: false,
-    lngLat: null,
+    lngLat: { lng: '', lat: '' },
     confirmed: false,
     zoom: null
   }

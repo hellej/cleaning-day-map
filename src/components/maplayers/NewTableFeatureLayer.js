@@ -1,9 +1,9 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { setLngLatZoomForNew } from './../reducers/tableFormReducer'
+import { setLngLatZoomForNew } from './../../reducers/tableFormReducer'
 // import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
-// import { renderPopup, removePopup, getRenderedFeaturesFromQuery } from './mapboxhelper'
+import { renderPopup, removePopup, getRenderedFeaturesFromQuery } from './../mapboxhelper'
 
 class NewTableFeatureLayer extends React.Component {
 
@@ -48,6 +48,7 @@ class NewTableFeatureLayer extends React.Component {
     this.canvas.style.cursor = 'grab'
     this.map.on('mousemove', this.onMove)
     this.map.once('mouseup', this.onUp)
+    removePopup()
   }
 
   onMove = (e) => {
@@ -62,11 +63,12 @@ class NewTableFeatureLayer extends React.Component {
     this.canvas.style.cursor = ''
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
+    renderPopup(this.newtable.features[0], this.map, 20)
   }
 
 
   componentDidMount() {
-    const { active, map } = this.props
+    const { active, map, confirmed } = this.props
 
     map.addSource('newtable', { type: 'geojson', data: this.newtable })
     map.addLayer({ id: 'newtable', source: 'newtable', type: 'circle', paint: this.circleStyle })
@@ -79,6 +81,7 @@ class NewTableFeatureLayer extends React.Component {
       const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
       if (newtable.length === 0) {
         this.updateNewTableLocation(this.map.getCenter())
+        if (active && !confirmed) { renderPopup(this.newtable.features[0], this.map, 20) }
       }
     })
 
@@ -101,6 +104,7 @@ class NewTableFeatureLayer extends React.Component {
       this.canvas.style.cursor = ''
       this.isCursorOverPoint = false
       map.dragPan.enable()
+
     })
 
     map.on('mousedown', this.mouseDown)
@@ -113,9 +117,19 @@ class NewTableFeatureLayer extends React.Component {
 
     if (!active) {
       this.map.setFilter('newtable', ['==', '-', ''])
-    } else {
-      this.map.setFilter('newtable', null)
+      removePopup()
     }
+
+    if (active && !confirmed) {
+      this.map.setFilter('newtable', null)
+      this.updateNewTableLocation(this.map.getCenter())
+      renderPopup(this.newtable.features[0], this.map, 20)
+    }
+
+    if (active && confirmed) {
+      removePopup()
+    }
+
 
   }
 

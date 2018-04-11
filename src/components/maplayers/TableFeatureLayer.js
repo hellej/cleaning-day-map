@@ -1,9 +1,9 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { renderPopup, getRenderedFeaturesFromQuery } from './mapboxhelper'
-import { setMapFiltTablesList } from './../reducers/mapFilteredTablesReducer'
-import { unselectTable, selectTable } from './../reducers/mapControlReducer'
+import { renderPopup, getRenderedFeaturesFromQuery } from './../mapboxhelper'
+import { setMapFiltTablesList } from './../../reducers/mapFilteredTablesReducer'
+import { unselectTable, selectTable } from './../../reducers/mapControlReducer'
 
 
 class TableFeatureLayer extends React.Component {
