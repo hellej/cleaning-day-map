@@ -5,7 +5,7 @@ import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
 
 import { Button, ZoomButton } from './Buttons'
-import { Input } from './FormComponents'
+import { Input } from './FormElements'
 
 
 const StyledTablesListContainer = styled.div`

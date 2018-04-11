@@ -22,7 +22,9 @@ class PopupNewTable extends React.Component {
 
   render() {
 
-    // const confirmed = store.getState().tableform.location.confirmed
+    // const location = store.getState().tableform.location
+    // if (location)
+    // console.log('location in button: ', location)
 
     return (
       <StyledPopupDiv>

@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 
 import { Button, StyledFormButtonDiv, LocationInput } from './Buttons'
-import { Input, Textarea } from './FormComponents'
+import { Input, Textarea } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, setLocationInputActive, hideForm } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmit, toggleLocationInputActive, hideForm } from './../reducers/tableFormReducer'
 
 const FormContainer = styled.div`
   width: 220px;
@@ -31,7 +31,7 @@ class TableForm extends React.Component {
   render() {
 
     const { tableform, handleFormChange, handleSubmit,
-      history, setLocationInputActive, hideForm } = this.props
+      history, toggleLocationInputActive, hideForm } = this.props
     const { title, description, phonenum, openhours, location } = this.props.tableform
 
     return (
@@ -52,9 +52,8 @@ class TableForm extends React.Component {
             value={description}
             onChange={handleFormChange}
           />
-          <LocationInput active={location.active} onClick={setLocationInputActive}>
-            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat
-              : 'Add Location'}
+          <LocationInput active={location.active} confirmed={location.confirmed} onClick={toggleLocationInputActive}>
+            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Add Location'}
           </LocationInput>
           <Input
             placeholder='Phone Number'
@@ -91,7 +90,7 @@ const mapDispatchToProps = {
   handleFormChange,
   handleSubmit,
   hideForm,
-  setLocationInputActive
+  toggleLocationInputActive
 }
 
 const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)

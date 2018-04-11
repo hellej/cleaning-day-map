@@ -94,15 +94,22 @@ export const LocationInput = styled.div`
   background-color: white;
   width: 100%;
   text-align: left;
-  &:hover { letter-spacing: 5px; } 
-  // &:hover { box-shadow: inset 0 0 2px grey; } 
+  &:hover { 
+    // letter-spacing: 5px; 
+    // box-shadow: inset 0 0 2px grey;
+    box-shadow: 0 0 5px rgba(0, 97, 255, 1);
+    border: 1px solid #3076dd;
+    outline: none;    
+  } 
   ${props => props.active && css`
-  font-size: 12px;
+  color: #3076dd;
   text-align: center;
-  letter-spacing: 3px;
   cursor: default;
-  &:hover { letter-spacing: 3px; } 
-  &:hover { box-shadow: inset 0 0 2px grey; } 
+`}
+  ${props => props.confirmed && css`
+  color: black;
+  text-align: center;
+  cursor: pointer;
 `}
 `
 

@@ -22,14 +22,17 @@ const tableFormReducer = (store = initialForm, action) => {
     case 'UPDATE_FORM':
       return { ...store, [action.name]: action.value }
 
-    case 'SET_LOCINPUT_ACTIVE':
-      let location = store.location
-      return { ...store, location: { ...location, active: true } }
+    case 'TOGGLE_LOCATION_INPUT_STATE':
+      let { active, confirmed } = store.location
+      if (active && !confirmed) { active = true; confirmed = true }
+      if (active && confirmed) { active = true; confirmed = false }
+      if (!active) { active = true; confirmed = false }
+      return { ...store, location: { ...store.location, active, confirmed } }
 
     case 'SET_LNGLAT_2NEW':
       const lngLat = { lng: action.lngLat.lng.toFixed(6), lat: action.lngLat.lat.toFixed(6) }
       const zoom = action.zoom
-      location = store.location
+      let location = store.location
       return { ...store, location: { ...location, lngLat, zoom } }
 
     case 'CONFIRM_LOCATION':
@@ -38,7 +41,7 @@ const tableFormReducer = (store = initialForm, action) => {
 
     case 'SET_LOCINPUT_UNACTIVE':
       location = store.location
-      return { ...store, location: { ...location, active: false } }
+      return { ...store, location: { ...location, active: false, confirmed: false } }
 
     case 'SUBMIT':
       console.log('form submitted: ', action.form)
@@ -62,10 +65,9 @@ export const setLngLatZoomForNew = (lngLat, zoom) => {
   }
 }
 
-export const setLocationInputActive = (lngLat) => {
-
+export const toggleLocationInputActive = () => {
   return (dispatch) => {
-    dispatch({ type: 'SET_LOCINPUT_ACTIVE' })
+    dispatch({ type: 'TOGGLE_LOCATION_INPUT_STATE' })
     dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to desired location' }, 10))
   }
 }
