@@ -23,11 +23,13 @@ ${props => props.submit && css`
   &:hover { background: green; }
 `}
 ${props => props.cancel && css`
-  border-color: red;
+  border: 1px solid transparent;
   color: red;
   font-size: 13px;
   box-sizing:border-box;
-  &:hover { box-shadow: inset 0 0 2px red; } 
+  &:hover { 
+    border: 1px solid red;
+    box-shadow: inset 0 0 2px red; } 
   font-size: 13px;
   padding: 3px 7px;
 `}
@@ -67,7 +69,7 @@ export const StyledNavLink = styled(NavLink).attrs({
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 1px;
-  margin: 4px 5px 4px 5px;
+  margin: 4px 3px;
   padding: 6px 13px;
   text-align: center;
   text-decoration: none;
@@ -84,7 +86,7 @@ export const StyledNavLink = styled(NavLink).attrs({
 export const StyledNavLinkContainer = styled.div`
   background: rgba(255, 255, 255,.9);
   border-radius: 20px;
-  padding: 2px;
+  padding: 2px 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 
@@ -94,6 +96,7 @@ export const LocationInput = styled.div`
   border: 1px solid black;
   box-sizing: border-box;
   cursor: pointer;
+  color: black;
   display: inline-block;
   font-size: 12px;
   font-weight: 400;    
@@ -102,25 +105,39 @@ export const LocationInput = styled.div`
   margin: 8px 0;
   padding: 9px 16px;
   text-align: left;
-  width: 100%;
+  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s; /* Safari */
+  width: 64%;
   &:hover { 
-    // letter-spacing: 5px; 
-    // box-shadow: inset 0 0 2px grey;
-    box-shadow: 0 0 5px rgba(0, 97, 255, 1);
-    border: 1px solid #3076dd;
-    outline: none;    
+    border: 1px solid #88C2E7;
+    background: #88C2E7;
+    color white;
   } 
   ${props => props.active && css`
+  width: 100%;
   font-weight: 300;    
   color: #3076dd;
   text-align: center;
   cursor: default;
+  &:hover { 
+    background: white;
+    color: #3076dd;
+    box-shadow: 0 0 5px rgba(0, 97, 255, 1);
+    border: 1px solid #3076dd;
+  }
 `}
   ${props => props.confirmed && css`
+  width: 100%;
   font-weight: 300;    
   color: black;
   text-align: center;
   cursor: pointer;
+  &:hover { 
+    background: white;
+    color: black;
+    box-shadow: 0 0 5px rgba(0, 97, 255, 1);
+    border: 1px solid #3076dd;
+  }
 `}
 `
 

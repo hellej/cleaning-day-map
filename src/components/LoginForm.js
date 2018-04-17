@@ -10,7 +10,7 @@ import { handleFormChange, handleSubmit, toggleLocationInputActive, hideForm } f
 
 
 
-class TableForm extends React.Component {
+class LoginForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const locationChanged = nextProps.location !== this.props.location
@@ -27,40 +27,22 @@ class TableForm extends React.Component {
       <FormContainer>
         <form>
           <Input
-            placeholder='Title'
+            placeholder='Username'
             type='text'
-            name='title'
-            value={title}
-            onChange={handleFormChange}
-          />
-          <Textarea
-            height={60}
-            placeholder='Description'
-            type='text'
-            name='description'
-            value={description}
+            name='username'
+            // value={username}
             onChange={handleFormChange}
           />
           <Input
-            placeholder='Phone Number'
-            type='number'
-            name='phonenum'
-            value={phonenum}
+            placeholder='Password'
+            type='password'
+            name='password'
+            // value={password}
             onChange={handleFormChange}
           />
-          <Input
-            placeholder='Opening Hours'
-            type='text'
-            name='openhours'
-            value={openhours}
-            onChange={handleFormChange}
-          />
-          <LocationInput active={location.active} confirmed={location.confirmed} onClick={toggleLocationInputActive}>
-            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Add Location'}
-          </LocationInput>
         </form>
         <StyledFormButtonDiv>
-          <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Add Table </Button>
+          <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Login </Button>
           <Button cancel onClick={() => hideForm(history)}> Cancel </Button>
         </StyledFormButtonDiv>
       </FormContainer>
@@ -82,6 +64,6 @@ const mapDispatchToProps = {
   toggleLocationInputActive
 }
 
-const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)
+const connectedLoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginForm)
 
-export default connectedTableForm
+export default connectedLoginForm

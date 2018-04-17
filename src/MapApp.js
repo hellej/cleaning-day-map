@@ -7,6 +7,7 @@ import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
 import TableForm from './components/TableForm'
+import LoginForm from './components/LoginForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 
@@ -30,6 +31,7 @@ class MapApp extends Component {
             <StyledNavLinkContainer>
               <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
               <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
+              <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
             </StyledNavLinkContainer>
           </div>
           <div style={toolStyle}>
@@ -37,6 +39,8 @@ class MapApp extends Component {
               <TablesList history={history} location={location} />} />
             <Route path='/addtable' render={({ history, location }) =>
               <TableForm history={history} location={location} />} />
+            <Route path='/login' render={({ history, location }) =>
+              <LoginForm history={history} location={location} />} />
           </div>
           <div style={notifStyle}><Notification notif={this.props.notification} /> </div>
         </div>

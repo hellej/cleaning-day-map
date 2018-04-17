@@ -2,6 +2,19 @@
 import styled, { css } from 'styled-components'
 
 
+export const FormContainer = styled.div`
+  width: 220px;
+  border-radius: 7px;
+  padding: 15px 15px 12px 15px;
+  background: rgba(255,255,255,1);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: ${props => props.display}
+  z-index: 2;
+  max-height: 77vh;
+  overflow-y: scroll;
+  overflow-x: scroll;
+`
+
 export const Input = styled.input`
 height: ${props => props.height}px;
 width: 100%;
@@ -23,6 +36,12 @@ background-color: white;
   box-shadow: 0 0 5px rgba(0, 97, 255, 1);
   border: 1px solid #3076dd;
   outline: none;
+}
+&:-webkit-autofill {
+  // box-shadow: 0 0 5px rgba(0, 97, 255, 1);
+  // border: 1px solid #3076dd;
+  // outline: none;
+  -webkit-box-shadow: 0 0 0 30px white inset;
 }
 ${props => props.filterinput && css`
 border-radius: 20px;
