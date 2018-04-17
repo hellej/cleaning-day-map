@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 
 import { Button, StyledFormButtonDiv, LocationInput } from './Buttons'
 import { FormContainer, Input, Textarea } from './FormElements'
@@ -56,7 +55,7 @@ class TableForm extends React.Component {
             onChange={handleFormChange}
           />
           <LocationInput active={location.active} confirmed={location.confirmed} onClick={toggleLocationInputActive}>
-            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Add Location'}
+            {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Set Location'}
           </LocationInput>
         </form>
         <StyledFormButtonDiv>

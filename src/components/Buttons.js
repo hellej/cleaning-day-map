@@ -97,17 +97,16 @@ export const LocationInput = styled.div`
   box-sizing: border-box;
   cursor: pointer;
   color: black;
-  display: inline-block;
   font-size: 12px;
   font-weight: 400;    
   letter-spacing: 3px;
   line-height: 14px;
-  margin: 8px 0;
+  margin: 12px auto;
   padding: 9px 16px;
-  text-align: left;
+  text-align: center;
   transition-duration: 0.2s;
   -webkit-transition-duration: 0.2s; /* Safari */
-  width: 64%;
+  width: 63%;
   &:hover { 
     border: 1px solid #88C2E7;
     background: #88C2E7;
@@ -142,7 +141,15 @@ export const LocationInput = styled.div`
 `
 
 export const StyledFormButtonDiv = styled.div`
-  margin: 10px 19px 0px 8px;
+  margin: 20px 19px 0px 8px;
+  display: flex;
+  align-items: center;
+  padding: 5px 0px 5px 0px;
+  border-radius: 7px; 
+`
+
+export const StyledLoginButtonDiv = styled.div`
+  margin: 10px 30px 0px 35px;
   display: flex;
   align-items: center;
   padding: 5px 0px 5px 0px;

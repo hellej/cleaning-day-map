@@ -1,11 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 
-import { Button, StyledFormButtonDiv, LocationInput } from './Buttons'
-import { FormContainer, Input, Textarea } from './FormElements'
+import { Button, StyledLoginButtonDiv } from './Buttons'
+import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, toggleLocationInputActive, hideForm } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmit, hideForm } from './../reducers/tableFormReducer'
 
 
 
@@ -19,9 +18,7 @@ class LoginForm extends React.Component {
 
   render() {
 
-    const { tableform, handleFormChange, handleSubmit,
-      history, toggleLocationInputActive, hideForm } = this.props
-    const { title, description, phonenum, openhours, location } = this.props.tableform
+    const { handleFormChange, handleSubmit, history, hideForm } = this.props
 
     return (
       <FormContainer>
@@ -41,10 +38,10 @@ class LoginForm extends React.Component {
             onChange={handleFormChange}
           />
         </form>
-        <StyledFormButtonDiv>
-          <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Login </Button>
+        <StyledLoginButtonDiv>
+          <Button submit onClick={(e) => handleSubmit(e, history)}> Login </Button>
           <Button cancel onClick={() => hideForm(history)}> Cancel </Button>
-        </StyledFormButtonDiv>
+        </StyledLoginButtonDiv>
       </FormContainer>
     )
   }
@@ -60,8 +57,7 @@ const mapDispatchToProps = {
   showNotification,
   handleFormChange,
   handleSubmit,
-  hideForm,
-  toggleLocationInputActive
+  hideForm
 }
 
 const connectedLoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginForm)
