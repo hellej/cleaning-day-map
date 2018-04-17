@@ -2,6 +2,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
+import { LngLat } from 'mapbox-gl'
 
 import Popup from './maplayers/Popup'
 import PopupNewTable from './maplayers/PopupNewTable'
@@ -22,20 +23,23 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
 }
 
 export const getRenderedFeaturesFromQuery = (map, id) => {
-  const tablefeatures = map.queryRenderedFeatures({ layers: [id] })
-  return getUniqueFeatures(tablefeatures, 'title')
+  const layerfeatures = map.queryRenderedFeatures({ layers: [id] })
+  return getUniqueFeatures(layerfeatures, 'title')
 }
 
 
 
 let popupObj = null
 
-export const renderPopup = (feature, map, offset) => {
-
+export const removePopup = () => {
   if (popupObj) { popupObj.remove() }
+}
+
+export const renderPopup = (feature, map, offset) => {
+  removePopup()
+
   const coordinates = feature.geometry.coordinates.slice()
   const newtablepopup = feature.properties ? false : true
-  const popup = `<div id="popup" </div>`
 
   newtablepopup ?
     popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false, offset: offset, anchor: 'top' })
@@ -43,7 +47,7 @@ export const renderPopup = (feature, map, offset) => {
 
   popupObj
     .setLngLat(coordinates)
-    .setHTML(popup)
+    .setHTML(`<div id="popup" </div>`)
     .addTo(map)
 
   newtablepopup ?
@@ -51,9 +55,6 @@ export const renderPopup = (feature, map, offset) => {
     : ReactDOM.render(<Popup table={feature} />, document.getElementById('popup'))
 }
 
-export const removePopup = () => {
-  if (popupObj) { popupObj.remove() }
-}
 
 export const equalCenter = (camera1, camera2) => {
   return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) && camera1.zoom === camera2.zoom)
@@ -69,24 +70,27 @@ export const equalCenter = (camera1, camera2) => {
 //   }
 // }
 
+export const getLngLatFromGeometry = (geometry) => {
+  return new LngLat(geometry.coordinates[0], geometry.coordinates[1])
+}
 
-export const createGeoJSON = (table) => {
+export const createGeoJSON = (props) => {
 
   const geojson = {
-    "type": "Feature",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [24.9698, 60.2178]
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [Number(props.location.lngLat.lng), Number(props.location.lngLat.lat)]
     },
-    "properties": {
-      "title": "Vaatteita ja kenkiä",
-      "description": "Paljon erilaisia 6-10 v lasten pieneksi jääneitä vaatteita",
-      "openhours": "10-14",
-      "phonenum": "0452342344",
-      "image": "url?",
-      "likes": 2
+    properties: {
+      title: props.title,
+      description: props.description,
+      phonenum: props.phonenum,
+      openhours: props.openhours,
+      image: "url?",
+      likes: 0
     }
   }
-  return geojson
 
+  return geojson
 }

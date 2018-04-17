@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { setLngLatZoomForNew } from './../../reducers/tableFormReducer'
-import { renderPopup, removePopup } from './../mapboxhelper'
+import { renderPopup, removePopup, getLngLatFromGeometry } from './../mapboxhelper'
 
 class NewTableFeatureLayer extends React.Component {
 
@@ -13,8 +13,8 @@ class NewTableFeatureLayer extends React.Component {
   confirmed = false
 
   getCenterCoords = (map) => {
-    const coords = map.getCenter()
-    return [coords.lng, coords.lat]
+    const lngLat = map.getCenter()
+    return [lngLat.lng, lngLat.lat]
   }
 
   circleStyle = {
@@ -25,12 +25,12 @@ class NewTableFeatureLayer extends React.Component {
   }
 
   newtable = {
-    "type": "FeatureCollection",
-    "features": [{
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": this.getCenterCoords(this.map)
+    type: "FeatureCollection",
+    features: [{
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: this.getCenterCoords(this.map)
       }
     }]
   }
@@ -43,13 +43,14 @@ class NewTableFeatureLayer extends React.Component {
 
 
   mouseDown = () => {
+    if (!this.props.active || this.props.confirmed) return
     if (!this.isCursorOverPoint) return
-    if (!this.props.active || this.props.confirmed) { return }
     removePopup()
     this.isDragging = true
     this.canvas.style.cursor = 'grab'
     this.map.on('mousemove', this.onMove)
     this.map.once('mouseup', this.onUp)
+    this.map.setPaintProperty('newtable', 'circle-color', 'transparent')
   }
 
   onMove = (e) => {
@@ -65,6 +66,7 @@ class NewTableFeatureLayer extends React.Component {
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
     renderPopup(this.newtable.features[0], this.map, 20)
+    this.map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
   }
 
 
@@ -74,9 +76,7 @@ class NewTableFeatureLayer extends React.Component {
 
     map.addSource('newtable', { type: 'geojson', data: this.newtable })
     map.addLayer({ id: 'newtable', source: 'newtable', type: 'circle', paint: this.circleStyle })
-
     map.setFilter('newtable', ['==', '-', ''])
-    this.updateNewTableLocation(this.map.getCenter())
 
     map.on('moveend', () => {
       if (!this.props.active || this.props.confirmed) { return }
@@ -97,7 +97,6 @@ class NewTableFeatureLayer extends React.Component {
 
     map.on('mouseenter', 'newtable', () => {
       if (!this.props.active || this.props.confirmed) { return }
-      map.setPaintProperty('newtable', 'circle-color', 'transparent')
       this.canvas.style.cursor = 'move'
       this.isCursorOverPoint = true
       map.dragPan.disable()
@@ -105,7 +104,6 @@ class NewTableFeatureLayer extends React.Component {
 
     map.on('mouseleave', 'newtable', () => {
       if (!this.props.active || this.props.confirmed) { return }
-      map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
       this.canvas.style.cursor = ''
       this.isCursorOverPoint = false
       map.dragPan.enable()
@@ -117,11 +115,9 @@ class NewTableFeatureLayer extends React.Component {
   componentDidUpdate(prevProps) {
     const { active, confirmed, map } = this.props
 
-    console.log('Component updated: ', this.props)
-
     if (!active) {
-      this.map.setFilter('newtable', ['==', '-', ''])
       removePopup()
+      this.map.setFilter('newtable', ['==', '-', ''])
     }
 
     if (confirmed) {
@@ -131,10 +127,13 @@ class NewTableFeatureLayer extends React.Component {
 
     if (active && !confirmed) {
       this.map.setFilter('newtable', null)
+      const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
+      if (newtable.length === 0) { this.updateNewTableLocation(this.map.getCenter()) }
       map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
+      const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
+      this.props.setLngLatZoomForNew(lngLat, this.map.getZoom())
       renderPopup(this.newtable.features[0], this.map, 20)
     }
-
 
   }
 

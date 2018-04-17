@@ -6,9 +6,10 @@ const mapControlReducer = (store = initialControl, action) => {
   // console.log('action: ', action)
 
   switch (action.type) {
-    case 'ZOOM_TO':
-      const latlong = new MapboxGl.LngLat(action.center[0], action.center[1])
-      return { center: latlong, zoom: action.zoom }
+    case 'SET_ZOOM_TO':
+      let center = null
+      if (action.center) { center = new MapboxGl.LngLat(action.center[0], action.center[1]) }
+      return { ...store, center, zoom: action.zoom }
 
     case 'RESET_CAMERA':
       return { ...initialControl, selectedtable: store.selectedtable }
@@ -17,7 +18,7 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
     case 'SELECT_TABLE':
-      return { ...store, selectedtable: action.table.properties.title }
+      return { ...store, selectedtable: action.title }
 
     case 'UNSELECT_TABLE':
       return { ...store, selectedtable: null }
@@ -33,13 +34,26 @@ const mapControlReducer = (store = initialControl, action) => {
   }
 }
 
-export const zoomToFeature = (feature) => {
-  return {
-    type: 'ZOOM_TO',
-    center: [feature.geometry.coordinates[0], feature.geometry.coordinates[1]],
-    zoom: 13
+export const zoomToFeature = (geometry, zoom) => {
+  return async (dispatch) => {
+    const zoomTo = zoom ? zoom : 13
+
+    dispatch({
+      type: 'SET_ZOOM_TO',
+      center: [geometry.coordinates[0], geometry.coordinates[1]],
+      zoom: zoomTo
+    })
+    await new Promise(resolve => setTimeout(resolve, 200))
+    dispatch({
+      type: 'SET_ZOOM_TO',
+      center: null,
+      zoom: zoomTo
+    })
+
   }
 }
+
+
 
 export const setCamera = (camera) => {
   return {
@@ -53,9 +67,10 @@ export const resetCamera = (feature) => {
   }
 }
 
-export const selectTable = (table) => {
-  console.log('select table: ', table)
-  return { type: 'SELECT_TABLE', table }
+export const selectTable = (tableprops) => {
+  console.log('select table: ', tableprops)
+  const title = tableprops.properties ? tableprops.properties.title : tableprops.title
+  return { type: 'SELECT_TABLE', title }
 }
 
 export const unselectTable = () => {

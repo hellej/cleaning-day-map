@@ -57,7 +57,7 @@ class TablesList extends React.Component {
     return (
       <StyledTablesListContainer>
         <StyledFilterDiv>
-          <Input filterinput placeholder='Type to search' value={filter} onChange={this.props.handleFilterChange} />
+          <Input filterinput placeholder='Filter results' value={filter} onChange={this.props.handleFilterChange} />
           <Button cancel onClick={this.handleCloseClick}> Close </Button>
         </StyledFilterDiv>
         {tables.map(table =>
@@ -86,7 +86,7 @@ const Table = (props) => {
       onMouseLeave={() => mouseOutTable()}>
       <b>{table.properties.title} </b>
       {table.properties.likes}{' '} likes {' '}
-      <ZoomButton onClick={() => zoomToFeature(table)}>Zoom</ZoomButton>
+      <ZoomButton onClick={() => zoomToFeature(table.geometry, 16)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
   )

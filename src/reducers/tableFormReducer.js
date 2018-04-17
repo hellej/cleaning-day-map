@@ -1,6 +1,7 @@
 
 import { showNotification } from './notificationReducer'
-
+import { zoomToFeature, selectTable } from './mapControlReducer'
+import { addTable } from './tablesReducer'
 
 const initialForm = {
   title: '',
@@ -9,7 +10,7 @@ const initialForm = {
   openhours: '',
   location: {
     active: false,
-    lngLat: { lng: '', lat: '' },
+    lngLat: { lng: null, lat: null },
     confirmed: false,
     zoom: null
   }
@@ -87,9 +88,20 @@ export const hideForm = (history) => {
 
 export const handleSubmit = (e, history, form) => {
   e.preventDefault()
+  const geometry = { coordinates: [form.location.lngLat.lng, form.location.lngLat.lat] }
+
+  if (!form.location.confirmed) {
+    return (dispatch) => {
+      dispatch(showNotification({ type: 'alert', text: 'You must confirm the location of the table' }, 4))
+    }
+  }
+
   return (dispatch) => {
+    dispatch(addTable(form))
+    dispatch(zoomToFeature(geometry, 16))
+    dispatch(selectTable(form))
+    dispatch(showNotification({ type: 'alert', text: 'Add new table not quite supported yet' }, 4))
     dispatch({ type: 'SUBMIT', form })
-    dispatch(showNotification({ type: 'alert', text: 'Add new table not supported yet' }, 3))
     history.push('/')
   }
 }

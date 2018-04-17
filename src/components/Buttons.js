@@ -36,12 +36,21 @@ ${props => props.cancel && css`
 export const ZoomButton = styled.button`
   border-radius: 4px;
   border: 1px solid transparent;
-  text-decoration: underline;
-  background: none;
+  background: rgba(0, 0, 0, 0.07);
   padding: 1px 4px;
   cursor: pointer;
-  &:hover { text-decoration: none;  border: 1px solid black; } 
-  &:focus { outline: none; background: none } 
+  &:hover { 
+    background: rgba(0, 0, 0, 0.27);
+    color: white;
+  } 
+  &:focus { 
+    outline: none; 
+    background: rgba(0, 0, 0, 0.07)
+    &:hover { 
+      background: rgba(0, 0, 0, 0.27);
+      color: white;
+      } 
+    } 
 `
 
 const activeClassName = 'active'
@@ -80,20 +89,20 @@ export const StyledNavLinkContainer = styled.div`
 `
 
 export const LocationInput = styled.div`
+  background-color: white;
   border-radius: 4px;
   border: 1px solid black;
   box-sizing: border-box;
   cursor: pointer;
   display: inline-block;
   font-size: 12px;
-  font-weight: 300;    
-  margin: 8px 0;
+  font-weight: 400;    
   letter-spacing: 3px;
   line-height: 14px;
+  margin: 8px 0;
   padding: 9px 16px;
-  background-color: white;
-  width: 100%;
   text-align: left;
+  width: 100%;
   &:hover { 
     // letter-spacing: 5px; 
     // box-shadow: inset 0 0 2px grey;
@@ -102,11 +111,13 @@ export const LocationInput = styled.div`
     outline: none;    
   } 
   ${props => props.active && css`
+  font-weight: 300;    
   color: #3076dd;
   text-align: center;
   cursor: default;
 `}
   ${props => props.confirmed && css`
+  font-weight: 300;    
   color: black;
   text-align: center;
   cursor: pointer;

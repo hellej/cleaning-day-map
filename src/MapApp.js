@@ -9,7 +9,6 @@ import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
 import TableForm from './components/TableForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
-import { tables } from './tables'
 
 const mapContainerStyle = { position: 'relative', width: 'device-width', height: '100vh' }
 const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 4, left: 10 }
@@ -24,7 +23,7 @@ class MapApp extends Component {
       <Router>
         <div style={mapContainerStyle}>
           <Map>
-            <TableFeatureLayer tables={tables} />
+            <TableFeatureLayer />
             <NewTableFeatureLayer />
           </Map>
           <div style={navigationBarStyle}>
@@ -49,7 +48,9 @@ class MapApp extends Component {
 
 
 
-const mapStateToProps = (state) => ({ notification: state.notification })
+const mapStateToProps = (state) => ({
+  notification: state.notification
+})
 
 const ConnectedMapApp = connect(mapStateToProps, null)(MapApp)
 

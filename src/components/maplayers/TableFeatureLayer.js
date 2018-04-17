@@ -40,7 +40,7 @@ class TableFeatureLayer extends React.Component {
     map.on('click', 'tables', (e) => {
       const table = e.features[0]
       renderPopup(table, map)
-      // this.props.selectTable(e.features[0])
+      this.props.selectTable(e.features[0])
     })
     map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
     map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
@@ -53,6 +53,12 @@ class TableFeatureLayer extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { map, textFiltTables, selectedtable, mouseontable } = this.props
+
+    // ADD NEW TABLE
+    if (this.props.tables.features.length !== prevProps.tables.features.length) {
+      console.log('Tables need to be re set in Map', this.props.tables)
+      map.getSource('tables').setData(this.props.tables)
+    }
 
     // UPDATE FILTERED TABLES
     if (prevProps.textFiltTables.length !== textFiltTables.length) {
@@ -78,9 +84,7 @@ class TableFeatureLayer extends React.Component {
   }
 
   componentWillUnmount() {
-
     const { map } = this.props
-
     map.removeSource('tables')
     map.removeLayer('tables')
   }
@@ -94,6 +98,7 @@ class TableFeatureLayer extends React.Component {
 
 
 const mapStateToProps = (state) => ({
+  tables: state.tables,
   selectedtable: state.mapControl.selectedtable,
   mouseontable: state.mapControl.mouseontable,
   textFiltTables: state.textFiltTables
