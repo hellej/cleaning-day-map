@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Button, StyledLoginButtonDiv } from './Buttons'
+import { Button } from './Buttons'
+import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
 import { handleFormChange, handleSubmit, hideForm } from './../reducers/tableFormReducer'

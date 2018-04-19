@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Button, StyledFormButtonDiv, LocationInput } from './Buttons'
 import { FormContainer, Input, Textarea } from './FormElements'
+import { Button, LocationInput } from './Buttons'
+import { StyledFormButtonDiv } from './StyledLayout'
+
 import { showNotification } from './../reducers/notificationReducer'
 import { handleFormChange, handleSubmit, toggleLocationInputActive, hideForm } from './../reducers/tableFormReducer'
 
@@ -65,7 +67,7 @@ class TableForm extends React.Component {
       </FormContainer>
     )
   }
-}
+} 
 
 
 

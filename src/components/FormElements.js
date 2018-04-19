@@ -1,18 +1,12 @@
 
 import styled, { css } from 'styled-components'
+import { StyledToolContainer } from './StyledLayout'
 
-
-export const FormContainer = styled.div`
-  width: 220px;
-  border-radius: 7px;
+export const FormContainer = StyledToolContainer.extend`
   padding: 15px 15px 12px 15px;
   background: rgba(255,255,255,1);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   display: ${props => props.display}
-  z-index: 2;
-  max-height: 77vh;
-  overflow-y: scroll;
-  overflow-x: scroll;
 `
 
 export const Input = styled.input`
@@ -45,8 +39,9 @@ background-color: white;
 }
 ${props => props.filterinput && css`
 border-radius: 20px;
+padding: 7px 13px;
 width: 60%;
-padding: 6px 12px;
+margin: 4px 3px 4px 4px;
 &::placeholder { letter-spacing: 0px }
 `}
 `

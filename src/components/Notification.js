@@ -1,7 +1,8 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import { css } from 'styled-components'
+import { StyledNotificationContainer } from './StyledLayout'
 
-const StyledNotificationDiv = styled.div`
+const StyledNotificationDiv = StyledNotificationContainer.extend`
 border-radius: 5px;
 display: inline-block;
 color: white;

@@ -6,33 +6,38 @@ import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../re
 
 import { Button, ZoomButton } from './Buttons'
 import { Input } from './FormElements'
+import { StyledToolContainer } from './StyledLayout'
 
 
-const StyledTablesListContainer = styled.div`
-  width: 220px;
-  border-radius: 7px;
+
+const StyledTablesListContainer = StyledToolContainer.extend`
   padding: 7px 7px 9px 7px;
-  background: rgba(255,255,255,.9);
+  background: rgba(255,255,255,.95);
   font-size: 13px;
   letter-spacing: 0.2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  max-height: 77vh;
-  overflow-y: scroll;
-  overflow-x: scroll;
+  `
+  const StyledFilterDiv = styled.div`
+  // border-radius: 7px;
+  // position: fixed;
+  // padding: 7px 7px 9px 7px;
+  margin: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  overflow: none;
+  align-items: center;
+  z-index: 2;
+  border-radius: 20px;
+  padding: 6px 13px;
 `
+
 const StyledTableDiv = styled.div`
   padding: 3px 3px 3px 7px;
   border-radius: 7px; 
   cursor: pointer;
-  margin-bottom: 4px;
+  margin: 2px 0px;
   border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
   &:hover { ${props => props.selected ? '' : 'border: 2px solid rgba(237, 197, 0,.8);'} }
-`
-const StyledFilterDiv = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 5px 0px 5px 10px;
-  border-radius: 7px; 
 `
 const StyledDescriptionDiv = styled.div`
   margin-top: 2px;
@@ -55,22 +60,24 @@ class TablesList extends React.Component {
   render() {
     const { tables, filter } = this.props
     return (
-      <StyledTablesListContainer>
+      <div>
+        <StyledTablesListContainer>
         <StyledFilterDiv>
           <Input filterinput placeholder='Filter results' value={filter} onChange={this.props.handleFilterChange} />
           <Button cancel onClick={this.handleCloseClick}> Close </Button>
         </StyledFilterDiv>
-        {tables.map(table =>
-          <Table
-            key={table.properties.title}
-            table={table}
-            selectTable={this.props.selectTable}
-            zoomToFeature={this.props.zoomToFeature}
-            selected={this.props.selectedtable === table.properties.title}
-            mouseOnTable={this.props.mouseOnTable}
-            mouseOutTable={this.props.mouseOutTable} />
-        )}
-      </StyledTablesListContainer>
+            {tables.map(table =>
+              <Table
+                key={table.properties.title}
+                table={table}
+                selectTable={this.props.selectTable}
+                zoomToFeature={this.props.zoomToFeature}
+                selected={this.props.selectedtable === table.properties.title}
+                mouseOnTable={this.props.mouseOnTable}
+                mouseOutTable={this.props.mouseOutTable} />
+            )}
+        </StyledTablesListContainer>
+      </div>
     )
   }
 }
