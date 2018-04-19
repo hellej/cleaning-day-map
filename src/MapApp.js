@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { StyledNavLink, StyledNavLinkContainer } from './components/Buttons'
+import { StyledNavLink } from './components/Buttons'
+import { StyledNavLinkContainer } from './components/StyledLayout'
+
 import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
@@ -11,45 +13,37 @@ import LoginForm from './components/LoginForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 
-const mapContainerStyle = { position: 'relative', width: 'device-width', height: '100vh' }
-const navigationBarStyle = { position: 'absolute', zIndex: 1, top: 4, left: 10 }
-const toolStyle = { position: 'absolute', zIndex: 1, top: 53, left: 10 }
-const notifStyle = { position: 'absolute', zIndex: 2, bottom: 12, right: 7 }
-
 
 class MapApp extends Component {
 
   render() {
     return (
       <Router>
-        <div style={mapContainerStyle}>
+        <div>
           <Map>
             <TableFeatureLayer />
             <NewTableFeatureLayer />
           </Map>
-          <div style={navigationBarStyle}>
-            <StyledNavLinkContainer>
-              <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
-              <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
-              <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
-            </StyledNavLinkContainer>
-          </div>
-          <div style={toolStyle}>
-            <Route path='/filtertables' render={({ history, location }) =>
-              <TablesList history={history} location={location} />} />
-            <Route path='/addtable' render={({ history, location }) =>
-              <TableForm history={history} location={location} />} />
-            <Route path='/login' render={({ history, location }) =>
-              <LoginForm history={history} location={location} />} />
-          </div>
-          <div style={notifStyle}><Notification notif={this.props.notification} /> </div>
+
+          <StyledNavLinkContainer>
+            <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
+            <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
+            <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
+          </StyledNavLinkContainer>
+
+          <Route path='/filtertables' render={({ history, location }) =>
+            <TablesList history={history} location={location} />} />
+          <Route path='/addtable' render={({ history, location }) =>
+            <TableForm history={history} location={location} />} />
+          <Route path='/login' render={({ history, location }) =>
+            <LoginForm history={history} location={location} />} />
+
+          <Notification notif={this.props.notification} />
         </div>
       </Router>
     )
   }
 }
-
-
 
 
 const mapStateToProps = (state) => ({

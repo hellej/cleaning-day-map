@@ -17,15 +17,24 @@ class Map extends React.Component {
     }
   }
 
+  resizeTimeout = null
   map = null
 
   componentDidMount() {
+
+    this.updateWindowDimensions()
+    window.addEventListener('resize', this.updateWindowDimensions)
+    window.addEventListener('orientationchange', this.updateWindowDimensions)
+
+    this.mapContainer.addEventListener('touchmove', (e) => { e.preventDefault() }, { passive: false })
 
     this.map = new MapboxGl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v9',
       center: [24.9213, 60.17673],
-      zoom: 10
+      zoom: 10,
+      boxZoom: false,
+      trackResize: true
     })
 
     this.map.on("render", () => {
@@ -39,11 +48,13 @@ class Map extends React.Component {
       this.map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
+      console.log('map loaded')
     })
 
     this.map.on('moveend', () => {
       this.setState({ camera: { zoom: this.map.getZoom(), center: this.map.getCenter() } })
     })
+
   }
 
 
@@ -55,24 +66,38 @@ class Map extends React.Component {
       this.map.flyTo({ center: this.props.mapControl.center, zoom: this.props.mapControl.zoom })
       this.props.resetCamera()
     }
-
   }
 
 
   componentWillUnmount() {
     setTimeout(() => this.map.remove(), 300)
+    window.removeEventListener('resize', this.updateWindowDimensions)
+    window.removeEventListener('orientationchange', this.updateWindowDimensions)
+  }
+
+  updateWindowDimensions = () => {
+    if (!this.map) { return }
+    this.forceUpdate()
+    setTimeout(() => { this.resizeMap() }, 300)
+  }
+
+  resizeMap = () => {
+    if (!this.map) return
+    this.map.resize()
   }
 
   render() {
-
     const mapstyle = {
-      position: 'absolute',
+      position: 'relative',
       top: 0,
       bottom: 0,
       right: 0,
       left: 0,
+      margin: 0,
       width: '100%',
-      height: '100%'
+      height: window.innerHeight,
+      overflow: 'hidden',
+      touchAction: 'none'
     }
 
     const children = React.Children.map(this.props.children, child =>
