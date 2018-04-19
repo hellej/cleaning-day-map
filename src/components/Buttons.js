@@ -23,7 +23,8 @@ ${props => props.submit && css`
   &:hover { background: green; }
 `}
 ${props => props.cancel && css`
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0);
+  border: 1px solid rgba(255, 255, 255, 0);
   color: red;
   font-size: 13px;
   box-sizing:border-box;
@@ -83,13 +84,6 @@ export const StyledNavLink = styled(NavLink).attrs({
   }
 `
 
-export const StyledNavLinkContainer = styled.div`
-  background: rgba(255, 255, 255,.9);
-  border-radius: 20px;
-  padding: 2px 4px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-`
-
 export const LocationInput = styled.div`
   background-color: white;
   border-radius: 4px;
@@ -140,18 +134,3 @@ export const LocationInput = styled.div`
 `}
 `
 
-export const StyledFormButtonDiv = styled.div`
-  margin: 20px 19px 0px 8px;
-  display: flex;
-  align-items: center;
-  padding: 5px 0px 5px 0px;
-  border-radius: 7px; 
-`
-
-export const StyledLoginButtonDiv = styled.div`
-  margin: 10px 30px 0px 35px;
-  display: flex;
-  align-items: center;
-  padding: 5px 0px 5px 0px;
-  border-radius: 7px; 
-`
