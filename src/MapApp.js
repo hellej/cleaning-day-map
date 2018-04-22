@@ -20,10 +20,12 @@ class MapApp extends Component {
     return (
       <Router>
         <div>
+          <Route render={({ history }) =>
           <Map>
+              <FocusDimLayer history={history} />
             <TableFeatureLayer />
-            <NewTableFeatureLayer />
-          </Map>
+              <NewTableFeatureLayer history={history} />
+            </Map>} />
 
           <StyledNavLinkContainer>
             <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
