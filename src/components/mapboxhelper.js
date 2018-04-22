@@ -35,7 +35,7 @@ export const removePopup = () => {
   if (popupObj) { popupObj.remove() }
 }
 
-export const renderPopup = (feature, map, offset) => {
+export const renderPopup = (feature, map, offset, history) => {
   removePopup()
 
   const coordinates = feature.geometry.coordinates.slice()
@@ -51,7 +51,7 @@ export const renderPopup = (feature, map, offset) => {
     .addTo(map)
 
   newtablepopup ?
-    ReactDOM.render(<PopupNewTable newtable={feature} />, document.getElementById('popup'))
+    ReactDOM.render(<PopupNewTable newtable={feature} history={history} />, document.getElementById('popup'))
     : ReactDOM.render(<Popup table={feature} />, document.getElementById('popup'))
 }
 

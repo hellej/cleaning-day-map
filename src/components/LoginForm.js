@@ -5,7 +5,7 @@ import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, hideForm } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmit, closeForm } from './../reducers/tableFormReducer'
 
 
 
@@ -19,7 +19,7 @@ class LoginForm extends React.Component {
 
   render() {
 
-    const { handleFormChange, handleSubmit, history, hideForm } = this.props
+    const { handleFormChange, handleSubmit, history, closeForm } = this.props
 
     return (
       <FormContainer>
@@ -40,8 +40,10 @@ class LoginForm extends React.Component {
           />
         </form>
         <StyledLoginButtonDiv>
-          <Button submit onClick={(e) => handleSubmit(e, history)}> Login </Button>
-          <Button cancel onClick={() => hideForm(history)}> Cancel </Button>
+          <Button submit
+            onClick={() => this.props.showNotification({ text: 'Wrong username or password', type: 'alert' }, 5)}
+          > Login </Button>
+          <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
         </StyledLoginButtonDiv>
       </FormContainer>
     )
@@ -58,7 +60,7 @@ const mapDispatchToProps = {
   showNotification,
   handleFormChange,
   handleSubmit,
-  hideForm
+  closeForm
 }
 
 const connectedLoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginForm)

@@ -11,16 +11,13 @@ import { StyledToolContainer } from './StyledLayout'
 
 
 const StyledTablesListContainer = StyledToolContainer.extend`
-  padding: 7px 7px 9px 7px;
+  padding: 7px 7px 7px 7px;
   background: rgba(255,255,255,.95);
   font-size: 13px;
   letter-spacing: 0.2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   `
   const StyledFilterDiv = styled.div`
-  // border-radius: 7px;
-  // position: fixed;
-  // padding: 7px 7px 9px 7px;
   margin: 0;
   background: rgba(255,255,255,0.95);
   display: flex;

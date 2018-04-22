@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export const StyledNavLinkContainer = styled.div`
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 4px;
   left: 10px;
   margin: 0px 10px 0px 0px;
@@ -16,9 +16,9 @@ export const StyledNavLinkContainer = styled.div`
 export const StyledToolContainer = styled.div`
   border-radius: 7px;
   position: absolute;
-  z-index: 1;
-  top: ${props => props.top ? props.top : '53'}px;
-  left: 10px; 
+  z-index: 2;
+  top: ${props => props.top ? props.top : '55'}px;
+  left: 15px; 
   width: 230px;
   max-width: 60%;
   min-width: 130px;
@@ -29,7 +29,7 @@ export const StyledToolContainer = styled.div`
 
 export const StyledNotificationContainer = styled.div`
   position: absolute; 
-  z-index: 2;
+  z-index: 3;
   bottom: 12px;
   right: 7px;
 `

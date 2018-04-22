@@ -12,6 +12,7 @@ import TableForm from './components/TableForm'
 import LoginForm from './components/LoginForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
+import FocusDimLayer from './components/FocusDimLayer'
 
 
 class MapApp extends Component {
@@ -21,9 +22,9 @@ class MapApp extends Component {
       <Router>
         <div>
           <Route render={({ history }) =>
-          <Map>
+            <Map>
               <FocusDimLayer history={history} />
-            <TableFeatureLayer />
+              <TableFeatureLayer />
               <NewTableFeatureLayer history={history} />
             </Map>} />
 
@@ -35,7 +36,7 @@ class MapApp extends Component {
 
           <Route path='/filtertables' render={({ history, location }) =>
             <TablesList history={history} location={location} />} />
-          <Route path='/addtable' render={({ history, location }) =>
+          <Route exact path='/addtable' render={({ history, location }) =>
             <TableForm history={history} location={location} />} />
           <Route path='/login' render={({ history, location }) =>
             <LoginForm history={history} location={location} />} />

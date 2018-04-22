@@ -16,6 +16,13 @@ const initialForm = {
   }
 }
 
+const phoneScreen = (window) => {
+  if (window.innerWidth < 640 && window.innerHeight < 900) {
+    return true
+  } return false
+}
+
+
 
 const tableFormReducer = (store = initialForm, action) => {
 
@@ -23,11 +30,15 @@ const tableFormReducer = (store = initialForm, action) => {
     case 'UPDATE_FORM':
       return { ...store, [action.name]: action.value }
 
-    case 'TOGGLE_LOCATION_INPUT_STATE':
+    case 'TOGGLE_LOCINPUT_STATE':
       let { active, confirmed } = store.location
-      if (active && !confirmed) { active = true; confirmed = true }
       if (active && confirmed) { active = true; confirmed = false }
-      if (!active) { active = true; confirmed = false }
+      else if (!active) { active = true; confirmed = false }
+      return { ...store, location: { ...store.location, active, confirmed } }
+
+    case 'SET_LOCINPUT_ACTIVE':
+      active = true
+      confirmed = false
       return { ...store, location: { ...store.location, active, confirmed } }
 
     case 'SET_LNGLAT_2NEW':
@@ -68,23 +79,42 @@ export const setLngLatZoomForNew = (lngLat, zoom) => {
 
 export const toggleLocationInputActive = () => {
   return (dispatch) => {
-    dispatch({ type: 'TOGGLE_LOCATION_INPUT_STATE' })
+    dispatch({ type: 'TOGGLE_LOCINPUT_STATE' })
     dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to desired location' }, 10))
   }
 }
 
-export const confirmLocation = () => {
-  return (dispatch) => {
+
+export const setLocationInputActive = (history) => {
+  return async (dispatch) => {
+    await new Promise(resolve => setTimeout(resolve, 400))
+    dispatch({ type: 'SET_LOCINPUT_ACTIVE' })
+    dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to desired location' }, 10))
+    if (phoneScreen(window)) { history.push('/addtable/location') }
+  }
+}
+
+export const confirmLocation = (history) => {
+  return async (dispatch) => {
     dispatch({ type: 'CONFIRM_LOCATION' })
+    if (history.location.pathname !== '/addtable') {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      history.push('/addtable')
+    }
   }
 }
 
 export const hideForm = (history) => {
   history.push('/')
+}
+
+export const closeForm = (history) => {
+  history.push('/')
   return (dispatch) => {
     dispatch({ type: 'SET_LOCINPUT_UNACTIVE' })
   }
 }
+
 
 export const handleSubmit = (e, history, form) => {
   e.preventDefault()

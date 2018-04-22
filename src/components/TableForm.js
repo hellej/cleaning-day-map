@@ -6,7 +6,7 @@ import { Button, LocationInput } from './Buttons'
 import { StyledFormButtonDiv } from './StyledLayout'
 
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, toggleLocationInputActive, hideForm } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmit, setLocationInputActive, closeForm } from './../reducers/tableFormReducer'
 
 
 
@@ -21,7 +21,7 @@ class TableForm extends React.Component {
   render() {
 
     const { tableform, handleFormChange, handleSubmit,
-      history, toggleLocationInputActive, hideForm } = this.props
+      history, setLocationInputActive, closeForm } = this.props
     const { title, description, phonenum, openhours, location } = this.props.tableform
 
     return (
@@ -56,18 +56,21 @@ class TableForm extends React.Component {
             value={openhours}
             onChange={handleFormChange}
           />
-          <LocationInput active={location.active} confirmed={location.confirmed} onClick={toggleLocationInputActive}>
+          <LocationInput
+            active={location.active}
+            confirmed={location.confirmed}
+            onClick={() => setLocationInputActive(history)}>
             {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Set Location'}
           </LocationInput>
         </form>
         <StyledFormButtonDiv>
           <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Add Table </Button>
-          <Button cancel onClick={() => hideForm(history)}> Cancel </Button>
+          <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
         </StyledFormButtonDiv>
       </FormContainer>
     )
   }
-} 
+}
 
 
 
@@ -79,8 +82,8 @@ const mapDispatchToProps = {
   showNotification,
   handleFormChange,
   handleSubmit,
-  hideForm,
-  toggleLocationInputActive
+  closeForm,
+  setLocationInputActive
 }
 
 const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)

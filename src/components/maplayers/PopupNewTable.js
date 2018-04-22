@@ -21,14 +21,9 @@ class PopupNewTable extends React.Component {
   }
 
   render() {
-
-    // const location = store.getState().tableform.location
-    // if (location)
-    // console.log('location in button: ', location)
-
     return (
       <StyledPopupDiv>
-        <Button submit onClick={() => store.dispatch(confirmLocation())}>
+        <Button submit onClick={() => store.dispatch(confirmLocation(this.props.history))}>
           Confirm
         </Button>
       </StyledPopupDiv >

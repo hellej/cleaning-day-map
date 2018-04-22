@@ -8,6 +8,7 @@ class NewTableFeatureLayer extends React.Component {
 
   map = this.props.map
   canvas = this.props.map.getCanvasContainer()
+  history = this.props.history
   isCursorOverPoint = false
   isDragging = false
   confirmed = false
@@ -65,7 +66,7 @@ class NewTableFeatureLayer extends React.Component {
     this.canvas.style.cursor = ''
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
-    renderPopup(this.newtable.features[0], this.map, 20)
+    renderPopup(this.newtable.features[0], this.map, 20, this.history)
     this.map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
   }
 
@@ -83,14 +84,14 @@ class NewTableFeatureLayer extends React.Component {
       const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
       if (newtable.length === 0) {
         this.updateNewTableLocation(this.map.getCenter())
-        renderPopup(this.newtable.features[0], this.map, 20)
+        renderPopup(this.newtable.features[0], this.map, 20, this.history)
       }
     })
 
     map.on('click', (e) => {
       if (!this.props.active || this.props.confirmed) { return }
       this.updateNewTableLocation(e.lngLat)
-      renderPopup(this.newtable.features[0], this.map, 20)
+      renderPopup(this.newtable.features[0], this.map, 20, this.history)
     })
 
     map.on('mousedown', this.mouseDown)
@@ -132,7 +133,7 @@ class NewTableFeatureLayer extends React.Component {
       map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
       const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
       this.props.setLngLatZoomForNew(lngLat, this.map.getZoom())
-      renderPopup(this.newtable.features[0], this.map, 20)
+      renderPopup(this.newtable.features[0], this.map, 20, this.history)
     }
 
   }

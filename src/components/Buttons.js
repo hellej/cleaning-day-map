@@ -100,7 +100,7 @@ export const LocationInput = styled.div`
   text-align: center;
   transition-duration: 0.2s;
   -webkit-transition-duration: 0.2s; /* Safari */
-  width: 63%;
+  width: 66%;
   &:hover { 
     border: 1px solid #88C2E7;
     background: #88C2E7;
