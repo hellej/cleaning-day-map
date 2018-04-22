@@ -1,6 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { css } from 'styled-components'
 import { StyledNotificationContainer } from './StyledLayout'
+
 
 const StyledNotificationDiv = StyledNotificationContainer.extend`
 border-radius: 5px;
@@ -19,19 +21,27 @@ ${props => props.type === 'success' && css`
 background: #2ea02e;
 `}
 ${props => props.type === 'alert' && css`
-background: #c4b300;
+background: #a51c1c;
 `}
 `
 
 
-const Notification = ({ notif }) => {
-  if (notif.text === null) { return null }
+const Notification = (props) => {
+  if (props.notification.text === null) { return null }
 
   return (
-    <StyledNotificationDiv {...notif}>
-      {notif.text}
+    <StyledNotificationDiv {...props.notification}>
+      {props.notification.text}
     </StyledNotificationDiv>
   )
 }
 
-export default Notification
+
+
+const mapStateToProps = (state) => ({
+  notification: state.notification
+})
+
+const ConnectedNotification = connect(mapStateToProps, null)(Notification)
+
+export default ConnectedNotification

@@ -40,18 +40,11 @@ class MapApp extends Component {
           <Route path='/login' render={({ history, location }) =>
             <LoginForm history={history} location={location} />} />
 
-          <Notification notif={this.props.notification} />
+          <Notification />
         </div>
       </Router>
     )
   }
 }
 
-
-const mapStateToProps = (state) => ({
-  notification: state.notification
-})
-
-const ConnectedMapApp = connect(mapStateToProps, null)(MapApp)
-
-export default ConnectedMapApp
+export default MapApp
