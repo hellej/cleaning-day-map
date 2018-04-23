@@ -17,7 +17,7 @@ const StyledTablesListContainer = StyledToolContainer.extend`
   letter-spacing: 0.2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   `
-  const StyledFilterDiv = styled.div`
+const StyledFilterDiv = styled.div`
   margin: 0;
   background: rgba(255,255,255,0.95);
   display: flex;
@@ -40,6 +40,12 @@ const StyledDescriptionDiv = styled.div`
   margin-top: 2px;
   padding: 0px;
 `
+const StyledFilteredStatsDiv = styled.div`
+  font-size: 9px;
+  padding: 3px 3px 3px 7px;
+  margin: 2px 2px;
+  font-size: 13px;
+`
 
 
 class TablesList extends React.Component {
@@ -55,24 +61,25 @@ class TablesList extends React.Component {
   }
 
   render() {
-    const { tables, filter } = this.props
+    const { tables, filter, mapFiltTables, allTables } = this.props
     return (
       <div>
         <StyledTablesListContainer>
-        <StyledFilterDiv>
-          <Input filterinput placeholder='Filter results' value={filter} onChange={this.props.handleFilterChange} />
-          <Button cancel onClick={this.handleCloseClick}> Close </Button>
-        </StyledFilterDiv>
-            {tables.map(table =>
-              <Table
-                key={table.properties.title}
-                table={table}
-                selectTable={this.props.selectTable}
-                zoomToFeature={this.props.zoomToFeature}
-                selected={this.props.selectedtable === table.properties.title}
-                mouseOnTable={this.props.mouseOnTable}
-                mouseOutTable={this.props.mouseOutTable} />
-            )}
+          <StyledFilterDiv>
+            <Input filterinput placeholder='Filter results' value={filter} onChange={this.props.handleFilterChange} />
+            <Button cancel onClick={this.handleCloseClick}> Close </Button>
+          </StyledFilterDiv>
+          {tables.map(table =>
+            <Table
+              key={table.properties.title}
+              table={table}
+              selectTable={this.props.selectTable}
+              zoomToFeature={this.props.zoomToFeature}
+              selected={this.props.selectedtable === table.properties.title}
+              mouseOnTable={this.props.mouseOnTable}
+              mouseOutTable={this.props.mouseOutTable} />
+          )}
+          <FilteredStats tables={tables} mapFiltTables={mapFiltTables} allTables={allTables} />
         </StyledTablesListContainer>
       </div>
     )
@@ -96,7 +103,20 @@ const Table = (props) => {
   )
 }
 
-
+const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
+  if (tables.length === 0) {
+    return (
+      <StyledFilteredStatsDiv>
+        <i>No tables to show within the map</i>
+      </StyledFilteredStatsDiv>
+    )
+  }
+  return (
+    <StyledFilteredStatsDiv>
+      <i>{tables.length} filtered from total {allTables.features.length} tables </i>
+    </StyledFilteredStatsDiv>
+  )
+}
 
 
 const getCommonObjects = (array1, array2) => {
@@ -117,6 +137,8 @@ const selectedFirst = (tables, selected) => {
 const mapStateToProps = (state) => ({
   filter: state.filter,
   selectedtable: state.mapControl.selectedtable,
+  mapFiltTables: state.mapFiltTables,
+  allTables: state.tables,
   tables: selectedFirst(
     orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables)),
     state.mapControl.selectedtable
