@@ -45,6 +45,7 @@ const StyledFilteredStatsDiv = styled.div`
   padding: 3px 3px 3px 7px;
   margin: 2px 2px;
   font-size: 13px;
+  color: grey;
 `
 
 
@@ -130,22 +131,19 @@ const orderByLikes = (tables) => {
   return tables.sort((a, b) => b.properties.likes - a.properties.likes)
 }
 
-const selectedFirst = (tables, selected) => {
-  if (selected) {
-    const selectedtable = tables.filter(table => table.properties.title === selected)
-    return selectedtable.concat(tables.filter(table => table.properties.title !== selected))
-  } else { return tables }
-}
+// const selectedFirst = (tables, selected) => {
+//   if (selected) {
+//     const selectedtable = tables.filter(table => table.properties.title === selected)
+//     return selectedtable.concat(tables.filter(table => table.properties.title !== selected))
+//   } else { return tables }
+// }
 
 const mapStateToProps = (state) => ({
   filter: state.filter,
   selectedtable: state.mapControl.selectedtable,
   mapFiltTables: state.mapFiltTables,
   allTables: state.tables.features,
-  tables: selectedFirst(
-    orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables)),
-    state.mapControl.selectedtable
-  )
+  tables: orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables))
 })
 
 const mapDispatchToProps = { handleFilterChange, zoomToFeature, selectTable, mouseOnTable, mouseOutTable }
