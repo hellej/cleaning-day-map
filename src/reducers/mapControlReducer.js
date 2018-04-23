@@ -3,11 +3,10 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 const initialControl = { center: null, zoom: null, selectedtable: null, mouseontable: null }
 
 const mapControlReducer = (store = initialControl, action) => {
-  // console.log('action: ', action)
+  let selectedtable, center = null
 
   switch (action.type) {
     case 'SET_ZOOM_TO':
-      let center = null
       if (action.center) { center = new MapboxGl.LngLat(action.center[0], action.center[1]) }
       return { ...store, center, zoom: action.zoom }
 
@@ -17,8 +16,11 @@ const mapControlReducer = (store = initialControl, action) => {
     case 'SET_CAMERA':
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
-    case 'SELECT_TABLE':
-      return { ...store, selectedtable: action.title }
+    case 'TOGGLE_SELECTION':
+      if (store.selectedtable === action.title) {
+        selectedtable = null
+      } else selectedtable = action.title
+      return { ...store, selectedtable }
 
     case 'UNSELECT_TABLE':
       return { ...store, selectedtable: null }
@@ -68,13 +70,14 @@ export const resetCamera = (feature) => {
 }
 
 export const selectTable = (tableprops) => {
-  console.log('select table: ', tableprops)
   const title = tableprops.properties ? tableprops.properties.title : tableprops.title
-  return { type: 'SELECT_TABLE', title }
+  return { type: 'TOGGLE_SELECTION', title }
 }
 
-export const unselectTable = () => {
-  return { type: 'UNSELECT_TABLE' }
+export const unselectTable = (e) => {
+  return async (dispatch) => {
+      dispatch({ type: 'UNSELECT_TABLE' })
+  }
 }
 
 export const mouseOnTable = (table) => {
