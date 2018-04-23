@@ -1,5 +1,4 @@
 import React from 'react'
-import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
 
 import styled from 'styled-components'
@@ -56,9 +55,6 @@ class FocusDimLayer extends React.Component {
     if (location === '/addtable' && locationinput.active && !locationinput.confirmed) {
       visible = false
     }
-
-    console.log('Location: ', location)
-    console.log('Visible ? ', visible)
 
     return (
       <div ref={el => { this.dimContainer = el }}>

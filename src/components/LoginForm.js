@@ -5,7 +5,7 @@ import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, closeForm } from './../reducers/tableFormReducer'
+import { handleFormChange, closeForm } from './../reducers/tableFormReducer'
 
 
 
@@ -19,7 +19,7 @@ class LoginForm extends React.Component {
 
   render() {
 
-    const { handleFormChange, handleSubmit, history, closeForm } = this.props
+    const { handleFormChange, history, closeForm } = this.props
 
     return (
       <FormContainer>
@@ -59,7 +59,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showNotification,
   handleFormChange,
-  handleSubmit,
   closeForm
 }
 
