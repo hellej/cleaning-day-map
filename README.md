@@ -6,7 +6,7 @@ The initial and main objective of the project was to explore and utilize ways of
 
 ### Main technology stack
 * React
-* Redux
+* Redux & Thunk
 * Mapbox GL JS
 * React Router
 * Hosting: Firebase
