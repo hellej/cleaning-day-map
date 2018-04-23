@@ -15,7 +15,7 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
     if (existingFeatureKeys[el.properties[comparatorProperty]]) {
       return false
     } else {
-      existingFeatureKeys[el.properties[comparatorProperty]] = true;
+      existingFeatureKeys[el.properties[comparatorProperty]] = true
       return true
     }
   })
@@ -47,7 +47,7 @@ export const renderPopup = (feature, map, offset, history) => {
 
   popupObj
     .setLngLat(coordinates)
-    .setHTML(`<div id="popup" </div>`)
+    .setHTML('<div id="popup" </div>')
     .addTo(map)
 
   newtablepopup ?
@@ -77,9 +77,9 @@ export const getLngLatFromGeometry = (geometry) => {
 export const createGeoJSON = (props) => {
 
   const geojson = {
-    type: "Feature",
+    type: 'Feature',
     geometry: {
-      type: "Point",
+      type: 'Point',
       coordinates: [Number(props.location.lngLat.lng), Number(props.location.lngLat.lat)]
     },
     properties: {
@@ -87,7 +87,7 @@ export const createGeoJSON = (props) => {
       description: props.description,
       phonenum: props.phonenum,
       openhours: props.openhours,
-      image: "url?",
+      image: 'url?',
       likes: 0
     }
   }

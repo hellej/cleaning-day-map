@@ -37,7 +37,7 @@ class Map extends React.Component {
       trackResize: true
     })
 
-    this.map.on("render", () => {
+    this.map.on('render', () => {
       if (!this.state.isReady) {
         this.setState({ isReady: true })
         this.setState({ camera: { zoom: this.map.getZoom(), center: this.map.getCenter() } })
@@ -61,7 +61,7 @@ class Map extends React.Component {
   componentDidUpdate(prevProps) {
     if (!this.map) { return }
 
-    // FLY TO FEATURE 
+    // FLY TO FEATURE
     if (this.props.mapControl.center && !equalCenter(this.state.camera, this.props.mapControl)) {
       this.map.flyTo({ center: this.props.mapControl.center, zoom: this.props.mapControl.zoom })
       this.props.resetCamera()
