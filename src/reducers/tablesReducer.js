@@ -7,6 +7,8 @@ const initialTables = tables
 
 const tablesReducer = (store = initialTables, action) => {
 
+  let featuresToUpdate = null
+
   switch (action.type) {
     case 'INIT_TABLES':
       return action.tables
@@ -15,9 +17,8 @@ const tablesReducer = (store = initialTables, action) => {
       return action.tables
 
     case 'ADD_TABLE':
-      const featuresToUpdate = store.features.concat(action.tableFeature)
+      featuresToUpdate = store.features.concat(action.tableFeature)
       return { ...store, features: featuresToUpdate }
-
 
     default:
       return store

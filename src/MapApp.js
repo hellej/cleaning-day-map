@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { connect } from 'react-redux'
 
 import { StyledNavLink } from './components/Buttons'
 import { StyledNavLinkContainer } from './components/StyledLayout'

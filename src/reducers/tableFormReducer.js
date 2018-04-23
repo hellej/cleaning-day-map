@@ -26,12 +26,15 @@ const phoneScreen = (window) => {
 
 const tableFormReducer = (store = initialForm, action) => {
 
+  let active, confirmed, lngLat, zoom, location = null
+
   switch (action.type) {
     case 'UPDATE_FORM':
       return { ...store, [action.name]: action.value }
 
     case 'TOGGLE_LOCINPUT_STATE':
-      let { active, confirmed } = store.location
+      active = store.location.active
+      confirmed = store.location.confirmed
       if (active && confirmed) { active = true; confirmed = false }
       else if (!active) { active = true; confirmed = false }
       return { ...store, location: { ...store.location, active, confirmed } }
@@ -42,9 +45,9 @@ const tableFormReducer = (store = initialForm, action) => {
       return { ...store, location: { ...store.location, active, confirmed } }
 
     case 'SET_LNGLAT_2NEW':
-      const lngLat = { lng: action.lngLat.lng.toFixed(6), lat: action.lngLat.lat.toFixed(6) }
-      const zoom = action.zoom
-      let location = store.location
+      lngLat = { lng: action.lngLat.lng.toFixed(6), lat: action.lngLat.lat.toFixed(6) }
+      zoom = action.zoom
+      location = store.location
       return { ...store, location: { ...location, lngLat, zoom } }
 
     case 'CONFIRM_LOCATION':

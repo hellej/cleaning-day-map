@@ -26,11 +26,11 @@ class NewTableFeatureLayer extends React.Component {
   }
 
   newtable = {
-    type: "FeatureCollection",
+    type: 'FeatureCollection',
     features: [{
-      type: "Feature",
+      type: 'Feature',
       geometry: {
-        type: "Point",
+        type: 'Point',
         coordinates: this.getCenterCoords(this.map)
       }
     }]
