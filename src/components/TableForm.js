@@ -25,7 +25,7 @@ class TableForm extends React.Component {
     const { title, description, phonenum, openhours, location } = this.props.tableform
 
     return (
-      <FormContainer>
+      <FormContainer left={30}>
         <form>
           <Input
             placeholder='Title'

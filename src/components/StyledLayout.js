@@ -18,7 +18,7 @@ export const StyledToolContainer = styled.div`
   position: absolute;
   z-index: 2;
   top: ${props => props.top ? props.top : '55'}px;
-  left: 15px; 
+  left: ${props => props.left ? props.left : '15'}px; 
   width: 230px;
   max-width: 60%;
   min-width: 130px;

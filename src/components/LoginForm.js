@@ -22,7 +22,7 @@ class LoginForm extends React.Component {
     const { handleFormChange, history, closeForm } = this.props
 
     return (
-      <FormContainer>
+      <FormContainer left={40}>
         <form>
           <Input
             placeholder='Username'
