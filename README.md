@@ -20,6 +20,7 @@ $ cd cleaning-day-map
 $ npm install
 $ npm start
 ```
+Update your Mapbox access token to `src/components/Map.js`
 Open browser to http://localhost:3000/
 
 ### License
