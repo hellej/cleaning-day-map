@@ -22,3 +22,5 @@ yarn-debug.log*
 yarn-error.log*
 
 README.1.md
+
+src/fire.js

@@ -1,5 +1,16 @@
-import { tables } from './../tables'
+// import { tables } from './../tables'
 import { createGeoJSON } from './../components/mapboxhelper'
+import fire from './../fire'
+import { showNotification } from './notificationReducer'
+
+
+
+let tablesRef = fire.database().ref('tables').orderByKey().limitToLast(100)
+console.log('tablesref in firebase: ', tablesRef)
+// for (let i = 0; i <= tables.length; i++) {
+//   fire.database().ref('tables').push(tables[i])
+// }
+
 
 const initialTables = {
   type: 'FeatureCollection',
@@ -26,23 +37,48 @@ const tablesReducer = (store = initialTables, action) => {
   }
 }
 
+export const tablesInitialization = () => {
+  return async (dispatch) => {
+    try {
+      const snapshot = await fire.database().ref('tables').once('value')
+      const tables = snapshot.val()
+
+      const ids = Object.keys(tables)
+      const features = Object.values(tables)
+
+      const featuresids = features.map((feature, index) => {
+        feature.id = ids[index]
+        return feature
+      })
+
+      const tablescollection = {
+        type: 'FeatureCollection',
+        features: featuresids
+      }
+      dispatch({ type: 'INIT_TABLES', tables: tablescollection })
+    } catch (error) {
+      console.log('Error: ', error)
+      dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
+    }
+  }
+}
+
+
 
 export const addTable = (form) => {
-  const tableFeature = createGeoJSON(form)
-  return (dispatch) => {
+  return async (dispatch) => {
+    const tableFeature = createGeoJSON(form)
+    try {
+      await fire.database().ref('tables').push(tableFeature)
+    } catch (error) {
+      console.log('Error: ', error)
+      dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
+    }
+    console.log('Lisätty ', )
     dispatch({ type: 'ADD_TABLE', tableFeature })
   }
 }
 
-export const tablesInitialization = () => {
-  const tablescollection = {
-    type: 'FeatureCollection',
-    features: tables
-  }
-  return async (dispatch) => {
-    dispatch({ type: 'INIT_TABLES', tables: tablescollection })
-  }
-}
 
 export default tablesReducer
 
