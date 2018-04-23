@@ -50,6 +50,10 @@ export const renderPopup = (feature, map, offset, history) => {
     .setHTML('<div id="popup" </div>')
     .addTo(map)
 
+  popupObj.on('close', function (e) {
+    console.log('popup closed', )
+  })
+
   newtablepopup ?
     ReactDOM.render(<PopupNewTable newtable={feature} history={history} />, document.getElementById('popup'))
     : ReactDOM.render(<Popup table={feature} />, document.getElementById('popup'))

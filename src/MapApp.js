@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-
+import { connect } from 'react-redux'
 import { StyledNavLink } from './components/Buttons'
 import { StyledNavLinkContainer } from './components/StyledLayout'
 
+import { tablesInitialization } from './reducers/tablesReducer'
 import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
@@ -13,8 +14,11 @@ import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 import FocusDimLayer from './components/FocusDimLayer'
 
-
 class MapApp extends Component {
+
+  componentDidMount = async () => {
+    this.props.tablesInitialization()
+  }
 
   render() {
     return (
@@ -47,4 +51,7 @@ class MapApp extends Component {
   }
 }
 
-export default MapApp
+
+const ConnectedMapApp = connect(null, { tablesInitialization })(MapApp)
+
+export default ConnectedMapApp

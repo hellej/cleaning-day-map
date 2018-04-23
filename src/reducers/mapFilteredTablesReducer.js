@@ -1,14 +1,11 @@
-import { tables } from './../tables'
 
-
-const initialTables = tables.features
-
+const initialTables = []
 
 const mapFilteredTablesReducer = (store = initialTables, action) => {
 
   switch (action.type) {
     case 'INIT_TABLES':
-      return action.tables
+      return action.tables.features
 
     case 'SET_MAP_FILT_TABLES':
       return action.tables

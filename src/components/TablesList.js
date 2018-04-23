@@ -66,7 +66,10 @@ class TablesList extends React.Component {
       <div>
         <StyledTablesListContainer>
           <StyledFilterDiv>
-            <Input filterinput placeholder='Filter results' value={filter} onChange={this.props.handleFilterChange} />
+            <Input filterinput
+              placeholder='Filter results'
+              value={filter}
+              onChange={(e) => this.props.handleFilterChange(e, allTables)} />
             <Button cancel onClick={this.handleCloseClick}> Close </Button>
           </StyledFilterDiv>
           {tables.map(table =>
@@ -113,7 +116,7 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
   }
   return (
     <StyledFilteredStatsDiv>
-      <i>{tables.length} filtered from total {allTables.features.length} tables </i>
+      <i>{tables.length} filtered from total {allTables.length} tables </i>
     </StyledFilteredStatsDiv>
   )
 }
@@ -138,7 +141,7 @@ const mapStateToProps = (state) => ({
   filter: state.filter,
   selectedtable: state.mapControl.selectedtable,
   mapFiltTables: state.mapFiltTables,
-  allTables: state.tables,
+  allTables: state.tables.features,
   tables: selectedFirst(
     orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables)),
     state.mapControl.selectedtable

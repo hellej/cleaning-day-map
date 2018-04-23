@@ -1,9 +1,10 @@
 import { tables } from './../tables'
 import { createGeoJSON } from './../components/mapboxhelper'
 
-
-const initialTables = tables
-
+const initialTables = {
+  type: 'FeatureCollection',
+  features: []
+}
 
 const tablesReducer = (store = initialTables, action) => {
 
@@ -27,11 +28,19 @@ const tablesReducer = (store = initialTables, action) => {
 
 
 export const addTable = (form) => {
-
   const tableFeature = createGeoJSON(form)
-
   return (dispatch) => {
     dispatch({ type: 'ADD_TABLE', tableFeature })
+  }
+}
+
+export const tablesInitialization = () => {
+  const tablescollection = {
+    type: 'FeatureCollection',
+    features: tables
+  }
+  return async (dispatch) => {
+    dispatch({ type: 'INIT_TABLES', tables: tablescollection })
   }
 }
 
