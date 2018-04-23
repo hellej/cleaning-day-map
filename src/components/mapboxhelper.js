@@ -51,7 +51,6 @@ export const renderPopup = (feature, map, offset, history) => {
     .addTo(map)
 
   popupObj.on('close', function (e) {
-    console.log('popup closed', )
   })
 
   newtablepopup ?
@@ -64,15 +63,6 @@ export const equalCenter = (camera1, camera2) => {
   return (camera1.center.lng.toFixed(3) === camera2.center.lng.toFixed(3) && camera1.zoom === camera2.zoom)
 }
 
-
-
-// export const createGeoJSONarray = (tables) => {
-
-//   let geojsontables = {
-//     "type": "FeatureCollection",
-//     "features": []
-//   }
-// }
 
 export const getLngLatFromGeometry = (geometry) => {
   return new LngLat(geometry.coordinates[0], geometry.coordinates[1])
