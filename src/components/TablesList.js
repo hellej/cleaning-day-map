@@ -33,8 +33,11 @@ const StyledTableDiv = styled.div`
   border-radius: 7px; 
   cursor: pointer;
   margin: 2px 0px;
-  border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
-  &:hover { ${props => props.selected ? '' : 'border: 2px solid rgba(237, 197, 0,.8);'} }
+  border: transparent;
+  background: ${props => props.selected ? 'rgba(255, 214, 247,0.8);' : 'transparent;'}
+  &:hover { background: ${props => props.selected ? 'rgba(255, 214, 247,.8);' : 'rgba(255, 255, 160,.9);'}}
+  //border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
+  //&:hover { ${props => props.selected ? '' : 'border: 2px solid rgba(237, 197, 0,.8);'} }
 `
 const StyledDescriptionDiv = styled.div`
   margin-top: 2px;
@@ -73,6 +76,7 @@ class TablesList extends React.Component {
               onChange={(e) => this.props.handleFilterChange(e, allTables)} />
             <Button cancel onClick={this.handleCloseClick}> Close </Button>
           </StyledFilterDiv>
+          <FilteredStats tables={tables} mapFiltTables={mapFiltTables} allTables={allTables} />
           {tables.map(table =>
             <Table
               key={table.properties.title}
@@ -83,7 +87,6 @@ class TablesList extends React.Component {
               mouseOnTable={this.props.mouseOnTable}
               mouseOutTable={this.props.mouseOutTable} />
           )}
-          <FilteredStats tables={tables} mapFiltTables={mapFiltTables} allTables={allTables} />
         </StyledTablesListContainer>
       </div>
     )
@@ -117,7 +120,7 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
   }
   return (
     <StyledFilteredStatsDiv>
-      <i>{tables.length} filtered from total {allTables.length} tables </i>
+      {tables.length} filtered from total {allTables.length} tables
     </StyledFilteredStatsDiv>
   )
 }
