@@ -36,8 +36,9 @@ const mapControlReducer = (store = initialControl, action) => {
   }
 }
 
-export const zoomToFeature = (geometry, zoom) => {
+export const zoomToFeature = (geometry, zoom, e) => {
   return async (dispatch) => {
+    e.stopPropagation()
     const zoomTo = zoom ? zoom : 13
 
     dispatch({
@@ -76,7 +77,7 @@ export const selectTable = (tableprops) => {
 
 export const unselectTable = (e) => {
   return async (dispatch) => {
-      dispatch({ type: 'UNSELECT_TABLE' })
+    dispatch({ type: 'UNSELECT_TABLE' })
   }
 }
 

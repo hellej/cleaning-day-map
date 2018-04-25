@@ -104,7 +104,7 @@ const Table = (props) => {
       onMouseLeave={() => mouseOutTable()}>
       <b>{table.properties.title} </b>
       {table.properties.likes}{' '} likes {' '}
-      <ZoomButton onClick={() => zoomToFeature(table.geometry, 16)}>Zoom</ZoomButton>
+      <ZoomButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
   )
