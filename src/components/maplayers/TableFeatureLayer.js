@@ -29,7 +29,6 @@ class TableFeatureLayer extends React.Component {
     const { tables, map } = this.props
 
     map.addSource('tables', { type: 'geojson', data: tables })
-
     map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
     map.addLayer({ id: 'mouseontable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
     map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
@@ -44,6 +43,10 @@ class TableFeatureLayer extends React.Component {
     map.on('click', (e) => { this.props.unselectTable(e) })
     map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
     map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
+
+    map.on('load', () => {
+      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
+    })
 
     map.on('moveend', () => {
       this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
