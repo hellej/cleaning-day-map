@@ -14,13 +14,13 @@ class TableFeatureLayer extends React.Component {
     'circle-stroke-color': 'black',
     'circle-stroke-width': 2
   }
-  circleStyleSelect = {
-    'circle-color': '#ff89eb',
+  circleStyleMouseOn = {
+    'circle-color': '#ffd800',
     'circle-stroke-color': 'black',
     'circle-stroke-width': 2
   }
-  circleStyleMouseOn = {
-    'circle-color': '#ffd800',
+  circleStyleSelect = {
+    'circle-color': '#ff99ec',
     'circle-stroke-color': 'black',
     'circle-stroke-width': 2
   }
@@ -71,7 +71,7 @@ class TableFeatureLayer extends React.Component {
       } else { map.setFilter('tables', ['==', '-', '']) }
       setTimeout(() => {
         this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
-      }, 300)
+      }, 100)
     }
 
     //COLOR SELECTED TABLE

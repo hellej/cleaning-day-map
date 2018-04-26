@@ -41,6 +41,7 @@ export const ZoomButton = styled.button`
   border: 1px solid transparent;
   background: rgba(0, 0, 0, 0.07);
   padding: 1px 4px;
+  font-weight: 300;
   cursor: pointer;
   &:hover { 
     background: rgba(0, 0, 0, 0.27);

@@ -26,29 +26,27 @@ const StyledFilterDiv = styled.div`
   z-index: 2;
   border-radius: 20px;
   padding: 6px 13px;
-`
-
-const StyledTableDiv = styled.div`
-  padding: 3px 3px 3px 7px;
-  border-radius: 7px; 
-  cursor: pointer;
-  margin: 2px 0px;
-  border: transparent;
-  background: ${props => props.selected ? 'rgba(255, 214, 247,0.8);' : 'transparent;'}
-  &:hover { background: ${props => props.selected ? 'rgba(255, 214, 247,.8);' : 'rgba(255, 255, 160,.9);'}}
-  //border: 2px solid ${props => props.selected ? 'rgba(255, 119, 230,.8)' : 'transparent'};
-  //&:hover { ${props => props.selected ? '' : 'border: 2px solid rgba(237, 197, 0,.8);'} }
-`
-const StyledDescriptionDiv = styled.div`
-  margin-top: 2px;
-  padding: 0px;
-`
+  `
 const StyledFilteredStatsDiv = styled.div`
-  font-size: 9px;
-  padding: 3px 3px 3px 7px;
+  font-size: 9px; 
+  padding: ${props => props.notables ? '4px 3px 4px 7px' : '4px 3px 8px 7px'};
   margin: 2px 2px;
   font-size: 13px;
   color: grey;
+`
+
+const StyledTableDiv = styled.div`
+  padding: 4px 4px 4px 7px;
+  border-radius: 7px; 
+  cursor: pointer;
+  margin: 3px 0px;
+  border: transparent;
+  background: ${props => props.selected ? 'rgba(255, 214, 247,0.8);' : 'transparent;'}
+  &:hover { background: ${props => props.selected ? 'rgba(255, 214, 247,.8);' : 'rgba(255, 232, 150,.8);'}}
+`
+const StyledDescriptionDiv = styled.div`
+  margin: 2px 2px;
+  padding: 0px;
 `
 
 
@@ -102,8 +100,8 @@ const Table = (props) => {
       onClick={() => selectTable(table)}
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
-      <b>{table.properties.title} </b>
-      {table.properties.likes}{' '} likes {' '}
+      <b>{table.properties.title}</b>
+      &nbsp;&nbsp;{table.properties.likes} likes &nbsp;
       <ZoomButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
@@ -113,17 +111,18 @@ const Table = (props) => {
 const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
   if (tables.length === 0) {
     return (
-      <StyledFilteredStatsDiv>
+      <StyledFilteredStatsDiv notables>
         <i>No tables to show within the map</i>
       </StyledFilteredStatsDiv>
     )
   }
   return (
     <StyledFilteredStatsDiv>
-      {tables.length} filtered from total {allTables.length} tables
+      {tables.length} filtered from total {allTables.length} tables:
     </StyledFilteredStatsDiv>
   )
 }
+
 
 
 const getCommonObjects = (array1, array2) => {
