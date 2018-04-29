@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { StyledNavLink } from './components/Buttons'
+import { firebase } from './firebase/index'
 import { StyledNavLinkContainer } from './components/StyledLayout'
 
 import { tablesInitialization } from './reducers/tablesReducer'
+import { logOut, setLoggedInUser, setUserLoggedOut } from './reducers/userReducer'
 import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
@@ -19,6 +21,13 @@ class MapApp extends Component {
 
   componentDidMount = async () => {
     this.props.tablesInitialization()
+
+    firebase.auth.onAuthStateChanged(authUser => {
+      console.log('check logged in user: ', authUser)
+      authUser
+        ? this.props.setLoggedInUser(authUser)
+        : this.props.setUserLoggedOut()
+    })
   }
 
   render() {
@@ -54,6 +63,5 @@ class MapApp extends Component {
 }
 
 
-const ConnectedMapApp = connect(null, { tablesInitialization })(MapApp)
 
 export default ConnectedMapApp
