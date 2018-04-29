@@ -5,7 +5,7 @@ import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, closeForm } from './../reducers/tableFormReducer'
+import { handleLoginFormChange, closeForm } from './../reducers/userReducer'
 
 
 
@@ -19,30 +19,34 @@ class LoginForm extends React.Component {
 
   render() {
 
-    const { handleFormChange, history, closeForm } = this.props
+    const { handleLoginFormChange, history, closeForm, loginForm } = this.props
+    const { email, password } = loginForm
 
     return (
       <FormContainer left={40}>
         <form>
           <Input
-            placeholder='Username'
-            type='text'
-            name='username'
-            // value={username}
-            onChange={handleFormChange}
+            placeholder='Email'
+            type='email'
+            name='email'
+            value={email}
+            onChange={handleLoginFormChange}
           />
           <Input
             placeholder='Password'
             type='password'
             name='password'
-            // value={password}
-            onChange={handleFormChange}
+            value={password}
+            onChange={handleLoginFormChange}
           />
         </form>
         <StyledLoginButtonDiv>
           <Button submit
             onClick={() => this.props.showNotification({ text: 'Wrong username or password', type: 'alert' }, 5)}
           > Login </Button>
+          <Button signup
+            onClick={() => history.push('/signup')}
+          > Sign Up </Button>
           <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
         </StyledLoginButtonDiv>
       </FormContainer>
@@ -53,12 +57,12 @@ class LoginForm extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  tableform: state.tableform
+  loginForm: state.userState.loginForm
 })
 
 const mapDispatchToProps = {
   showNotification,
-  handleFormChange,
+  handleLoginFormChange,
   closeForm
 }
 
