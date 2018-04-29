@@ -38,7 +38,8 @@ const mapControlReducer = (store = initialControl, action) => {
 
 export const zoomToFeature = (geometry, zoom, e) => {
   return async (dispatch) => {
-    e.stopPropagation()
+    if (e) e.stopPropagation()
+
     const zoomTo = zoom ? zoom : 13
 
     dispatch({
