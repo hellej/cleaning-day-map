@@ -59,7 +59,7 @@ class TableFeatureLayer extends React.Component {
 
     // ADD NEW TABLE
     if (this.props.tables.features.length !== prevProps.tables.features.length) {
-      console.log('Tables need to be re set in Map', this.props.tables)
+      console.log('Redraw tables layer', this.props.tables)
       map.getSource('tables').setData(this.props.tables)
     }
 

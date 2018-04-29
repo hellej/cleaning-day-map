@@ -33,6 +33,7 @@ const StyledFilteredStatsDiv = styled.div`
   margin: 2px 2px;
   font-size: 13px;
   color: grey;
+  font-style: italic;
 `
 
 const StyledTableDiv = styled.div`

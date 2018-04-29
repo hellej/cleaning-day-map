@@ -90,6 +90,24 @@ export const StyledNavLink = styled(NavLink).attrs({
     background: black;
   }
 `
+export const StyledNavLinkButton = styled.div`
+  background: white;
+  border: 2px solid black;
+  border-radius: 20px;
+  color: black;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 4px 3px;
+  padding: 6px 13px;
+  text-align: center;
+  text-decoration: none;
+  transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s; /* Safari */
+  &:hover { box-shadow: inset 0 0 0 1px black;  }
+`
 
 export const LocationInput = styled.div`
   background-color: white;

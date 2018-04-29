@@ -28,10 +28,12 @@ export const StyledToolContainer = styled.div`
 `
 
 export const StyledNotificationContainer = styled.div`
-  position: absolute; 
-  z-index: 3;
-  bottom: 12px;
-  right: 7px;
+  position: fixed; 
+  z-index: 4;
+  margin: auto;
+  bottom: 20px;
+  right: 10px;
+  left: 10px
 `
 
 export const StyledFormButtonDiv = styled.div`
@@ -43,7 +45,7 @@ export const StyledFormButtonDiv = styled.div`
 `
 
 export const StyledLoginButtonDiv = styled.div`
-  margin: 10px 30px 0px 35px;
+  margin: 10px 4px 0px 4px;
   display: flex;
   align-items: center;
   padding: 5px 0px 5px 0px;

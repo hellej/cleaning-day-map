@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 
 import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
@@ -8,6 +9,11 @@ import { showNotification } from './../reducers/notificationReducer'
 import { handleLoginFormChange, closeForm } from './../reducers/userReducer'
 
 
+const StyledError = styled.div`
+font-size: 13px
+font-style: italic;
+padding: 5px 0px;
+`
 
 
 class LoginForm extends React.Component {
