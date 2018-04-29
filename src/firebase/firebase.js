@@ -10,13 +10,12 @@ const config = {
   messagingSenderId: '1070116075880'
 }
 
-let fire
 
 if (!firebase.apps.length) {
-  fire = firebase.initializeApp(config)
+  firebase.initializeApp(config)
 }
 
 export const auth = firebase.auth()
 
-export const database = fire.database()
+export const database = firebase.database()
 
