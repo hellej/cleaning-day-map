@@ -18,19 +18,17 @@ const notificationReducer = (store = initialNotification, action) => {
 
 export const showNotification = (notification, notiftime) => {
   return async (dispatch) => {
-    dispatch({
-      type: 'SHOWNOTIF',
-      notification
-    })
-    console.log(notification, notiftime)
+
+    dispatch({ type: 'RMNOTIF' })
+
+    clearTimeout(notifTimeout)
+    await new Promise(resolve => notifTimeout = setTimeout(resolve, 150))
+    dispatch({ type: 'SHOWNOTIF', notification })
 
     clearTimeout(notifTimeout)
     await new Promise(resolve => notifTimeout = setTimeout(resolve, notiftime * 1000))
-    console.log('WAITED ', notiftime, ' seconds')
 
-    dispatch({
-      type: 'RMNOTIF'
-    })
+    dispatch({ type: 'RMNOTIF' })
   }
 }
 
