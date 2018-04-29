@@ -10,6 +10,7 @@ import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
 import TableForm from './components/TableForm'
 import LoginForm from './components/LoginForm'
+import SignUpForm from './components/SignUpForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 import FocusDimLayer from './components/FocusDimLayer'
@@ -43,7 +44,8 @@ class MapApp extends Component {
             <TableForm history={history} location={location} />} />
           <Route path='/login' render={({ history, location }) =>
             <LoginForm history={history} location={location} />} />
-
+          <Route path='/signup' render={({ history, location }) =>
+            <SignUpForm history={history} location={location} />} />
           <Notification />
         </div>
       </Router>
