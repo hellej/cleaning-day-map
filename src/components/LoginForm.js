@@ -6,8 +6,7 @@ import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleLoginFormChange, closeForm } from './../reducers/userReducer'
-
+import { handleLoginFormChange, submitLogin, closeLoginForm, openSignUpForm } from './../reducers/userReducer'
 
 const StyledError = styled.div`
 font-size: 13px
@@ -25,8 +24,11 @@ class LoginForm extends React.Component {
 
   render() {
 
-    const { handleLoginFormChange, history, closeForm, loginForm } = this.props
-    const { email, password } = loginForm
+    const { handleLoginFormChange, submitLogin, closeLoginForm, history, loginForm, openSignUpForm } = this.props
+    const { email, password, error } = loginForm
+
+    const isInvalid = email === '' || password === ''
+
 
     return (
       <FormContainer left={40}>
@@ -45,16 +47,13 @@ class LoginForm extends React.Component {
             value={password}
             onChange={handleLoginFormChange}
           />
+          {error && <StyledError>{error.message}</StyledError>}
+          <StyledLoginButtonDiv>
+            <Button submit disabled={isInvalid} onClick={(e) => submitLogin(e, history, loginForm)}> Login </Button>
+            <Button signup onClick={(e) => openSignUpForm(e, history)}> Sign Up </Button>
+            <Button cancel onClick={(e) => closeLoginForm(e, history)}> Cancel </Button>
+          </StyledLoginButtonDiv>
         </form>
-        <StyledLoginButtonDiv>
-          <Button submit
-            onClick={() => this.props.showNotification({ text: 'Wrong username or password', type: 'alert' }, 5)}
-          > Login </Button>
-          <Button signup
-            onClick={() => history.push('/signup')}
-          > Sign Up </Button>
-          <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
-        </StyledLoginButtonDiv>
       </FormContainer>
     )
   }
@@ -69,7 +68,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showNotification,
   handleLoginFormChange,
-  closeForm
+  closeLoginForm,
+  submitLogin,
+  openSignUpForm
 }
 
 const connectedLoginForm = connect(mapStateToProps, mapDispatchToProps)(LoginForm)

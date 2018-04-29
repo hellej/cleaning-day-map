@@ -6,8 +6,7 @@ import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
 import { showNotification } from './../reducers/notificationReducer'
-import { handleSignUpFormChange, signUp, closeForm } from './../reducers/userReducer'
-
+import { handleSignUpFormChange, submitSignUp, openLoginForm, closeSignUpForm } from './../reducers/userReducer'
 
 const StyledError = styled.div`
 font-size: 13px
@@ -25,8 +24,8 @@ class SignUpForm extends React.Component {
 
   render() {
 
-    const { handleSignUpFormChange, history, closeForm, signUpForm } = this.props
-    const { username, email, passwordOne, passwordTwo } = signUpForm
+    const { handleSignUpFormChange, history, signUpForm, submitSignUp, closeSignUpForm, openLoginForm } = this.props
+    const { username, email, passwordOne, passwordTwo, error } = signUpForm
     const isInvalid = passwordOne !== passwordTwo || passwordOne === '' || username === ''
 
     return (
@@ -60,12 +59,13 @@ class SignUpForm extends React.Component {
             value={passwordTwo}
             onChange={handleSignUpFormChange}
           />
+          {error && <StyledError>{error.message}</StyledError>}
+          <StyledLoginButtonDiv>
+            <Button submit disabled={isInvalid} onClick={(e) => submitSignUp(e, history, signUpForm)}> Sign Up </Button>
+            <Button signup onClick={(e) => openLoginForm(e, history)}> Sign In </Button>
+            <Button cancel onClick={(e) => closeSignUpForm(e, history)}> Cancel </Button>
+          </StyledLoginButtonDiv>
         </form>
-        <StyledLoginButtonDiv>
-          <Button submit disabled={isInvalid}
-            onClick={(e) => this.props.signUp(e, history, signUpForm)}> Sign Up </Button>
-          <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
-        </StyledLoginButtonDiv>
       </FormContainer>
     )
   }
@@ -80,8 +80,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showNotification,
   handleSignUpFormChange,
-  closeForm,
-  signUp
+  submitSignUp,
+  closeSignUpForm,
+  openLoginForm
 }
 
 const connectedSignUpForm = connect(mapStateToProps, mapDispatchToProps)(SignUpForm)
