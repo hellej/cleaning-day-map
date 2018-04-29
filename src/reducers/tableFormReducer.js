@@ -133,7 +133,6 @@ export const handleSubmit = (e, history, form) => {
     dispatch(addTable(form))
     dispatch(zoomToFeature(geometry, 16))
     dispatch(selectTable(form))
-    dispatch(showNotification({ type: 'alert', text: 'Add new table not quite supported yet' }, 4))
     dispatch({ type: 'SUBMIT', form })
     history.push('/')
   }
