@@ -22,17 +22,23 @@ ${props => props.submit && css`
   color: white;
   &:hover { background: green; }
 `}
+${props => props.signup && css`
+  border: #77d17a;
+  background: #77d17a;
+  color: white;
+  &:hover { background: green; }
+`}
 ${props => props.cancel && css`
   background: rgba(255, 255, 255, 0);
   border: 1px solid rgba(255, 255, 255, 0);
   color: red;
   font-size: 13px;
   box-sizing:border-box;
+  font-size: 13px;
+  padding: 3px 7px;
   &:hover { 
     border: 1px solid red;
     box-shadow: inset 0 0 2px red; } 
-  font-size: 13px;
-  padding: 3px 7px;
 `}
 `
 
