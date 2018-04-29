@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { StyledNavLink } from './components/Buttons'
 import { firebase } from './firebase/index'
+
+import { StyledNavLink, StyledNavLinkButton } from './components/Buttons'
 import { StyledNavLinkContainer } from './components/StyledLayout'
 
 import { tablesInitialization } from './reducers/tablesReducer'
@@ -44,7 +45,10 @@ class MapApp extends Component {
           <StyledNavLinkContainer>
             <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
             <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
-            <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
+            {this.props.loggedInUser
+              ? <StyledNavLinkButton onClick={this.props.logOut} > Logout </StyledNavLinkButton>
+              : <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
+            }
           </StyledNavLinkContainer>
 
           <Route path='/filtertables' render={({ history, location }) =>
@@ -63,5 +67,12 @@ class MapApp extends Component {
 }
 
 
+
+const mapStateToProps = (state) => ({
+  loggedInUser: state.userState.loggedInUser
+})
+
+
+const ConnectedMapApp = connect(mapStateToProps, { tablesInitialization, setLoggedInUser, logOut, setUserLoggedOut })(MapApp)
 
 export default ConnectedMapApp
