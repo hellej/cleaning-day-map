@@ -5,8 +5,8 @@ import { showNotification } from './notificationReducer'
 
 
 
-let tablesRef = database.ref('tables').orderByKey().limitToLast(100)
-console.log('tablesref in firebase: ', tablesRef)
+// let tablesRef = database.ref('tables').orderByKey().limitToLast(100)
+// console.log('tablesref in firebase: ', tablesRef)
 // for (let i = 0; i <= tables.length; i++) {
 //   database.ref('tables').push(tables[i])
 // }
@@ -66,16 +66,17 @@ export const tablesInitialization = () => {
 
 
 export const addTable = (form) => {
-  return async (dispatch) => {
+  return (dispatch) => {
     const tableFeature = createGeoJSON(form)
-    try {
-      await database.ref('tables').push(tableFeature)
-    } catch (error) {
-      console.log('Error: ', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
-    }
-    console.log('Lisätty ', )
-    dispatch({ type: 'ADD_TABLE', tableFeature })
+    database.ref('tables').push(tableFeature)
+      .then(() => {
+        dispatch({ type: 'ADD_TABLE', tableFeature })
+        dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
+      })
+      .catch((error) => {
+        dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
+        console.log('Error: ', error)
+      })
   }
 }
 
