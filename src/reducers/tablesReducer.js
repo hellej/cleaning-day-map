@@ -1,14 +1,14 @@
 // import { tables } from './../tables'
 import { createGeoJSON } from './../components/mapboxhelper'
-import fire from './../fire'
+import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
 
 
 
-let tablesRef = fire.database().ref('tables').orderByKey().limitToLast(100)
+let tablesRef = database.ref('tables').orderByKey().limitToLast(100)
 console.log('tablesref in firebase: ', tablesRef)
 // for (let i = 0; i <= tables.length; i++) {
-//   fire.database().ref('tables').push(tables[i])
+//   database.ref('tables').push(tables[i])
 // }
 
 
@@ -40,7 +40,7 @@ const tablesReducer = (store = initialTables, action) => {
 export const tablesInitialization = () => {
   return async (dispatch) => {
     try {
-      const snapshot = await fire.database().ref('tables').once('value')
+      const snapshot = await database.ref('tables').once('value')
       const tables = snapshot.val()
 
       const ids = Object.keys(tables)
@@ -69,7 +69,7 @@ export const addTable = (form) => {
   return async (dispatch) => {
     const tableFeature = createGeoJSON(form)
     try {
-      await fire.database().ref('tables').push(tableFeature)
+      await database.ref('tables').push(tableFeature)
     } catch (error) {
       console.log('Error: ', error)
       dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
