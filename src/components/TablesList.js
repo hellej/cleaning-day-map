@@ -78,11 +78,11 @@ class TablesList extends React.Component {
           <FilteredStats tables={tables} mapFiltTables={mapFiltTables} allTables={allTables} />
           {tables.map(table =>
             <Table
-              key={table.properties.title}
+              key={table.properties.id}
               table={table}
               selectTable={this.props.selectTable}
               zoomToFeature={this.props.zoomToFeature}
-              selected={this.props.selectedtable === table.properties.title}
+              selected={this.props.selectedtable === table.properties.id}
               mouseOnTable={this.props.mouseOnTable}
               mouseOutTable={this.props.mouseOutTable} />
           )}
@@ -101,8 +101,7 @@ const Table = (props) => {
       onClick={() => selectTable(table)}
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
-      <b>{table.properties.title}</b>
-      &nbsp;&nbsp;{table.properties.likes} likes &nbsp;
+      <b>{table.properties.title}</b> &nbsp;
       <ZoomButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
     </StyledTableDiv>
@@ -134,12 +133,6 @@ const orderByLikes = (tables) => {
   return tables.sort((a, b) => b.properties.likes - a.properties.likes)
 }
 
-// const selectedFirst = (tables, selected) => {
-//   if (selected) {
-//     const selectedtable = tables.filter(table => table.properties.title === selected)
-//     return selectedtable.concat(tables.filter(table => table.properties.title !== selected))
-//   } else { return tables }
-// }
 
 const mapStateToProps = (state) => ({
   filter: state.filter,

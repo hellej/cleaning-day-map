@@ -42,15 +42,13 @@ export const tablesInitialization = () => {
     try {
       const snapshot = await database.ref('tables').once('value')
       const tables = snapshot.val()
-
       const ids = Object.keys(tables)
       const features = Object.values(tables)
 
       const featuresids = features.map((feature, index) => {
-        feature.id = ids[index]
+        feature.properties.id = ids[index]
         return feature
       })
-
       const tablescollection = {
         type: 'FeatureCollection',
         features: featuresids
@@ -58,7 +56,7 @@ export const tablesInitialization = () => {
       dispatch({ type: 'INIT_TABLES', tables: tablescollection })
     } catch (error) {
       console.log('Error: ', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
+      dispatch(showNotification({ type: 'alert', text: "Couldn't initialize tables" }, 7))
     }
   }
 }
@@ -69,7 +67,8 @@ export const addTable = (form) => {
   return (dispatch) => {
     const tableFeature = createGeoJSON(form)
     database.ref('tables').push(tableFeature)
-      .then(() => {
+      .then((ref) => {
+        tableFeature.properties.id = ref.key
         dispatch({ type: 'ADD_TABLE', tableFeature })
         dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
       })

@@ -17,16 +17,16 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
     case 'TOGGLE_SELECTION':
-      if (store.selectedtable === action.title) {
+      if (store.selectedtable === action.id) {
         selectedtable = null
-      } else selectedtable = action.title
+      } else selectedtable = action.id
       return { ...store, selectedtable }
 
     case 'UNSELECT_TABLE':
       return { ...store, selectedtable: null }
 
     case 'MOUSEON_TABLE':
-      return { ...store, mouseontable: action.table.properties.title }
+      return { ...store, mouseontable: action.table.properties.id }
 
     case 'MOUSEOUT_TABLE':
       return { ...store, mouseontable: null }
@@ -39,7 +39,6 @@ const mapControlReducer = (store = initialControl, action) => {
 export const zoomToFeature = (geometry, zoom, e) => {
   return async (dispatch) => {
     if (e) e.stopPropagation()
-
     const zoomTo = zoom ? zoom : 13
 
     dispatch({
@@ -72,8 +71,8 @@ export const resetCamera = (feature) => {
 }
 
 export const selectTable = (tableprops) => {
-  const title = tableprops.properties ? tableprops.properties.title : tableprops.title
-  return { type: 'TOGGLE_SELECTION', title }
+  const id = tableprops.properties ? tableprops.properties.id : tableprops.id
+  return { type: 'TOGGLE_SELECTION', id }
 }
 
 export const unselectTable = (e) => {

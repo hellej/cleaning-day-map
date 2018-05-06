@@ -66,8 +66,8 @@ class TableFeatureLayer extends React.Component {
     // UPDATE FILTERED TABLES
     if (prevProps.textFiltTables.length !== textFiltTables.length) {
       if (textFiltTables.length > 0) {
-        map.setFilter('tables', ['match', ['get', 'description'],
-          textFiltTables.map(table => table.properties.description), true, false])
+        map.setFilter('tables', ['match', ['get', 'id'],
+          textFiltTables.map(table => table.properties.id), true, false])
       } else { map.setFilter('tables', ['==', '-', '']) }
       setTimeout(() => {
         this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
@@ -76,12 +76,12 @@ class TableFeatureLayer extends React.Component {
 
     //COLOR SELECTED TABLE
     if (selectedtable) {
-      map.setFilter('selectedtable', ['match', ['get', 'title'], selectedtable, true, false])
+      map.setFilter('selectedtable', ['match', ['get', 'id'], selectedtable, true, false])
     } else { map.setFilter('selectedtable', ['==', '-', '']) }
 
     //COLOR HOVERED TABLE
     if (mouseontable) {
-      map.setFilter('mouseontable', ['match', ['get', 'title'], mouseontable, true, false])
+      map.setFilter('mouseontable', ['match', ['get', 'id'], mouseontable, true, false])
     } else { map.setFilter('mouseontable', ['==', '-', '']) }
 
   }
