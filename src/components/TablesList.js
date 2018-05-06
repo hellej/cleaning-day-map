@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
 
@@ -41,10 +41,25 @@ const StyledTableDiv = styled.div`
   border-radius: 7px; 
   cursor: pointer;
   margin: 3px 0px;
-  border: transparent;
-  background: ${props => props.selected ? 'rgba(255, 214, 247,0.8);' : 'transparent;'}
-  &:hover { background: ${props => props.selected ? 'rgba(255, 214, 247,.8);' : 'rgba(255, 232, 150,.8);'}}
-`
+  position: relative;
+  border: none;
+  transition: box-shadow 0.3s;
+  background: rgba(255, 255, 255,0);
+  z-index: 2;
+  &:hover {
+    z-index: 4;
+    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.05), 0 3px 7px 0 rgba(0, 0, 0, 0.2);
+  }
+  ${props => props.selected && css`
+    //background: rgba(255, 214, 247,0.8);
+    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 4px 7px 0 rgba(0, 0, 0, 0.3);
+    z-index: 3;
+    &:hover {
+      box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 4px 7px 0 rgba(0, 0, 0, 0.3);
+    }
+  `}
+  `
+
 const StyledDescriptionDiv = styled.div`
   margin: 2px 2px;
   padding: 0px;
