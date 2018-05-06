@@ -1,6 +1,5 @@
 
 import { showNotification } from './notificationReducer'
-import { zoomToFeature, selectTable } from './mapControlReducer'
 import { addTable } from './tablesReducer'
 
 const initialForm = {
@@ -84,14 +83,6 @@ export const setLngLatZoomForNew = (lngLat, zoom) => {
   }
 }
 
-export const toggleLocationInputActive = () => {
-  return (dispatch) => {
-    dispatch({ type: 'TOGGLE_LOCINPUT_STATE' })
-    dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to desired location' }, 10))
-  }
-}
-
-
 export const setLocationInputActive = (history) => {
   return async (dispatch) => {
     await new Promise(resolve => setTimeout(resolve, 400))
@@ -111,10 +102,6 @@ export const confirmLocation = (history) => {
   }
 }
 
-export const hideForm = (history) => {
-  history.push('/')
-}
-
 export const closeForm = (history) => {
   history.push('/')
   return (dispatch) => {
@@ -124,7 +111,6 @@ export const closeForm = (history) => {
 
 export const handleSubmit = (e, history, form, loggedInUser) => {
   e.preventDefault()
-  const geometry = { coordinates: [form.location.lngLat.lng, form.location.lngLat.lat] }
   const error = validate(form, loggedInUser)
   if (error) {
     return (dispatch) => {
@@ -132,11 +118,7 @@ export const handleSubmit = (e, history, form, loggedInUser) => {
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
     }
   }
-
   return (dispatch) => {
-    dispatch(addTable(form))
-    dispatch(zoomToFeature(geometry, 16))
-    dispatch(selectTable(form))
     const props = { ...form, user: loggedInUser.id }
     dispatch(addTable(props))
     dispatch({ type: 'SUBMIT', form })

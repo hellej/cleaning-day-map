@@ -2,7 +2,7 @@
 import { createGeoJSON } from './../components/mapboxhelper'
 import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
-
+import { selectTable, zoomToFeature } from './mapControlReducer'
 
 
 // let tablesRef = database.ref('tables').orderByKey().limitToLast(100)
@@ -63,17 +63,21 @@ export const tablesInitialization = () => {
 
 
 
-export const addTable = (form) => {
+export const addTable = (props) => {
   return (dispatch) => {
-    const tableFeature = createGeoJSON(form)
+    const tableFeature = createGeoJSON(props)
+    const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
+
     database.ref('tables').push(tableFeature)
       .then((ref) => {
         tableFeature.properties.id = ref.key
         dispatch({ type: 'ADD_TABLE', tableFeature })
         dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
+        dispatch(selectTable(tableFeature))
+        dispatch(zoomToFeature(geometry, 16))
       })
       .catch((error) => {
-        dispatch(showNotification({ type: 'alert', text: "Couldn't connect to database" }, 7))
+        dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
         console.log('Error: ', error)
       })
   }
