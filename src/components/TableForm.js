@@ -20,7 +20,7 @@ class TableForm extends React.Component {
 
   render() {
 
-    const { tableform, handleFormChange, handleSubmit,
+    const { tableform, loggedInUser, handleFormChange, handleSubmit,
       history, setLocationInputActive, closeForm } = this.props
     const { title, description, phonenum, openhours, location } = this.props.tableform
 
@@ -64,7 +64,7 @@ class TableForm extends React.Component {
           </LocationInput>
         </form>
         <StyledFormButtonDiv>
-          <Button submit onClick={(e) => handleSubmit(e, history, tableform)}> Add Table </Button>
+          <Button submit onClick={(e) => handleSubmit(e, history, tableform, loggedInUser)}> Add Table </Button>
           <Button cancel onClick={() => closeForm(history)}> Cancel </Button>
         </StyledFormButtonDiv>
       </FormContainer>
@@ -75,7 +75,8 @@ class TableForm extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  tableform: state.tableform
+  tableform: state.tableform,
+  loggedInUser: state.userState.loggedInUser
 })
 
 const mapDispatchToProps = {

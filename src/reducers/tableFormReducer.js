@@ -137,6 +137,8 @@ export const handleSubmit = (e, history, form, loggedInUser) => {
     dispatch(addTable(form))
     dispatch(zoomToFeature(geometry, 16))
     dispatch(selectTable(form))
+    const props = { ...form, user: loggedInUser.id }
+    dispatch(addTable(props))
     dispatch({ type: 'SUBMIT', form })
     history.push('/')
   }

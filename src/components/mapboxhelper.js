@@ -82,7 +82,8 @@ export const createGeoJSON = (props) => {
       phonenum: props.phonenum,
       openhours: props.openhours,
       image: 'url?',
-      likes: 0
+      likes: 0,
+      user: props.user
     }
   }
 
