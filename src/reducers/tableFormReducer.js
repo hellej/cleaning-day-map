@@ -13,7 +13,8 @@ const initialForm = {
     lngLat: { lng: null, lat: null },
     confirmed: false,
     zoom: null
-  }
+  },
+  error: null
 }
 
 const phoneScreen = (window) => {
@@ -61,6 +62,9 @@ const tableFormReducer = (store = initialForm, action) => {
     case 'SUBMIT':
       console.log('form submitted: ', action.form)
       return initialForm
+
+    case 'SET_TABLEFORM_ERROR':
+      return { ...store, error: action.error }
 
     default:
       return store
@@ -118,14 +122,14 @@ export const closeForm = (history) => {
   }
 }
 
-
-export const handleSubmit = (e, history, form) => {
+export const handleSubmit = (e, history, form, loggedInUser) => {
   e.preventDefault()
   const geometry = { coordinates: [form.location.lngLat.lng, form.location.lngLat.lat] }
-
-  if (!form.location.confirmed) {
+  const error = validate(form, loggedInUser)
+  if (error) {
     return (dispatch) => {
-      dispatch(showNotification({ type: 'alert', text: 'You must confirm the location of the table' }, 4))
+      dispatch(showNotification({ type: 'alert', text: error }, 4))
+      dispatch({ type: 'SET_TABLEFORM_ERROR', error })
     }
   }
 
@@ -137,5 +141,22 @@ export const handleSubmit = (e, history, form) => {
     history.push('/')
   }
 }
+
+const validate = (form, loggedInUser) => {
+  if (!loggedInUser) {
+    return 'You must log in first'
+  }
+  if (!form.title || form.title.trim() === '') {
+    return 'Title is missing'
+  }
+  if (!form.description || form.description.trim() === '') {
+    return 'Description is missing'
+  }
+  if (!form.location.confirmed) {
+    return 'Location must be confirmed first'
+  }
+  return null
+}
+
 
 export default tableFormReducer
