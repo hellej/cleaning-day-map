@@ -3,12 +3,18 @@ const initialTables = []
 
 const mapFilteredTablesReducer = (store = initialTables, action) => {
 
+  let featuresToUpdate
+
   switch (action.type) {
     case 'INIT_TABLES':
       return action.tables.features
 
     case 'SET_MAP_FILT_TABLES':
       return action.tables
+
+    case 'ADD_TABLE':
+      featuresToUpdate = store.concat(action.tableFeature)
+      return featuresToUpdate
 
     default:
       return store

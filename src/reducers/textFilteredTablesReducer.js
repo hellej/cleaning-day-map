@@ -3,6 +3,8 @@ const initialTables = []
 
 const textFilteredTablesReducer = (store = initialTables, action) => {
 
+  let featuresToUpdate
+
   switch (action.type) {
 
     case 'INIT_TABLES':
@@ -10,6 +12,10 @@ const textFilteredTablesReducer = (store = initialTables, action) => {
 
     case 'SET_FILTER':
       return filterTables(action.tables, action.filter)
+
+    case 'ADD_TABLE':
+      featuresToUpdate = store.concat(action.tableFeature)
+      return featuresToUpdate
 
     default:
       return store
