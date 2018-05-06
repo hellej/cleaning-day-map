@@ -10,6 +10,7 @@ The initial and main objective of the project was to explore and utilize ways of
 * Mapbox GL JS
 * React Router
 * Hosting: Firebase
+* Database & authentication: Firebase
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
