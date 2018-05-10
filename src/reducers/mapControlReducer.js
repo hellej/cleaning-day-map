@@ -1,9 +1,16 @@
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
-const initialControl = { center: null, zoom: null, selectedtable: null, mouseontable: null }
+const initialControl = {
+  center: null,
+  zoom: null,
+  selectedTable: null,
+  mouseOnTable: null,
+  mapLoaded: false,
+  layerLoaded: false
+}
 
 const mapControlReducer = (store = initialControl, action) => {
-  let selectedtable, center = null
+  let selectedTable, center = null
 
   switch (action.type) {
     case 'SET_ZOOM_TO':
@@ -11,25 +18,31 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, center, zoom: action.zoom }
 
     case 'RESET_CAMERA':
-      return { ...initialControl, selectedtable: store.selectedtable }
+      return { ...initialControl, selectedTable: store.selectedTable }
 
     case 'SET_CAMERA':
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
     case 'TOGGLE_SELECTION':
-      if (store.selectedtable === action.id) {
-        selectedtable = null
-      } else selectedtable = action.id
-      return { ...store, selectedtable }
+      if (store.selectedTable === action.id) {
+        selectedTable = null
+      } else selectedTable = action.id
+      return { ...store, selectedTable }
 
     case 'UNSELECT_TABLE':
-      return { ...store, selectedtable: null }
+      return { ...store, selectedTable: null }
 
     case 'MOUSEON_TABLE':
-      return { ...store, mouseontable: action.table.properties.id }
+      return { ...store, mouseOnTable: action.table.properties.id }
 
     case 'MOUSEOUT_TABLE':
-      return { ...store, mouseontable: null }
+      return { ...store, mouseOnTable: null }
+
+    case 'SET_MAP_LOADED':
+      return { ...store, mapLoaded: true }
+
+    case 'SET_LAYER_LOADED':
+      return { ...store, layerLoaded: true }
 
     default:
       return store
@@ -87,6 +100,14 @@ export const mouseOnTable = (table) => {
 
 export const mouseOutTable = () => {
   return { type: 'MOUSEOUT_TABLE' }
+}
+
+export const setMapLoaded = () => {
+  return { type: 'SET_MAP_LOADED' }
+}
+
+export const setLayerLoaded = () => {
+  return { type: 'SET_LAYER_LOADED' }
 }
 
 export default mapControlReducer

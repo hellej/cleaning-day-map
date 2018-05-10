@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { renderPopup, getRenderedFeaturesFromQuery } from './../mapboxhelper'
 import { setMapFiltTablesList } from './../../reducers/mapFilteredTablesReducer'
 import { unselectTable, selectTable } from './../../reducers/mapControlReducer'
-
+import { setLayerLoaded } from './../../reducers/mapControlReducer'
 
 class TableFeatureLayer extends React.Component {
 
@@ -55,10 +55,15 @@ class TableFeatureLayer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { map, textFiltTables, selectedTable, mouseOnTable } = this.props
+    const { map, tables, textFiltTables, selectedTable, mouseOnTable } = this.props
+
+    // SET LAYER LOADED AFTER INITIALIZATION
+    if (prevProps.textFiltTables.length === 0 && textFiltTables.length > 0) {
+      this.props.setLayerLoaded()
+    }
 
     // ADD NEW TABLE
-    if (this.props.tables.features.length !== prevProps.tables.features.length) {
+    if (tables.features.length !== prevProps.tables.features.length) {
       console.log('Redraw tables layer', this.props.tables)
       map.getSource('tables').setData(this.props.tables)
     }
@@ -106,7 +111,7 @@ const mapStateToProps = (state) => ({
   mouseOnTable: state.mapControl.mouseOnTable,
   textFiltTables: state.textFiltTables
 })
-const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable }
+const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable, setLayerLoaded }
 
 const ConnectedTableFeatureLayer = connect(mapStateToProps, mapDispatchToProps)(TableFeatureLayer)
 

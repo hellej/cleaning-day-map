@@ -31,9 +31,9 @@ export const StyledNotificationContainer = styled.div`
   position: fixed; 
   z-index: 4;
   margin: auto;
-  bottom: 20px;
   right: 10px;
-  left: 10px
+  bottom: ${props => props.bottom ? props.bottom : '20'}px;
+  left: ${props => props.left ? props.left : '10'}px; 
 `
 
 export const StyledFormButtonDiv = styled.div`

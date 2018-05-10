@@ -15,14 +15,31 @@ letter-spacing: 1px;
 padding: 12px 20px;
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 ${props => props.type === 'info' && css`
-background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.8);
 `}
 ${props => props.type === 'success' && css`
-background: rgba(0, 28, 0, 0.8);
+  background: rgba(0, 28, 0, 0.8);
 `}
 ${props => props.type === 'alert' && css`
-//background: #a51c1c;
-background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.8);
+`}
+${props => props.type === 'load' && css`
+  background: rgba(0,0,0,0.03);
+  box-shadow: none;
+  letter-spacing: 3px;
+  font-size: 20px;
+  font-weight: 100;
+  color: rgba(0,0,0,0.8);
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //text-align: center;
+  //vertical-align: middle;
+  //line-height: normal;
 `}
 `
 
@@ -36,7 +53,6 @@ const Notification = (props) => {
     </StyledNotificationDiv>
   )
 }
-
 
 
 const mapStateToProps = (state) => ({

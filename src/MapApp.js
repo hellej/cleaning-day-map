@@ -6,6 +6,7 @@ import { firebase } from './firebase/index'
 import { StyledNavLink, StyledNavLinkButton } from './components/Buttons'
 import { StyledNavLinkContainer } from './components/StyledLayout'
 
+import { showLoadNotification } from './reducers/notificationReducer'
 import { tablesInitialization } from './reducers/tablesReducer'
 import { logOut, setLoggedInUser, setUserLoggedOut } from './reducers/userReducer'
 import Map from './components/Map'
@@ -29,6 +30,7 @@ class MapApp extends Component {
         ? this.props.setLoggedInUser(authUser)
         : this.props.setUserLoggedOut()
     })
+    this.props.showLoadNotification()
   }
 
   render() {
@@ -72,7 +74,15 @@ const mapStateToProps = (state) => ({
   loggedInUser: state.userState.loggedInUser
 })
 
+const mapDispatchToProps = {
+  tablesInitialization,
+  setLoggedInUser,
+  logOut,
+  setUserLoggedOut,
+  showLoadNotification
+}
 
-const ConnectedMapApp = connect(mapStateToProps, { tablesInitialization, setLoggedInUser, logOut, setUserLoggedOut })(MapApp)
+
+const ConnectedMapApp = connect(mapStateToProps, mapDispatchToProps)(MapApp)
 
 export default ConnectedMapApp
