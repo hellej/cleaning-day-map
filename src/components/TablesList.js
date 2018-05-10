@@ -5,10 +5,10 @@ import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
 import { removeTable } from './../reducers/tablesReducer'
 
-import { Button, TableDivButton } from './Buttons'
+import { Button, TableDivButton, StyledFaHeartO } from './Buttons'
 import { Input } from './FormElements'
 import { StyledToolContainer } from './StyledLayout'
-
+import FaHeartO from 'react-icons/lib/fa/heart-o'
 
 
 const StyledTablesListContainer = StyledToolContainer.extend`
@@ -38,9 +38,9 @@ const StyledFilteredStatsDiv = styled.div`
 `
 
 const StyledTableDiv = styled.div`
-  padding: 6px 6px 6px 8px;
+  padding: 9px 6px 7px 9px;
   border-radius: 7px; 
-  cursor: pointer;
+  cursor: default;
   margin: 3px 0px;
   position: relative;
   border: none;
@@ -53,13 +53,17 @@ const StyledTableDiv = styled.div`
     box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 3px 7px 0 rgba(0, 0, 0, 0.25);
   }
   ${props => props.selected && css`
-    //background: rgba(255, 214, 247,0.8);
+  //background: rgba(255, 214, 247,0.8);
+  box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
+  z-index: 3;
+  &:hover {
     box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
-    z-index: 3;
-    &:hover {
-      box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
-    }
+  }
   `}
+  `
+const StyledTitleDiv = styled.div`
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
   `
 
 const StyledDescriptionDiv = styled.div`
@@ -119,10 +123,10 @@ const Table = (props) => {
       onClick={() => selectTable(table)}
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
-      <b>{table.properties.title}</b> &nbsp;
+      <StyledTitleDiv><b>{table.properties.title}</b> &nbsp; <StyledFaHeartO size={14} />
+      </StyledTitleDiv>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
-      <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Edit</TableDivButton>
       <TableDivButton onClick={(e) => removeTable(table, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )

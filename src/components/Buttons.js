@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components'
 import { NavLink } from 'react-router-dom'
+import FaHeartO from 'react-icons/lib/fa/heart-o'
 
 export const Button = styled.button`
   background: white;
@@ -64,10 +65,26 @@ export const TableDivButton = styled.button`
       color: white;
       } 
     } 
+  ${props => props.love && css`
+    padding: 0px;
+    height: 17px;
+  `}
+`
+export const StyledFaHeartO = styled(FaHeartO) `
+  color: black;
+  font-size: 50px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  transition-duration: 0.15s;
+  &:hover { 
+    color: red;
+    } 
 `
 
-const activeClassName = 'active'
 
+
+const activeClassName = 'active'
 export const StyledNavLink = styled(NavLink).attrs({
   activeClassName
 }) `
