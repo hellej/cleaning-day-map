@@ -37,31 +37,32 @@ const StyledFilteredStatsDiv = styled.div`
 `
 
 const StyledTableDiv = styled.div`
-  padding: 4px 4px 4px 7px;
+  padding: 6px 6px 6px 8px;
   border-radius: 7px; 
   cursor: pointer;
   margin: 3px 0px;
   position: relative;
   border: none;
-  transition: box-shadow 0.3s;
-  background: rgba(255, 255, 255,0);
+  transition: box-shadow 0.15s;
+  background: rgba(255, 255, 255,0.5);
   z-index: 2;
+  box-shadow: 0 -2px 3px 0 rgba(50, 50, 50, 0.1), 0 2px 3px 0 rgba(50, 50, 50, 0.1);
   &:hover {
     z-index: 4;
-    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.05), 0 3px 7px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 3px 7px 0 rgba(0, 0, 0, 0.25);
   }
   ${props => props.selected && css`
     //background: rgba(255, 214, 247,0.8);
-    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 4px 7px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
     z-index: 3;
     &:hover {
-      box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 4px 7px 0 rgba(0, 0, 0, 0.3);
+      box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
     }
   `}
   `
 
 const StyledDescriptionDiv = styled.div`
-  margin: 2px 2px;
+  margin: 0px 2px;
   padding: 0px;
 `
 
@@ -97,7 +98,7 @@ class TablesList extends React.Component {
               table={table}
               selectTable={this.props.selectTable}
               zoomToFeature={this.props.zoomToFeature}
-              selected={this.props.selectedtable === table.properties.id}
+              selected={this.props.selectedTable === table.properties.id}
               mouseOnTable={this.props.mouseOnTable}
               mouseOutTable={this.props.mouseOutTable} />
           )}
@@ -151,7 +152,7 @@ const orderByLikes = (tables) => {
 
 const mapStateToProps = (state) => ({
   filter: state.filter,
-  selectedtable: state.mapControl.selectedtable,
+  selectedTable: state.mapControl.selectedTable,
   mapFiltTables: state.mapFiltTables,
   allTables: state.tables.features,
   tables: orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables))
