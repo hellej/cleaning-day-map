@@ -106,8 +106,8 @@ export const submitSignUp = (e, history, form) => {
 }
 
 export const submitLogin = (e, history, form) => {
-  e.preventDefault()
   return (dispatch) => {
+    e.preventDefault()
     auth.doSignInWithEmailAndPassword(form.email, form.password)
       .then(() => {
         const user = auth.currentUser()
@@ -136,7 +136,6 @@ export const setUserLoggedOut = (user) => {
 
 export const logOut = () => {
   return (dispatch) => {
-    console.log('try to logout...', )
     auth.doSignOut()
       .then(() => {
         dispatch({ type: 'SET_USER_LOGGED_OUT' })

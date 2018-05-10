@@ -42,13 +42,15 @@ ${props => props.cancel && css`
 `}
 `
 
-export const ZoomButton = styled.button`
+export const TableDivButton = styled.button`
   border-radius: 4px;
+  margin: 0px 5px 0px 0px;
   border: 1px solid transparent;
-  background: rgba(0, 0, 0, 0.07);
+  background: rgba(0, 0, 0, 0.06);
   padding: 1px 4px;
-  font-weight: 300;
+  font-weight: 450;
   cursor: pointer;
+  color: rgba(0, 0, 0, 0.8);
   transition-duration: 0.15s;
   &:hover { 
     background: rgba(0, 0, 0, 0.27);
