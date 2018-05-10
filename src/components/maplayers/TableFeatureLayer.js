@@ -30,10 +30,10 @@ class TableFeatureLayer extends React.Component {
 
     map.addSource('tables', { type: 'geojson', data: tables })
     map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
-    map.addLayer({ id: 'mouseontable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
-    map.addLayer({ id: 'selectedtable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
-    map.setFilter('mouseontable', ['==', '-', ''])
-    map.setFilter('selectedtable', ['==', '-', ''])
+    map.addLayer({ id: 'mouseOnTable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
+    map.addLayer({ id: 'selectedTable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
+    map.setFilter('mouseOnTable', ['==', '-', ''])
+    map.setFilter('selectedTable', ['==', '-', ''])
 
     map.on('click', 'tables', (e) => {
       const table = e.features[0]
@@ -55,7 +55,7 @@ class TableFeatureLayer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { map, textFiltTables, selectedtable, mouseontable } = this.props
+    const { map, textFiltTables, selectedTable, mouseOnTable } = this.props
 
     // ADD NEW TABLE
     if (this.props.tables.features.length !== prevProps.tables.features.length) {
@@ -75,14 +75,14 @@ class TableFeatureLayer extends React.Component {
     }
 
     //COLOR SELECTED TABLE
-    if (selectedtable) {
-      map.setFilter('selectedtable', ['match', ['get', 'id'], selectedtable, true, false])
-    } else { map.setFilter('selectedtable', ['==', '-', '']) }
+    if (selectedTable) {
+      map.setFilter('selectedTable', ['match', ['get', 'id'], selectedTable, true, false])
+    } else { map.setFilter('selectedTable', ['==', '-', '']) }
 
     //COLOR HOVERED TABLE
-    if (mouseontable) {
-      map.setFilter('mouseontable', ['match', ['get', 'id'], mouseontable, true, false])
-    } else { map.setFilter('mouseontable', ['==', '-', '']) }
+    if (mouseOnTable) {
+      map.setFilter('mouseOnTable', ['match', ['get', 'id'], mouseOnTable, true, false])
+    } else { map.setFilter('mouseOnTable', ['==', '-', '']) }
 
   }
 
@@ -102,8 +102,8 @@ class TableFeatureLayer extends React.Component {
 
 const mapStateToProps = (state) => ({
   tables: state.tables,
-  selectedtable: state.mapControl.selectedtable,
-  mouseontable: state.mapControl.mouseontable,
+  selectedTable: state.mapControl.selectedTable,
+  mouseOnTable: state.mapControl.mouseOnTable,
   textFiltTables: state.textFiltTables
 })
 const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable }
