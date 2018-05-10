@@ -1,10 +1,10 @@
 
 ## Cleaning Day Map
-An interactive map application for exploring the locations of vendor tables in the supposed context of the annual cleaning day event (a day when anyone can host a pop-up flea market). The app allows users to add new vendor tables to the map and search for tables by using both a search field and the map window as filters.
+An interactive web map application for exploring the locations of vendor tables in the supposed context of the annual cleaning day event (a day when anyone can host a pop-up flea market). The app allows users to add new vendor tables to the map and search for tables by using both a search field and the map window as filters.
 
 The initial and main objective of the project was to explore and utilize ways of using Mapbox GL maps within a React+Redux app. This is just a demo / proof of concept and not part of the official [Cleaning Day](http://siivouspaiva.com/en/info/basics-of-cleaning-day) event by any means. 
 
-### Main technology stack
+### Built With
 * React
 * Redux & Thunk
 * Mapbox GL JS
@@ -25,4 +25,4 @@ Update your Mapbox access token to `src/components/Map.js`<br>
 Open browser to http://localhost:3000/
 
 ### License
-TBA
+MIT
