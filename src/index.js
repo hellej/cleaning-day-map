@@ -4,14 +4,14 @@ import './index.css'
 import { Provider } from 'react-redux'
 import store from './store'
 
-import MapApp from './MapApp'
+import App from './App'
 
 
 
 const render = () => {
   ReactDOM.render(
     <Provider store={store}>
-      <MapApp />
+      <App />
     </Provider>,
     document.getElementById('root')
   )

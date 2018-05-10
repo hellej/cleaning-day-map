@@ -19,7 +19,7 @@ import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 import FocusDimLayer from './components/FocusDimLayer'
 
-class MapApp extends Component {
+class App extends Component {
 
   componentDidMount = async () => {
     this.props.tablesInitialization()
@@ -83,6 +83,6 @@ const mapDispatchToProps = {
 }
 
 
-const ConnectedMapApp = connect(mapStateToProps, mapDispatchToProps)(MapApp)
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
-export default ConnectedMapApp
+export default ConnectedApp
