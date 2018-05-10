@@ -16,6 +16,10 @@ const mapFilteredTablesReducer = (store = initialTables, action) => {
       featuresToUpdate = store.concat(action.tableFeature)
       return featuresToUpdate
 
+    case 'REMOVE_TABLE':
+      featuresToUpdate = store.filter(table => table.properties.id !== action.id)
+      return featuresToUpdate
+
     default:
       return store
   }

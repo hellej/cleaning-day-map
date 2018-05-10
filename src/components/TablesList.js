@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
+import { removeTable } from './../reducers/tablesReducer'
 
-import { Button, ZoomButton } from './Buttons'
+import { Button, TableDivButton } from './Buttons'
 import { Input } from './FormElements'
 import { StyledToolContainer } from './StyledLayout'
 
@@ -62,7 +63,7 @@ const StyledTableDiv = styled.div`
   `
 
 const StyledDescriptionDiv = styled.div`
-  margin: 0px 2px;
+  margin: 5px 0px 5px 0px;
   padding: 0px;
 `
 
@@ -100,7 +101,8 @@ class TablesList extends React.Component {
               zoomToFeature={this.props.zoomToFeature}
               selected={this.props.selectedTable === table.properties.id}
               mouseOnTable={this.props.mouseOnTable}
-              mouseOutTable={this.props.mouseOutTable} />
+              mouseOutTable={this.props.mouseOutTable}
+              removeTable={this.props.removeTable} />
           )}
         </StyledTablesListContainer>
       </div>
@@ -109,7 +111,7 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable } = props
+  const { table, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable, removeTable } = props
 
   return (
     <StyledTableDiv
@@ -118,8 +120,10 @@ const Table = (props) => {
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
       <b>{table.properties.title}</b> &nbsp;
-      <ZoomButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</ZoomButton>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
+      <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
+      <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Edit</TableDivButton>
+      <TableDivButton onClick={(e) => removeTable(table, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )
 }
@@ -158,7 +162,14 @@ const mapStateToProps = (state) => ({
   tables: orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables))
 })
 
-const mapDispatchToProps = { handleFilterChange, zoomToFeature, selectTable, mouseOnTable, mouseOutTable }
+const mapDispatchToProps = {
+  handleFilterChange,
+  zoomToFeature,
+  selectTable,
+  mouseOnTable,
+  mouseOutTable,
+  removeTable
+}
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)
 export default connectedTablesList

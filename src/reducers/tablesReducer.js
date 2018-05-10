@@ -32,6 +32,10 @@ const tablesReducer = (store = initialTables, action) => {
       featuresToUpdate = store.features.concat(action.tableFeature)
       return { ...store, features: featuresToUpdate }
 
+    case 'REMOVE_TABLE':
+      featuresToUpdate = store.features.filter(table => table.properties.id !== action.id)
+      return { ...store, features: featuresToUpdate }
+
     default:
       return store
   }
@@ -64,7 +68,7 @@ export const tablesInitialization = () => {
 
 
 export const addTable = (props) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     const tableFeature = createGeoJSON(props)
     const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
 
@@ -78,6 +82,29 @@ export const addTable = (props) => {
       })
       .catch((error) => {
         dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
+        console.log('Error: ', error)
+      })
+  }
+}
+
+export const removeTable = (table, e) => {
+  return async (dispatch) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    const ok = window.confirm(`Remove table: ${table.properties.title} ?`)
+    if (ok === false) return
+
+    const tablesRef = database.ref('tables')
+
+    tablesRef.child(table.properties.id).remove()
+      .then((ref) => {
+        dispatch({ type: 'REMOVE_TABLE', id: table.properties.id })
+        dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
+      })
+      .catch((error) => {
+        dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))
         console.log('Error: ', error)
       })
   }
