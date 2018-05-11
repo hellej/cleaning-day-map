@@ -6,7 +6,8 @@ const initialControl = {
   selectedTable: null,
   mouseOnTable: null,
   mapLoaded: false,
-  layerLoaded: false
+  layerLoaded: false,
+  reloadTables: []
 }
 
 const mapControlReducer = (store = initialControl, action) => {
@@ -43,6 +44,9 @@ const mapControlReducer = (store = initialControl, action) => {
 
     case 'SET_LAYER_LOADED':
       return { ...store, layerLoaded: true }
+
+    case 'LIKE_TABLE':
+      return { ...store, reloadTables: store.reloadTables.concat(action.id) }
 
     default:
       return store

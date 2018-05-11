@@ -55,15 +55,15 @@ class TableFeatureLayer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { map, tables, textFiltTables, selectedTable, mouseOnTable } = this.props
+    const { map, tables, textFiltTables, selectedTable, mouseOnTable, reloadTables } = this.props
 
     // SET LAYER LOADED AFTER INITIALIZATION
     if (prevProps.textFiltTables.length === 0 && textFiltTables.length > 0) {
       this.props.setLayerLoaded()
     }
 
-    // ADD NEW TABLE
-    if (tables.features.length !== prevProps.tables.features.length) {
+    // RELOAD TABLES TO MAP (NEW TABLE / UPDATED TABLE)
+    if (tables.features.length !== prevProps.tables.features.length || prevProps.reloadTables.length !== reloadTables.length) {
       console.log('Redraw tables layer', this.props.tables)
       map.getSource('tables').setData(this.props.tables)
     }
@@ -107,9 +107,10 @@ class TableFeatureLayer extends React.Component {
 
 const mapStateToProps = (state) => ({
   tables: state.tables,
+  textFiltTables: state.textFiltTables,
   selectedTable: state.mapControl.selectedTable,
   mouseOnTable: state.mapControl.mouseOnTable,
-  textFiltTables: state.textFiltTables
+  reloadTables: state.mapControl.reloadTables
 })
 const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable, setLayerLoaded }
 
