@@ -3,12 +3,11 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
-import { removeTable } from './../reducers/tablesReducer'
+import { removeTable, likeTable } from './../reducers/tablesReducer'
 
 import { Button, TableDivButton, StyledFaHeartO } from './Buttons'
 import { Input } from './FormElements'
 import { StyledToolContainer } from './StyledLayout'
-import FaHeartO from 'react-icons/lib/fa/heart-o'
 
 
 const StyledTablesListContainer = StyledToolContainer.extend`
@@ -62,13 +61,18 @@ const StyledTableDiv = styled.div`
   `}
   `
 const StyledTitleDiv = styled.div`
-    margin: 0px 0px 0px 0px;
-    padding: 0px;
-  `
-
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+`
 const StyledDescriptionDiv = styled.div`
   margin: 5px 0px 5px 0px;
   padding: 0px;
+`
+const StyledLikes = styled.span`
+  margin: 0px 0px 0px 28px;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(0, 0, 0,0.9)
 `
 
 
@@ -106,7 +110,8 @@ class TablesList extends React.Component {
               selected={this.props.selectedTable === table.properties.id}
               mouseOnTable={this.props.mouseOnTable}
               mouseOutTable={this.props.mouseOutTable}
-              removeTable={this.props.removeTable} />
+              removeTable={this.props.removeTable}
+              likeTable={this.props.likeTable} />
           )}
         </StyledTablesListContainer>
       </div>
@@ -115,7 +120,8 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, zoomToFeature, selectTable, selected, mouseOnTable, mouseOutTable, removeTable } = props
+  const { table, zoomToFeature, selectTable, selected,
+    mouseOnTable, mouseOutTable, removeTable, likeTable } = props
 
   return (
     <StyledTableDiv
@@ -123,7 +129,9 @@ const Table = (props) => {
       onClick={() => selectTable(table)}
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
-      <StyledTitleDiv><b>{table.properties.title}</b> &nbsp; <StyledFaHeartO size={14} />
+      <StyledTitleDiv><b>{table.properties.title}</b>
+        <StyledFaHeartO size={13} onClick={(e) => likeTable(table, e)} />
+        <StyledLikes>{table.properties.likes}</StyledLikes>
       </StyledTitleDiv>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
@@ -172,7 +180,8 @@ const mapDispatchToProps = {
   selectTable,
   mouseOnTable,
   mouseOutTable,
-  removeTable
+  removeTable,
+  likeTable
 }
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)

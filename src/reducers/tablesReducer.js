@@ -36,6 +36,11 @@ const tablesReducer = (store = initialTables, action) => {
       featuresToUpdate = store.features.filter(table => table.properties.id !== action.id)
       return { ...store, features: featuresToUpdate }
 
+    case 'LIKE_TABLE':
+      featuresToUpdate = store.features.map(table =>
+        table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
+      return { ...store, features: featuresToUpdate }
+
     default:
       return store
   }
@@ -109,6 +114,28 @@ export const removeTable = (table, e) => {
       })
   }
 }
+
+
+export const likeTable = (table, e) => {
+  return async (dispatch) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    const id = table.properties.id
+    const tableLikes = `/tables/${id}/properties`
+    const tableLikesRef = database.ref(tableLikes)
+    tableLikesRef.once('value')
+      .then((ref) => {
+        const likes = ref.val().likes + 1
+        tableLikesRef.update({ likes: likes })
+          .then(() => { dispatch({ type: 'LIKE_TABLE', id, likes }) })
+          .catch((error) => { dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6)) })
+      })
+      .catch((error) => { dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6)) })
+  }
+}
+
 
 
 export default tablesReducer

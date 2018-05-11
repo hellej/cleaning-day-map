@@ -76,10 +76,11 @@ export const StyledFaHeartO = styled(FaHeartO) `
   cursor: pointer;
   position: absolute;
   top: 10px;
+  margin: 0px 0px 0px 10px;
   transition-duration: 0.15s;
   &:hover { 
     color: red;
-    } 
+  } 
 `
 
 

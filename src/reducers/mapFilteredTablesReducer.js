@@ -20,6 +20,11 @@ const mapFilteredTablesReducer = (store = initialTables, action) => {
       featuresToUpdate = store.filter(table => table.properties.id !== action.id)
       return featuresToUpdate
 
+    case 'LIKE_TABLE':
+      featuresToUpdate = store.map(table =>
+        table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
+      return featuresToUpdate
+
     default:
       return store
   }
