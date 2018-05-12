@@ -37,6 +37,7 @@ const tablesReducer = (store = initialTables, action) => {
       return { ...store, features: featuresToUpdate }
 
     case 'LIKE_TABLE':
+    case 'UNLIKE_TABLE':
       featuresToUpdate = store.features.map(table =>
         table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
       return { ...store, features: featuresToUpdate }
@@ -107,21 +108,31 @@ export const removeTable = (table, e) => {
 }
 
 
-export const likeTable = (table, e) => {
+export const toggleLikeTable = (table, loggedInUser, e) => {
   return async (dispatch) => {
     if (e) {
       e.preventDefault()
       e.stopPropagation()
     }
     const id = table.properties.id
-    const tableLikes = `/tables/${id}/properties`
-    const tableLikesRef = database.ref(tableLikes)
+    const tableLikesDB = database.ref(`/tables/${id}/properties/likes`)
 
     try {
-      const ref = await tableLikesRef.once('value')
-      const likes = ref.val().likes + 1
-      tableLikesRef.update({ likes: likes })
-      dispatch({ type: 'LIKE_TABLE', id, likes })
+      const tableLikesRef = await tableLikesDB.once('value')
+      let tableLikes = tableLikesRef.val()
+      // const userLikesRef = await userLikesDB.once('value')
+      let userLikes = loggedInUser.likes
+
+      if (likedBefore) {
+        userLikes = userLikes !== null ? userLikes.filter(tableid => tableid !== id) : []
+        dispatch({ type: 'UNLIKE_TABLE', id, likes: tableLikes - 1, uid: loggedInUser.id, userLikes })
+        tableLikesDB.set(tableLikes - 1)
+      } else {
+        userLikes ? userLikes.push(id) : userLikes = [id]
+        dispatch({ type: 'LIKE_TABLE', id, likes: tableLikes + 1, uid: loggedInUser.id, userLikes })
+        tableLikesDB.set(tableLikes + 1)
+      }
+
     } catch (error) {
       console.log('Error: ', error)
       dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6))

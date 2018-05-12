@@ -70,19 +70,20 @@ export const TableDivButton = styled.button`
     height: 17px;
   `}
 `
-export const StyledFaHeartO = styled(FaHeartO) `
-  color: black;
-  font-size: 50px;
+export const LikedHeart = styled(FaHeartO) `
+  color: ${props => props.liked === 1 ? 'red' : 'black'};
   cursor: pointer;
   position: absolute;
   top: 10px;
   margin: 0px 0px 0px 10px;
-  transition-duration: 0.15s;
+  transition-duration: 0.2s;
   &:hover { 
-    color: red;
+    size: 30px;
+  } 
+  &:active { 
+    // color: red;
   } 
 `
-
 
 
 const activeClassName = 'active'

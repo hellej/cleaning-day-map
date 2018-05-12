@@ -46,6 +46,7 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, layerLoaded: true }
 
     case 'LIKE_TABLE':
+    case 'UNLIKE_TABLE':
       return { ...store, reloadTables: store.reloadTables.concat(action.id) }
 
     default:

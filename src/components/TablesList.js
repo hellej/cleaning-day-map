@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
-import { removeTable, likeTable } from './../reducers/tablesReducer'
+import { removeTable, toggleLikeTable } from './../reducers/tablesReducer'
 
-import { Button, TableDivButton, StyledFaHeartO } from './Buttons'
+import { Button, TableDivButton, LikedHeart } from './Buttons'
 import { Input } from './FormElements'
 import { StyledToolContainer } from './StyledLayout'
 
@@ -89,7 +89,7 @@ class TablesList extends React.Component {
   }
 
   render() {
-    const { tables, filter, mapFiltTables, allTables } = this.props
+    const { loggedInUser, tables, selectedTable, filter, mapFiltTables, allTables } = this.props
     return (
       <div>
         <StyledTablesListContainer>
@@ -105,13 +105,15 @@ class TablesList extends React.Component {
             <Table
               key={table.properties.id}
               table={table}
+              loggedInUser={loggedInUser}
+              selected={selectedTable === table.properties.id}
               selectTable={this.props.selectTable}
               zoomToFeature={this.props.zoomToFeature}
-              selected={this.props.selectedTable === table.properties.id}
               mouseOnTable={this.props.mouseOnTable}
               mouseOutTable={this.props.mouseOutTable}
               removeTable={this.props.removeTable}
-              likeTable={this.props.likeTable} />
+              toggleLikeTable={this.props.toggleLikeTable}
+            />
           )}
         </StyledTablesListContainer>
       </div>
@@ -120,8 +122,10 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, zoomToFeature, selectTable, selected,
-    mouseOnTable, mouseOutTable, removeTable, likeTable } = props
+  const { table, loggedInUser, selected, zoomToFeature, selectTable,
+    mouseOnTable, mouseOutTable, removeTable, toggleLikeTable } = props
+
+  const liked = loggedInUser && loggedInUser.likes && loggedInUser.likes.indexOf(table.properties.id) !== -1 ? 1 : 0
 
   return (
     <StyledTableDiv
@@ -130,7 +134,7 @@ const Table = (props) => {
       onMouseEnter={() => mouseOnTable(table)}
       onMouseLeave={() => mouseOutTable()}>
       <StyledTitleDiv><b>{table.properties.title}</b>
-        <StyledFaHeartO size={13} onClick={(e) => likeTable(table, e)} />
+        <LikedHeart liked={liked} size={13} onClick={(e) => toggleLikeTable(table, loggedInUser, e)} />
         <StyledLikes>{table.properties.likes}</StyledLikes>
       </StyledTitleDiv>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
@@ -167,6 +171,7 @@ const orderByLikes = (tables) => {
 
 
 const mapStateToProps = (state) => ({
+  loggedInUser: state.userState.loggedInUser,
   filter: state.filter,
   selectedTable: state.mapControl.selectedTable,
   mapFiltTables: state.mapFiltTables,
@@ -181,7 +186,7 @@ const mapDispatchToProps = {
   mouseOnTable,
   mouseOutTable,
   removeTable,
-  likeTable
+  toggleLikeTable
 }
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)

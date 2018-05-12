@@ -22,6 +22,7 @@ const textFilteredTablesReducer = (store = initialTables, action) => {
       return featuresToUpdate
 
     case 'LIKE_TABLE':
+    case 'UNLIKE_TABLE':
       featuresToUpdate = store.map(table =>
         table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
       return featuresToUpdate
