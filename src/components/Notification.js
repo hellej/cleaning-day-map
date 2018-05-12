@@ -10,7 +10,7 @@ display: inline-block;
 color: white;
 font-size: 14px;
 font-weight: 300;
-letter-spacing: 1px;
+letter-spacing: 1.5px;
 //margin: 3px 0px 3px 10px;
 padding: 12px 20px;
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -18,7 +18,7 @@ ${props => props.type === 'info' && css`
   background: rgba(0,0,0,0.8);
 `}
 ${props => props.type === 'success' && css`
-  background: rgba(0, 28, 0, 0.8);
+  background: rgba(0, 20, 0, 0.8);
 `}
 ${props => props.type === 'alert' && css`
   background: rgba(0,0,0,0.8);

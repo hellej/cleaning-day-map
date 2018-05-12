@@ -64,7 +64,7 @@ class TableFeatureLayer extends React.Component {
 
     // RELOAD TABLES TO MAP (NEW TABLE / UPDATED TABLE)
     if (tables.features.length !== prevProps.tables.features.length || prevProps.reloadTables.length !== reloadTables.length) {
-      console.log('Redraw tables layer', this.props.tables)
+      //console.log('Redraw tables layer', this.props.tables)
       map.getSource('tables').setData(this.props.tables)
     }
 
