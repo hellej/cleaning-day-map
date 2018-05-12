@@ -5,13 +5,6 @@ import { showNotification } from './notificationReducer'
 import { selectTable, zoomToFeature } from './mapControlReducer'
 
 
-// let tablesRef = database.ref('tables').orderByKey().limitToLast(100)
-// console.log('tablesref in firebase: ', tablesRef)
-// for (let i = 0; i <= tables.length; i++) {
-//   database.ref('tables').push(tables[i])
-// }
-
-
 const initialTables = {
   type: 'FeatureCollection',
   features: []
@@ -116,6 +109,8 @@ export const toggleLikeTable = (table, loggedInUser, e) => {
     }
     const id = table.properties.id
     const tableLikesDB = database.ref(`/tables/${id}/properties/likes`)
+    const userLikesDB = database.ref(`/users/${loggedInUser.id}/likes`)
+    const likedBefore = loggedInUser.likes !== null && loggedInUser.likes.indexOf(id) !== -1
 
     try {
       const tableLikesRef = await tableLikesDB.once('value')
@@ -127,10 +122,12 @@ export const toggleLikeTable = (table, loggedInUser, e) => {
         userLikes = userLikes !== null ? userLikes.filter(tableid => tableid !== id) : []
         dispatch({ type: 'UNLIKE_TABLE', id, likes: tableLikes - 1, uid: loggedInUser.id, userLikes })
         tableLikesDB.set(tableLikes - 1)
+        userLikesDB.set(userLikes)
       } else {
         userLikes ? userLikes.push(id) : userLikes = [id]
         dispatch({ type: 'LIKE_TABLE', id, likes: tableLikes + 1, uid: loggedInUser.id, userLikes })
         tableLikesDB.set(tableLikes + 1)
+        userLikesDB.set(userLikes)
       }
 
     } catch (error) {

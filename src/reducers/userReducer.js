@@ -3,7 +3,7 @@ import { showNotification } from './notificationReducer'
 import { auth, database } from './../firebase/index'
 
 const initialUserState = {
-  loggedInUser: null, //{ id: '', email: '', displayName: '' },
+  loggedInUser: null,
   loginForm: { email: '', password: '', error: null },
   signUpForm: { username: '', email: '', passwordOne: '', passwordTwo: '', error: null }
 }
@@ -11,9 +11,19 @@ const initialUserState = {
 
 const userStateReducer = (store = initialUserState, action) => {
 
-  let loggedInUser, user
+  let loggedInUser, user, likes
 
   switch (action.type) {
+
+    case 'SET_USER_LOGGED_IN':
+      user = action.user
+      likes = user.likes ? user.likes : null
+      loggedInUser = { id: user.id, name: user.name, email: user.email, likes }
+      return { ...store, loggedInUser }
+
+    case 'SET_USER_LOGGED_OUT':
+      return { ...store, loggedInUser: null }
+
     case 'UPDATE_SIGNUP_FORM':
       return { ...store, signUpForm: { ...store.signUpForm, [action.name]: action.value } }
 
@@ -26,13 +36,9 @@ const userStateReducer = (store = initialUserState, action) => {
     case 'EMPTY_LOGIN_FORM':
       return { ...store, loginForm: { ...initialUserState.loginForm } }
 
-    case 'SET_USER_LOGGED_IN':
-      user = action.user
-      loggedInUser = { id: user.uid, displayName: user.displayName, email: user.email }
-      return { ...store, loggedInUser }
-
-    case 'SET_USER_LOGGED_OUT':
-      return { ...store, loggedInUser: null }
+    case 'LIKE_TABLE':
+    case 'UNLIKE_TABLE':
+      return { ...store, loggedInUser: { ...store.loggedInUser, likes: action.userLikes } }
 
     default:
       return store
@@ -92,10 +98,10 @@ export const submitSignUp = (e, history, form) => {
     try {
       const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
       await authUser.updateProfile({ displayName: form.username })
-      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email }
+      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [] }
       await database.ref(`/users/${authUser.uid}`).set(user)
       dispatch(setLoggedInUser(authUser))
-      dispatch(showNotification({ type: 'success', text: `Sign up successfull - welcome ${form.username}!` }, 6))
+      dispatch(showNotification({ type: 'success', text: `Sign up successfull, welcome ${form.username}!` }, 6))
       dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
     } catch (error) {
@@ -112,7 +118,7 @@ export const submitLogin = (e, history, form) => {
     try {
       await auth.doSignInWithEmailAndPassword(form.email, form.password)
       const user = await auth.currentUser()
-      dispatch(showNotification({ type: 'success', text: `Signed in - welcome ${user.displayName}!` }, 6))
+      dispatch(showNotification({ type: 'success', text: `Signed in, welcome ${user.displayName}!` }, 6))
       dispatch({ type: 'EMPTY_LOGIN_FORM' })
       history.push('/')
     } catch (error) {
@@ -122,9 +128,15 @@ export const submitLogin = (e, history, form) => {
   }
 }
 
-export const setLoggedInUser = (user) => {
-  return (dispatch) => {
-    dispatch({ type: 'SET_USER_LOGGED_IN', user })
+export const setLoggedInUser = (authUser) => {
+  return async (dispatch) => {
+    try {
+      const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
+      const user = userRef.val()
+      dispatch({ type: 'SET_USER_LOGGED_IN', user })
+    } catch (error) {
+      console.log('Error in logging in: ', error)
+    }
   }
 }
 
