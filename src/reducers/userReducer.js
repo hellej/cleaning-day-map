@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { auth } from './../firebase/index'
+import { auth, database } from './../firebase/index'
 
 const initialUserState = {
   loggedInUser: null, //{ id: '', email: '', displayName: '' },
@@ -92,7 +92,12 @@ export const submitSignUp = (e, history, form) => {
     auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
       .then(authUser => {
         authUser.updateProfile({ displayName: form.username })
-          .then(() => dispatch(setLoggedInUser(authUser)))
+          .then(() => {
+            dispatch(setLoggedInUser(authUser))
+            const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email }
+            database.ref(`/users/${authUser.uid}`).set(user)
+              .catch(error => console.log('Error in saving user: ', error))
+          })
           .catch(error => console.log('Error in profile update: ', error))
         dispatch({ type: 'EMPTY_SIGNUP_FORM' })
         dispatch(showNotification({ type: 'success', text: `Sign up successfull - welcome ${form.username}!` }, 6))
