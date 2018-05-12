@@ -50,22 +50,16 @@ export const tablesInitialization = () => {
   return async (dispatch) => {
     try {
       const snapshot = await database.ref('tables').once('value')
-      const tables = snapshot.val()
-      const ids = Object.keys(tables)
-      const features = Object.values(tables)
-
-      const featuresids = features.map((feature, index) => {
-        feature.properties.id = ids[index]
-        return feature
-      })
+      const dbTables = snapshot.val()
+      const features = Object.values(dbTables)
       const tablescollection = {
         type: 'FeatureCollection',
-        features: featuresids
+        features: features
       }
       dispatch({ type: 'INIT_TABLES', tables: tablescollection })
     } catch (error) {
       console.log('Error: ', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't initialize tables" }, 7))
+      dispatch(showNotification({ type: 'alert', text: "Couldn't load tables" }, 7))
     }
   }
 }
@@ -77,18 +71,18 @@ export const addTable = (props) => {
     const tableFeature = createGeoJSON(props)
     const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
 
-    database.ref('tables').push(tableFeature)
-      .then((ref) => {
-        tableFeature.properties.id = ref.key
-        dispatch({ type: 'ADD_TABLE', tableFeature })
-        dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
-        dispatch(selectTable(tableFeature))
-        dispatch(zoomToFeature(geometry, 16))
-      })
-      .catch((error) => {
-        dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
-        console.log('Error: ', error)
-      })
+    try {
+      const ref = await database.ref('/tables').push(tableFeature)
+      database.ref(`/tables/${ref.key}/properties/id`).set(ref.key)
+      tableFeature.properties.id = ref.key
+      dispatch({ type: 'ADD_TABLE', tableFeature })
+      dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
+      dispatch(selectTable(tableFeature))
+      dispatch(zoomToFeature(geometry, 16))
+    } catch (error) {
+      dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
+      console.log('Error: ', error)
+    }
   }
 }
 
@@ -101,17 +95,14 @@ export const removeTable = (table, e) => {
     const ok = window.confirm(`Remove table: ${table.properties.title} ?`)
     if (ok === false) return
 
-    const tablesRef = database.ref('tables')
-
-    tablesRef.child(table.properties.id).remove()
-      .then((ref) => {
-        dispatch({ type: 'REMOVE_TABLE', id: table.properties.id })
-        dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
-      })
-      .catch((error) => {
-        dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))
-        console.log('Error: ', error)
-      })
+    try {
+      await database.ref('tables').child(table.properties.id).remove()
+      dispatch({ type: 'REMOVE_TABLE', id: table.properties.id })
+      dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
+    } catch (error) {
+      dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))
+      console.log('Error: ', error)
+    }
   }
 }
 
@@ -125,14 +116,16 @@ export const likeTable = (table, e) => {
     const id = table.properties.id
     const tableLikes = `/tables/${id}/properties`
     const tableLikesRef = database.ref(tableLikes)
-    tableLikesRef.once('value')
-      .then((ref) => {
-        const likes = ref.val().likes + 1
-        tableLikesRef.update({ likes: likes })
-          .then(() => { dispatch({ type: 'LIKE_TABLE', id, likes }) })
-          .catch((error) => { dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6)) })
-      })
-      .catch((error) => { dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6)) })
+
+    try {
+      const ref = await tableLikesRef.once('value')
+      const likes = ref.val().likes + 1
+      tableLikesRef.update({ likes: likes })
+      dispatch({ type: 'LIKE_TABLE', id, likes })
+    } catch (error) {
+      console.log('Error: ', error)
+      dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6))
+    }
   }
 }
 
