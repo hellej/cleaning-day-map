@@ -87,43 +87,38 @@ export const openLoginForm = (e, history) => {
 
 
 export const submitSignUp = (e, history, form) => {
-  e.preventDefault()
-  return (dispatch) => {
-    auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
-      .then(authUser => {
-        authUser.updateProfile({ displayName: form.username })
-          .then(() => {
-            dispatch(setLoggedInUser(authUser))
-            const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email }
-            database.ref(`/users/${authUser.uid}`).set(user)
-              .catch(error => console.log('Error in saving user: ', error))
-          })
-          .catch(error => console.log('Error in profile update: ', error))
-        dispatch({ type: 'EMPTY_SIGNUP_FORM' })
-        dispatch(showNotification({ type: 'success', text: `Sign up successfull - welcome ${form.username}!` }, 6))
-        history.push('/')
-      })
-      .catch(error => {
-        dispatch({ type: 'UPDATE_SIGNUP_FORM', name: 'error', value: error })
-        dispatch(showNotification({ type: 'alert', text: error.message }, 6))
-      })
+  return async (dispatch) => {
+    e.preventDefault()
+    try {
+      const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
+      await authUser.updateProfile({ displayName: form.username })
+      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email }
+      await database.ref(`/users/${authUser.uid}`).set(user)
+      dispatch(setLoggedInUser(authUser))
+      dispatch(showNotification({ type: 'success', text: `Sign up successfull - welcome ${form.username}!` }, 6))
+      dispatch({ type: 'EMPTY_SIGNUP_FORM' })
+      history.push('/')
+    } catch (error) {
+      console.log('Error in creating profile: ', error)
+      dispatch({ type: 'UPDATE_SIGNUP_FORM', name: 'error', value: error })
+      dispatch(showNotification({ type: 'alert', text: error.message }, 6))
+    }
   }
 }
 
 export const submitLogin = (e, history, form) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     e.preventDefault()
-    auth.doSignInWithEmailAndPassword(form.email, form.password)
-      .then(() => {
-        const user = auth.currentUser()
-        dispatch({ type: 'EMPTY_LOGIN_FORM' })
-        dispatch(showNotification({ type: 'success', text: `Signed in - welcome ${user.displayName}!` }, 6))
-        history.push('/')
-      })
-      .catch(error => {
-        dispatch({ type: 'UPDATE_LOGIN_FORM', name: 'error', value: error })
-        dispatch(showNotification({ type: 'alert', text: error.message }, 6))
-      })
+    try {
+      await auth.doSignInWithEmailAndPassword(form.email, form.password)
+      const user = await auth.currentUser()
+      dispatch(showNotification({ type: 'success', text: `Signed in - welcome ${user.displayName}!` }, 6))
+      dispatch({ type: 'EMPTY_LOGIN_FORM' })
+      history.push('/')
+    } catch (error) {
+      dispatch({ type: 'UPDATE_LOGIN_FORM', name: 'error', value: error })
+      dispatch(showNotification({ type: 'alert', text: error.message }, 6))
+    }
   }
 }
 
@@ -140,15 +135,14 @@ export const setUserLoggedOut = (user) => {
 }
 
 export const logOut = () => {
-  return (dispatch) => {
-    auth.doSignOut()
-      .then(() => {
-        dispatch({ type: 'SET_USER_LOGGED_OUT' })
-        dispatch(showNotification({ type: 'alert', text: 'Logged out' }, 4))
-      })
-      .catch(error => {
-        dispatch({ type: 'UPDATE_LOGIN_FORM', name: 'error', value: error })
-      })
+  return async (dispatch) => {
+    try {
+      await auth.doSignOut()
+      dispatch({ type: 'SET_USER_LOGGED_OUT' })
+      dispatch(showNotification({ type: 'alert', text: 'Logged out' }, 4))
+    } catch (error) {
+      console.log('Error in logOut: ', error)
+    }
   }
 }
 
