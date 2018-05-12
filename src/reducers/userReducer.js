@@ -18,7 +18,7 @@ const userStateReducer = (store = initialUserState, action) => {
     case 'SET_USER_LOGGED_IN':
       user = action.user
       likes = user.likes ? user.likes : null
-      loggedInUser = { id: user.id, name: user.name, email: user.email, likes }
+      loggedInUser = { id: user.id, anonymous: user.anonymous, name: user.name, email: user.email, likes }
       return { ...store, loggedInUser }
 
     case 'SET_USER_LOGGED_OUT':
@@ -130,9 +130,19 @@ export const submitLogin = (e, history, form) => {
 
 export const setLoggedInUser = (authUser) => {
   return async (dispatch) => {
-    try {
+    if (authUser.isAnonymous) {
+      try {
+        const userLikesRef = await database.ref(`/users/${authUser.uid}/likes`).once('value')
+        const userLikes = userLikesRef.val()
+        const user = { id: authUser.uid, anonymous: true, name: null, email: null, likes: userLikes }
+        await database.ref(`/users/${authUser.uid}`).set(user)
+        dispatch({ type: 'SET_USER_LOGGED_IN', user })
+      } catch (error) {
+        console.log('Error in logging in anonymous user: ', error)
+      }
+    } else try {
       const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
-      const user = userRef.val()
+      const user = { ...userRef.val(), anonymous: false }
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
     } catch (error) {
       console.log('Error in logging in: ', error)

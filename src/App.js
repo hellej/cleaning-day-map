@@ -22,15 +22,19 @@ import FocusDimLayer from './components/FocusDimLayer'
 class App extends Component {
 
   componentDidMount = async () => {
+    this.props.showLoadNotification()
     this.props.tablesInitialization()
 
-    firebase.auth.onAuthStateChanged(authUser => {
-      console.log('check logged in user: ', authUser)
-      authUser
-        ? this.props.setLoggedInUser(authUser)
-        : this.props.setUserLoggedOut()
+    firebase.auth.onAuthStateChanged(user => {
+      console.log('Logged in user state changed -> ', user)
+      if (user) {
+        this.props.setLoggedInUser(user)
+      } else {
+        firebase.auth.signInAnonymously().catch((error) => {
+          console.log('Error in anynomous sign in: ', error)
+        })
+      }
     })
-    this.props.showLoadNotification()
   }
 
   render() {
@@ -47,7 +51,7 @@ class App extends Component {
           <StyledNavLinkContainer>
             <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
             <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
-            {this.props.loggedInUser
+            {this.props.loggedInUser && !this.props.loggedInUser.anonymous
               ? <StyledNavLinkButton onClick={this.props.logOut} > Logout </StyledNavLinkButton>
               : <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
             }
