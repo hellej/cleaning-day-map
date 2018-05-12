@@ -139,7 +139,7 @@ const Table = (props) => {
       </StyledTitleDiv>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
-      <TableDivButton onClick={(e) => removeTable(table, e)}>Delete</TableDivButton>
+      <TableDivButton onClick={(e) => removeTable(table, loggedInUser, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )
 }

@@ -1,4 +1,3 @@
-// import { tables } from './../tables'
 import { createGeoJSON } from './../components/mapboxhelper'
 import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
@@ -12,7 +11,7 @@ const initialTables = {
 
 const tablesReducer = (store = initialTables, action) => {
 
-  let featuresToUpdate = null
+  let featuresToUpdate
 
   switch (action.type) {
     case 'INIT_TABLES':
@@ -32,7 +31,9 @@ const tablesReducer = (store = initialTables, action) => {
     case 'LIKE_TABLE':
     case 'UNLIKE_TABLE':
       featuresToUpdate = store.features.map(table =>
-        table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
+        table.properties.id !== action.id
+          ? table
+          : { ...table, properties: { ...table.properties, likes: action.likes } })
       return { ...store, features: featuresToUpdate }
 
     default:
@@ -80,11 +81,17 @@ export const addTable = (props) => {
   }
 }
 
-export const removeTable = (table, e) => {
+export const removeTable = (table, loggedInUser, e) => {
   return async (dispatch) => {
     if (e) {
       e.preventDefault()
       e.stopPropagation()
+    }
+
+    const error = validateRemove(table, loggedInUser)
+    if (error) {
+      dispatch(showNotification({ type: 'alert', text: error }, 4))
+      return
     }
     const ok = window.confirm(`Remove table: ${table.properties.title} ?`)
     if (ok === false) return
@@ -115,7 +122,6 @@ export const toggleLikeTable = (table, loggedInUser, e) => {
     try {
       const tableLikesRef = await tableLikesDB.once('value')
       let tableLikes = tableLikesRef.val()
-      // const userLikesRef = await userLikesDB.once('value')
       let userLikes = loggedInUser.likes
 
       if (likedBefore) {
@@ -129,14 +135,23 @@ export const toggleLikeTable = (table, loggedInUser, e) => {
         tableLikesDB.set(tableLikes + 1)
         userLikesDB.set(userLikes)
       }
-
     } catch (error) {
-      console.log('Error: ', error)
+      console.log('Error in like table: ', error)
       dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6))
     }
   }
 }
 
+
+const validateRemove = (table, loggedInUser) => {
+  if ((!loggedInUser || loggedInUser.anonymous) && loggedInUser.id !== table.properties.user) {
+    return 'You must log in first'
+  }
+  if (!table.properties.user || table.properties.user !== loggedInUser.id) {
+    return 'You cannot delete someone elses table'
+  }
+  return null
+}
 
 
 export default tablesReducer
