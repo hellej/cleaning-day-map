@@ -129,7 +129,6 @@ const Table = (props) => {
     mouseOnTable, mouseOutTable, removeTable, toggleLikeTable, startEditing } = props
 
   const liked = loggedInUser && loggedInUser.likes && loggedInUser.likes.indexOf(table.properties.id) !== -1 ? 1 : 0
-
   return (
     <StyledTableDiv
       selected={selected}
@@ -166,7 +165,7 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
 
 
 const getCommonObjects = (array1, array2) => {
-  return array1.filter(obj1 => array2.some(obj2 => obj1.id === obj2.id))
+  return array1.filter(obj1 => array2.some(id => obj1.properties.id === id))
 }
 
 const orderByLikes = (tables) => {
@@ -180,7 +179,7 @@ const mapStateToProps = (state) => ({
   selectedTable: state.mapControl.selectedTable,
   mapFiltTables: state.mapFiltTables,
   allTables: state.tables.features,
-  tables: orderByLikes(getCommonObjects(state.mapFiltTables, state.textFiltTables))
+  tables: orderByLikes(getCommonObjects(state.textFiltTables, state.mapFiltTables))
 })
 
 const mapDispatchToProps = {

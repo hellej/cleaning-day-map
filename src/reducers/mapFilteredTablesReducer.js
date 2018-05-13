@@ -3,28 +3,18 @@ const initialTables = []
 
 const mapFilteredTablesReducer = (store = initialTables, action) => {
 
-  let featuresToUpdate
-
   switch (action.type) {
     case 'INIT_TABLES':
-      return action.tables.features
+      return action.tables.features.map(feature => feature.properties.id)
 
     case 'SET_MAP_FILT_TABLES':
-      return action.tables
+      return action.tables.map(table => table.properties.id)
 
     case 'ADD_TABLE':
-      featuresToUpdate = store.concat(action.tableFeature)
-      return featuresToUpdate
+      return store.concat(action.tableFeature.properties.id)
 
     case 'REMOVE_TABLE':
-      featuresToUpdate = store.filter(table => table.properties.id !== action.id)
-      return featuresToUpdate
-
-    case 'LIKE_TABLE':
-    case 'UNLIKE_TABLE':
-      featuresToUpdate = store.map(table =>
-        table.properties.id !== action.id ? table : { ...table, properties: { ...table.properties, likes: action.likes } })
-      return featuresToUpdate
+      return store.filter(id => id !== action.id)
 
     default:
       return store
