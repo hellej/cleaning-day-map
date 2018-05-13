@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { setLngLatZoomForNew } from './../../reducers/tableFormReducer'
-import { renderPopup, removePopup, getLngLatFromGeometry } from './../mapboxhelper'
+import { renderPopup, removePopup, getLngLatFromGeometry, getLngLatFromLngLat } from './../mapboxhelper'
 
 class NewTableFeatureLayer extends React.Component {
 
@@ -114,7 +114,7 @@ class NewTableFeatureLayer extends React.Component {
 
 
   componentDidUpdate(prevProps) {
-    const { active, confirmed, map } = this.props
+    const { active, confirmed, editing, editLngLat, map } = this.props
 
     if (!active) {
       removePopup()
@@ -126,10 +126,13 @@ class NewTableFeatureLayer extends React.Component {
       map.setPaintProperty('newtable', 'circle-color', '#00ff1d')
     }
 
+    console.log('editing: ', editing)
+
     if (active && !confirmed) {
+      const location = editing ? getLngLatFromLngLat(editLngLat) : this.map.getCenter()
       this.map.setFilter('newtable', null)
       const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
-      if (newtable.length === 0) { this.updateNewTableLocation(this.map.getCenter()) }
+      if (newtable.length === 0) { this.updateNewTableLocation(location) }
       map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
       const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
       this.props.setLngLatZoomForNew(lngLat, this.map.getZoom())
@@ -152,7 +155,9 @@ class NewTableFeatureLayer extends React.Component {
 
 const mapStateToProps = (state) => ({
   active: state.tableform.location.active,
-  confirmed: state.tableform.location.confirmed
+  confirmed: state.tableform.location.confirmed,
+  editing: state.tableform.editing,
+  editLngLat: state.tableform.editLngLat
 })
 
 const ConnectedNewTableFeatureLayer = connect(mapStateToProps, { setLngLatZoomForNew })(NewTableFeatureLayer)

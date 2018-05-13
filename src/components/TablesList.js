@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
 import { removeTable, toggleLikeTable } from './../reducers/tablesReducer'
+import { startEditing } from './../reducers/tableFormReducer'
 
 import { Button, TableDivButton, LikedHeart } from './Buttons'
 import { Input } from './FormElements'
@@ -89,7 +90,7 @@ class TablesList extends React.Component {
   }
 
   render() {
-    const { loggedInUser, tables, selectedTable, filter, mapFiltTables, allTables } = this.props
+    const { loggedInUser, history, tables, selectedTable, filter, mapFiltTables, allTables } = this.props
     return (
       <div>
         <StyledTablesListContainer>
@@ -106,6 +107,7 @@ class TablesList extends React.Component {
               key={table.properties.id}
               table={table}
               loggedInUser={loggedInUser}
+              history={history}
               selected={selectedTable === table.properties.id}
               selectTable={this.props.selectTable}
               zoomToFeature={this.props.zoomToFeature}
@@ -113,6 +115,7 @@ class TablesList extends React.Component {
               mouseOutTable={this.props.mouseOutTable}
               removeTable={this.props.removeTable}
               toggleLikeTable={this.props.toggleLikeTable}
+              startEditing={this.props.startEditing}
             />
           )}
         </StyledTablesListContainer>
@@ -122,8 +125,8 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, loggedInUser, selected, zoomToFeature, selectTable,
-    mouseOnTable, mouseOutTable, removeTable, toggleLikeTable } = props
+  const { table, loggedInUser, history, selected, zoomToFeature, selectTable,
+    mouseOnTable, mouseOutTable, removeTable, toggleLikeTable, startEditing } = props
 
   const liked = loggedInUser && loggedInUser.likes && loggedInUser.likes.indexOf(table.properties.id) !== -1 ? 1 : 0
 
@@ -139,6 +142,7 @@ const Table = (props) => {
       </StyledTitleDiv>
       <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
+      <TableDivButton onClick={(e) => startEditing(table, loggedInUser, e, history)}>Edit</TableDivButton>
       <TableDivButton onClick={(e) => removeTable(table, loggedInUser, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )
@@ -162,7 +166,7 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
 
 
 const getCommonObjects = (array1, array2) => {
-  return array1.filter(obj1 => array2.some(obj2 => obj1.title === obj2.title))
+  return array1.filter(obj1 => array2.some(obj2 => obj1.id === obj2.id))
 }
 
 const orderByLikes = (tables) => {
@@ -186,7 +190,8 @@ const mapDispatchToProps = {
   mouseOnTable,
   mouseOutTable,
   removeTable,
-  toggleLikeTable
+  toggleLikeTable,
+  startEditing
 }
 
 const connectedTablesList = connect(mapStateToProps, mapDispatchToProps)(TablesList)

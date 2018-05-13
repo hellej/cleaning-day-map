@@ -17,7 +17,7 @@ import LoginForm from './components/LoginForm'
 import SignUpForm from './components/SignUpForm'
 import TablesList from './components/TablesList'
 import Notification from './components/Notification'
-import FocusDimLayer from './components/FocusDimLayer'
+import MapDimLayer from './components/MapDimLayer'
 
 class App extends Component {
 
@@ -38,19 +38,22 @@ class App extends Component {
   }
 
   render() {
+    const tableFormState = this.props.editing
+      ? { name: 'Edit Table', path: '/edittable' }
+      : { name: 'Add Table', path: '/addtable' }
     return (
       <Router>
         <div>
           <Route render={({ history }) =>
             <Map>
-              <FocusDimLayer history={history} />
+              <MapDimLayer history={history} />
               <TableFeatureLayer />
               <NewTableFeatureLayer history={history} />
             </Map>} />
 
           <StyledNavLinkContainer>
             <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
-            <StyledNavLink to='/addtable' activeClassName={'active'} > Add Table </StyledNavLink>
+            <StyledNavLink to={tableFormState.path} activeClassName={'active'} > {tableFormState.name} </StyledNavLink>
             {this.props.loggedInUser && !this.props.loggedInUser.anonymous
               ? <StyledNavLinkButton onClick={this.props.logOut} > Logout </StyledNavLinkButton>
               : <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
@@ -59,7 +62,7 @@ class App extends Component {
 
           <Route path='/filtertables' render={({ history, location }) =>
             <TablesList history={history} location={location} />} />
-          <Route exact path='/addtable' render={({ history, location }) =>
+          <Route exact path={tableFormState.path} render={({ history, location }) =>
             <TableForm history={history} location={location} />} />
           <Route path='/login' render={({ history, location }) =>
             <LoginForm history={history} location={location} />} />
@@ -75,6 +78,7 @@ class App extends Component {
 
 
 const mapStateToProps = (state) => ({
+  editing: state.tableform.editing,
   loggedInUser: state.userState.loggedInUser
 })
 
