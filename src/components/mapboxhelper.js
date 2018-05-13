@@ -11,7 +11,7 @@ import PopupNewTable from './maplayers/PopupNewTable'
 
 export const getUniqueFeatures = (array, comparatorProperty) => {
   var existingFeatureKeys = {}
-  var uniqueFeatures = array.filter(function (el) {
+  var uniqueFeatures = array.filter((el) => {
     if (existingFeatureKeys[el.properties[comparatorProperty]]) {
       return false
     } else {
@@ -24,7 +24,7 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
 
 export const getRenderedFeaturesFromQuery = (map, id) => {
   const layerfeatures = map.queryRenderedFeatures({ layers: [id] })
-  return getUniqueFeatures(layerfeatures, 'title')
+  return getUniqueFeatures(layerfeatures, 'id')
 }
 
 
