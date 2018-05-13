@@ -46,13 +46,16 @@ class FocusDimLayer extends React.Component {
   render() {
     const location = this.state.location
     const locationinput = this.props.tableform.location
+    const editing = this.props.tableform.editing
     let visible
 
-    if (location === '/addtable' || location === '/login' || location === '/signup') {
+    if (['/addtable', '/edittable', '/login', '/signup'].indexOf(location) !== -1) {
       visible = true
     } else visible = false
 
-    if (location === '/addtable' && locationinput.active && !locationinput.confirmed) {
+    if ((location === '/addtable' && locationinput.active && !locationinput.confirmed) ||
+      (location === '/edittable' && !editing) ||
+      (editing && locationinput.active && !locationinput.confirmed)) {
       visible = false
     }
 
