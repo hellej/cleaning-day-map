@@ -13,8 +13,7 @@ const initialForm = {
   location: {
     active: false,
     lngLat: { lng: null, lat: null },
-    confirmed: false,
-    zoom: null
+    confirmed: false
   },
   editLngLat: { lng: null, lat: null },
   error: null
@@ -30,7 +29,7 @@ const phoneScreen = (window) => {
 
 const tableFormReducer = (store = initialForm, action) => {
 
-  let active, confirmed, lngLat, zoom, location
+  let active, confirmed, lngLat, location, editLngLat
 
   switch (action.type) {
     case 'UPDATE_FORM':
@@ -49,15 +48,14 @@ const tableFormReducer = (store = initialForm, action) => {
       return { ...store, location: { ...store.location, active, confirmed } }
 
     case 'SET_LNGLAT_2NEW':
-      console.log('action.lngLat: ', action.lngLat)
       lngLat = { lng: action.lngLat.lng.toFixed(6), lat: action.lngLat.lat.toFixed(6) }
-      zoom = action.zoom
       location = store.location
-      return { ...store, location: { ...location, lngLat, zoom } }
+      return { ...store, location: { ...location, lngLat } }
 
     case 'CONFIRM_LOCATION':
       location = store.location
-      return { ...store, location: { ...location, confirmed: true } }
+      editLngLat = store.location.lngLat
+      return { ...store, editLngLat, location: { ...location, confirmed: true } }
 
     case 'SET_LOCINPUT_UNACTIVE':
       location = store.location
@@ -70,7 +68,7 @@ const tableFormReducer = (store = initialForm, action) => {
       const { id, title, description, phonenum, openhours } = action.table.properties
       const coords = action.table.geometry.coordinates
       const editLngLat = { lng: coords[0].toFixed(6), lat: coords[1].toFixed(6) }
-      const location = { active: true, confirmed: true, zoom: null, lngLat: { ...editLngLat } }
+      const location = { active: true, confirmed: true, lngLat: { ...editLngLat } }
       return { editing: true, id, title, description, phonenum, openhours, location, editLngLat, error: null }
     }
 
@@ -90,12 +88,8 @@ export const handleFormChange = (e) => {
   return { type: 'UPDATE_FORM', name: e.target.name, value: e.target.value }
 }
 
-export const setLngLatZoomForNew = (lngLat, zoom) => {
-  return {
-    type: 'SET_LNGLAT_2NEW',
-    lngLat,
-    zoom
-  }
+export const setLngLatForNew = (lngLat) => {
+  return { type: 'SET_LNGLAT_2NEW', lngLat }
 }
 
 export const setLocationInputActive = (history, form) => {
@@ -115,10 +109,9 @@ export const confirmLocation = (history) => {
   return async (dispatch) => {
     dispatch({ type: 'CONFIRM_LOCATION' })
     const path = history.location.pathname
-    if (path !== '/addtable') {
-      console.log('history: ', history.location.pathname)
+    if (path !== '/addtable' && path !== '/edittable') {
       await new Promise(resolve => setTimeout(resolve, 400))
-      path.indexOf('edittable') !== -1
+      path.indexOf('edittable/location') !== -1
         ? history.push('/edittable')
         : history.push('/addtable')
     }
@@ -159,19 +152,27 @@ export const startEditing = (table, loggedInUser, e, history) => {
       e.stopPropagation()
       e.preventDefault()
     }
-    console.log('table to edit: ', table)
+    dispatch({ type: 'EMPTY_FORM' })
     dispatch({ type: 'START_EDITING', table })
+    dispatch(zoomToFeature(table.geometry, 15))
     history.push('/edittable')
-    dispatch(zoomToFeature(table.geometry, 16))
   }
 }
 
-export const handleSave = (table, loggedInUser, e, history) => {
+export const handleSave = (e, history, form, loggedInUser) => {
   return async (dispatch) => {
-    console.log('table to save: ', table)
+    const error = validate(form, loggedInUser)
+    console.log('validation error: ', error)
+    console.log('table to save: ', form)
     console.log('user saving: ', loggedInUser)
+    if (error) {
+      dispatch(showNotification({ type: 'alert', text: error }, 4))
+      dispatch({ type: 'SET_TABLEFORM_ERROR', error })
+      return
+    }
   }
 }
+
 
 const validate = (form, loggedInUser) => {
   if (!loggedInUser) {

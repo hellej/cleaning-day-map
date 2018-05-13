@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { setLngLatZoomForNew } from './../../reducers/tableFormReducer'
+import { setLngLatForNew } from './../../reducers/tableFormReducer'
 import { renderPopup, removePopup, getLngLatFromGeometry, getLngLatFromLngLat } from './../mapboxhelper'
 
 class NewTableFeatureLayer extends React.Component {
@@ -36,10 +36,10 @@ class NewTableFeatureLayer extends React.Component {
     }]
   }
 
-  updateNewTableLocation = (lngLat) => {
+  updateTableLocation = (lngLat) => {
     this.newtable.features[0].geometry.coordinates = [lngLat.lng, lngLat.lat]
     this.map.getSource('newtable').setData(this.newtable)
-    this.props.setLngLatZoomForNew(lngLat, this.map.getZoom())
+    this.props.setLngLatForNew(lngLat)
   }
 
 
@@ -57,7 +57,7 @@ class NewTableFeatureLayer extends React.Component {
   onMove = (e) => {
     if (!this.isDragging) return
     const lngLat = e.lngLat
-    this.updateNewTableLocation(lngLat)
+    this.updateTableLocation(lngLat)
     this.canvas.style.cursor = 'grabbing'
   }
 
@@ -83,14 +83,15 @@ class NewTableFeatureLayer extends React.Component {
       if (!this.props.active || this.props.confirmed) { return }
       const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
       if (newtable.length === 0) {
-        this.updateNewTableLocation(this.map.getCenter())
+        this.updateTableLocation(this.map.getCenter())
         renderPopup(this.newtable.features[0], this.map, 20, this.history)
       }
     })
 
     map.on('click', (e) => {
+      console.log('MAP CLICKED', )
       if (!this.props.active || this.props.confirmed) { return }
-      this.updateNewTableLocation(e.lngLat)
+      this.updateTableLocation(e.lngLat)
       renderPopup(this.newtable.features[0], this.map, 20, this.history)
     })
 
@@ -116,29 +117,31 @@ class NewTableFeatureLayer extends React.Component {
   componentDidUpdate(prevProps) {
     const { active, confirmed, editing, editLngLat, map } = this.props
 
-    if (!active) {
+    if (active) {
+      this.map.setFilter('newtable', null)
+    } else {
       removePopup()
       this.map.setFilter('newtable', ['==', '-', ''])
+      return
+    }
+
+    if (editing) {
+      this.updateTableLocation(getLngLatFromLngLat(editLngLat))
+    } else {
+      const newtables = this.map.queryRenderedFeatures({ layers: ['newtable'] })
+      if (newtables.length === 0) { this.updateTableLocation(this.map.getCenter()) }
     }
 
     if (confirmed) {
-      removePopup()
       map.setPaintProperty('newtable', 'circle-color', '#00ff1d')
-    }
-
-    console.log('editing: ', editing)
-
-    if (active && !confirmed) {
-      const location = editing ? getLngLatFromLngLat(editLngLat) : this.map.getCenter()
-      this.map.setFilter('newtable', null)
-      const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
-      if (newtable.length === 0) { this.updateNewTableLocation(location) }
+      removePopup()
+    } else {
       map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
-      const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
-      this.props.setLngLatZoomForNew(lngLat, this.map.getZoom())
       renderPopup(this.newtable.features[0], this.map, 20, this.history)
     }
 
+    const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
+    this.props.setLngLatForNew(lngLat)
   }
 
   componentWillUnmount() {
@@ -160,6 +163,6 @@ const mapStateToProps = (state) => ({
   editLngLat: state.tableform.editLngLat
 })
 
-const ConnectedNewTableFeatureLayer = connect(mapStateToProps, { setLngLatZoomForNew })(NewTableFeatureLayer)
+const ConnectedNewTableFeatureLayer = connect(mapStateToProps, { setLngLatForNew })(NewTableFeatureLayer)
 
 export default ConnectedNewTableFeatureLayer
