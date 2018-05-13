@@ -58,10 +58,15 @@ export const zoomToFeature = (geometry, zoom, e) => {
   return async (dispatch) => {
     if (e) e.stopPropagation()
     const zoomTo = zoom ? zoom : 13
+    let center
+
+    geometry.lng
+      ? center = [geometry.lng, geometry.lat]
+      : center = [geometry.coordinates[0], geometry.coordinates[1]]
 
     dispatch({
       type: 'SET_ZOOM_TO',
-      center: [geometry.coordinates[0], geometry.coordinates[1]],
+      center,
       zoom: zoomTo
     })
     await new Promise(resolve => setTimeout(resolve, 200))
