@@ -68,6 +68,10 @@ export const getLngLatFromGeometry = (geometry) => {
   return new LngLat(geometry.coordinates[0], geometry.coordinates[1])
 }
 
+export const getLngLatFromLngLat = (lngLat) => {
+  return new LngLat(lngLat.lng, lngLat.lat)
+}
+
 export const createGeoJSON = (props) => {
 
   const geojson = {
