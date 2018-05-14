@@ -1,7 +1,7 @@
 import React from 'react'
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
-import { setCamera, resetCamera, unselectTable, setMapLoaded } from './../reducers/mapControlReducer'
+import { setCamera, resetCamera, setMapLoaded } from './../reducers/mapControlReducer'
 import { equalCenter } from './mapboxhelper'
 
 MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
@@ -116,6 +116,6 @@ class Map extends React.Component {
 
 const mapStateToProps = (state) => ({ mapControl: state.mapControl })
 
-const ConnectedMap = connect(mapStateToProps, { setCamera, resetCamera, unselectTable, setMapLoaded })(Map)
+const ConnectedMap = connect(mapStateToProps, { setCamera, resetCamera, setMapLoaded })(Map)
 
 export default ConnectedMap

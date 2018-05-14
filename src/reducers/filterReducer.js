@@ -1,3 +1,4 @@
+
 const initialFilter = ''
 
 const filterReducer = (store = initialFilter, action) => {
@@ -11,9 +12,8 @@ const filterReducer = (store = initialFilter, action) => {
   }
 }
 
-
-export const handleFilterChange = (e, tables) => {
-  return { type: 'SET_FILTER', filter: e.target.value, tables }
+export const handleFilterChange = (e, features) => {
+  return { type: 'SET_FILTER', filter: e.target.value, features }
 }
 
 export default filterReducer

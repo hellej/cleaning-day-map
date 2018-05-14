@@ -6,7 +6,7 @@ const StyledPopupTitle = styled.div`
 font-weight: bold;
 font-size: 13px;
 color: black
-letter-spacing: 1px;
+letter-spacing: 0.5px;
 margin-bottom: 4px;
 line-height: 130%;
 `
@@ -18,11 +18,11 @@ color: black;
 `
 
 
-const Popup = ({ table }) => {
+const Popup = ({ feature }) => {
   return (
-    <div onClick={() => console.log('popup clicked!', )}>
-      <StyledPopupTitle>{table.properties.title} </StyledPopupTitle>
-      <StyledPopupDescription> {table.properties.description} </StyledPopupDescription>
+    <div>
+      <StyledPopupTitle>{feature.properties.title} </StyledPopupTitle>
+      <StyledPopupDescription> {feature.properties.description} </StyledPopupDescription>
     </div>
   )
 }

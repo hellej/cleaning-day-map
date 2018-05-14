@@ -1,19 +1,19 @@
 
-const initialTables = []
+const initialFeatures = []
 
-const mapFilteredTablesReducer = (store = initialTables, action) => {
+const mapFilteredTablesReducer = (store = initialFeatures, action) => {
 
   switch (action.type) {
-    case 'INIT_TABLES':
-      return action.tables.features.map(feature => feature.properties.id)
+    case 'INIT_FEATURES':
+      return action.featureCollection.features.map(feature => feature.properties.id)
 
-    case 'SET_MAP_FILT_TABLES':
-      return action.tables.map(table => table.properties.id)
+    case 'SET_MAP_FILT_FEATURES':
+      return action.features.map(feature => feature.properties.id)
 
-    case 'ADD_TABLE':
-      return store.concat(action.tableFeature.properties.id)
+    case 'ADD_FEATURE':
+      return store.concat(action.newFeature.properties.id)
 
-    case 'REMOVE_TABLE':
+    case 'REMOVE_FEATURE':
       return store.filter(id => id !== action.id)
 
     default:
@@ -22,8 +22,8 @@ const mapFilteredTablesReducer = (store = initialTables, action) => {
 }
 
 
-export const setMapFiltTablesList = (tables) => {
-  return { type: 'SET_MAP_FILT_TABLES', tables }
+export const setMapFilteredFeatures = (features) => {
+  return { type: 'SET_MAP_FILT_FEATURES', features }
 }
 
 

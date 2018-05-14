@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { handleFilterChange } from './../reducers/filterReducer'
-import { zoomToFeature, selectTable, mouseOnTable, mouseOutTable } from './../reducers/mapControlReducer'
-import { removeTable, toggleLikeTable } from './../reducers/tablesReducer'
+import { zoomToFeature, selectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
+import { removeFeature, toggleLikeTable } from './../reducers/tablesReducer'
 import { startEditing } from './../reducers/tableFormReducer'
 
 import { Button, TableDivButton, LikedHeart } from './Buttons'
@@ -90,7 +90,7 @@ class TablesList extends React.Component {
   }
 
   render() {
-    const { loggedInUser, history, tables, selectedTable, filter, mapFiltTables, allTables } = this.props
+    const { loggedInUser, history, features, selectedFeature, filter, mapFiltFeatures, allFeatures } = this.props
     return (
       <div>
         <StyledTablesListContainer>
@@ -98,22 +98,22 @@ class TablesList extends React.Component {
             <Input filterinput
               placeholder='Filter results'
               value={filter}
-              onChange={(e) => this.props.handleFilterChange(e, allTables)} />
+              onChange={(e) => this.props.handleFilterChange(e, allFeatures)} />
             <Button cancel onClick={this.handleCloseClick}> Close </Button>
           </StyledFilterDiv>
-          <FilteredStats tables={tables} mapFiltTables={mapFiltTables} allTables={allTables} />
-          {tables.map(table =>
+          <FilteredStats features={features} mapFiltFeatures={mapFiltFeatures} allFeatures={allFeatures} />
+          {features.map(feature =>
             <Table
-              key={table.properties.id}
-              table={table}
+              key={feature.properties.id}
+              feature={feature}
               loggedInUser={loggedInUser}
               history={history}
-              selected={selectedTable === table.properties.id}
-              selectTable={this.props.selectTable}
+              selected={selectedFeature === feature.properties.id}
+              selectFeature={this.props.selectFeature}
               zoomToFeature={this.props.zoomToFeature}
-              mouseOnTable={this.props.mouseOnTable}
-              mouseOutTable={this.props.mouseOutTable}
-              removeTable={this.props.removeTable}
+              mouseOnFeature={this.props.mouseOnFeature}
+              mouseOutFeature={this.props.mouseOutFeature}
+              removeFeature={this.props.removeFeature}
               toggleLikeTable={this.props.toggleLikeTable}
               startEditing={this.props.startEditing}
             />
@@ -125,30 +125,32 @@ class TablesList extends React.Component {
 }
 
 const Table = (props) => {
-  const { table, loggedInUser, history, selected, zoomToFeature, selectTable,
-    mouseOnTable, mouseOutTable, removeTable, toggleLikeTable, startEditing } = props
+  const { feature, loggedInUser, history, selected, zoomToFeature, selectFeature,
+    mouseOnFeature, mouseOutFeature, removeFeature, toggleLikeTable, startEditing } = props
 
-  const liked = loggedInUser && loggedInUser.likes && loggedInUser.likes.indexOf(table.properties.id) !== -1 ? 1 : 0
+  const liked = loggedInUser && loggedInUser.likes &&
+    loggedInUser.likes.indexOf(feature.properties.id) !== -1 ? 1 : 0
+
   return (
     <StyledTableDiv
       selected={selected}
-      onClick={() => selectTable(table)}
-      onMouseEnter={() => mouseOnTable(table)}
-      onMouseLeave={() => mouseOutTable()}>
-      <StyledTitleDiv><b>{table.properties.title}</b>
-        <LikedHeart liked={liked} size={13} onClick={(e) => toggleLikeTable(table, loggedInUser, e)} />
-        <StyledLikes>{table.properties.likes}</StyledLikes>
+      onClick={() => selectFeature(feature)}
+      onMouseEnter={() => mouseOnFeature(feature)}
+      onMouseLeave={() => mouseOutFeature()}>
+      <StyledTitleDiv><b>{feature.properties.title}</b>
+        <LikedHeart liked={liked} size={13} onClick={(e) => toggleLikeTable(feature, loggedInUser, e)} />
+        <StyledLikes>{feature.properties.likes}</StyledLikes>
       </StyledTitleDiv>
-      <StyledDescriptionDiv> {table.properties.description} </StyledDescriptionDiv>
-      <TableDivButton onClick={(e) => zoomToFeature(table.geometry, 16, e)}>Zoom</TableDivButton>
-      <TableDivButton onClick={(e) => startEditing(table, loggedInUser, e, history)}>Edit</TableDivButton>
-      <TableDivButton onClick={(e) => removeTable(table, loggedInUser, e)}>Delete</TableDivButton>
+      <StyledDescriptionDiv> {feature.properties.description} </StyledDescriptionDiv>
+      <TableDivButton onClick={(e) => zoomToFeature(feature.geometry, 16, e)}>Zoom</TableDivButton>
+      <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e, history)}>Edit</TableDivButton>
+      <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )
 }
 
-const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
-  if (tables.length === 0) {
+const FilteredStats = ({ features, mapFiltFeatures, allFeatures }) => {
+  if (features.length === 0) {
     return (
       <StyledFilteredStatsDiv notables>
         <i>No tables to show within the map</i>
@@ -157,7 +159,7 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
   }
   return (
     <StyledFilteredStatsDiv>
-      {tables.length} filtered from total {allTables.length} tables:
+      {features.length} filtered from total {allFeatures.length} tables:
     </StyledFilteredStatsDiv>
   )
 }
@@ -165,30 +167,30 @@ const FilteredStats = ({ tables, mapFiltTables, allTables }) => {
 
 
 const getCommonObjects = (array1, array2) => {
-  return array1.filter(obj1 => array2.some(id => obj1.properties.id === id))
+  return array1.filter(feature => array2.some(id => feature.properties.id === id))
 }
 
-const orderByLikes = (tables) => {
-  return tables.sort((a, b) => b.properties.likes - a.properties.likes)
+const orderByLikes = (features) => {
+  return features.sort((a, b) => b.properties.likes - a.properties.likes)
 }
 
 
 const mapStateToProps = (state) => ({
+  features: orderByLikes(getCommonObjects(state.textFiltFeatures, state.mapFiltFeatures)),
+  allFeatures: state.tablesCollection.features,
+  mapFiltFeatures: state.mapFiltFeatures,
+  selectedFeature: state.mapControl.selectedFeature,
   loggedInUser: state.userState.loggedInUser,
-  filter: state.filter,
-  selectedTable: state.mapControl.selectedTable,
-  mapFiltTables: state.mapFiltTables,
-  allTables: state.tables.features,
-  tables: orderByLikes(getCommonObjects(state.textFiltTables, state.mapFiltTables))
+  filter: state.filter
 })
 
 const mapDispatchToProps = {
   handleFilterChange,
   zoomToFeature,
-  selectTable,
-  mouseOnTable,
-  mouseOutTable,
-  removeTable,
+  selectFeature,
+  mouseOnFeature,
+  mouseOutFeature,
+  removeFeature,
   toggleLikeTable,
   startEditing
 }

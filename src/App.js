@@ -11,7 +11,7 @@ import { tablesInitialization } from './reducers/tablesReducer'
 import { logOut, setLoggedInUser, setUserLoggedOut } from './reducers/userReducer'
 import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
-import NewTableFeatureLayer from './components/maplayers/NewTableFeatureLayer'
+import SelectLocationFeatureLayer from './components/maplayers/SelectLocationFeatureLayer'
 import TableForm from './components/TableForm'
 import LoginForm from './components/LoginForm'
 import SignUpForm from './components/SignUpForm'
@@ -26,12 +26,12 @@ class App extends Component {
     this.props.tablesInitialization()
 
     firebase.auth.onAuthStateChanged(user => {
-      console.log('Logged in user state changed -> ', user)
       if (user) {
         this.props.setLoggedInUser(user)
+        console.log('User state change: \nanynomous: ', user.isAnonymous, '\n', user.uid, '\n', user.displayName, '\n', user.email, '\n')
       } else {
-        firebase.auth.signInAnonymously().catch((error) => {
-          console.log('Error in anynomous sign in: ', error)
+        firebase.auth.signInAnonymously().catch(error => {
+          console.log('Error in anynomous sign in: \n', error)
         })
       }
     })
@@ -48,7 +48,7 @@ class App extends Component {
             <Map>
               <MapDimLayer history={history} />
               <TableFeatureLayer />
-              <NewTableFeatureLayer history={history} />
+              <SelectLocationFeatureLayer history={history} />
             </Map>} />
 
           <StyledNavLinkContainer>

@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { setLngLatForNew } from './../../reducers/tableFormReducer'
 import { renderPopup, removePopup, getLngLatFromGeometry, getLngLatFromLngLat } from './../mapboxhelper'
 
-class NewTableFeatureLayer extends React.Component {
-
+class SelectLocationFeatureLayer extends React.Component {
 
   map = this.props.map
   canvas = this.props.map.getCanvasContainer()
@@ -25,7 +24,7 @@ class NewTableFeatureLayer extends React.Component {
     'circle-stroke-width': 2
   }
 
-  newtable = {
+  selectedLocation = {
     type: 'FeatureCollection',
     features: [{
       type: 'Feature',
@@ -36,9 +35,9 @@ class NewTableFeatureLayer extends React.Component {
     }]
   }
 
-  updateTableLocation = (lngLat) => {
-    this.newtable.features[0].geometry.coordinates = [lngLat.lng, lngLat.lat]
-    this.map.getSource('newtable').setData(this.newtable)
+  setSelectedLocation = (lngLat) => {
+    this.selectedLocation.features[0].geometry.coordinates = [lngLat.lng, lngLat.lat]
+    this.map.getSource('selectedLocation').setData(this.selectedLocation)
     this.props.setLngLatForNew(lngLat)
   }
 
@@ -51,13 +50,13 @@ class NewTableFeatureLayer extends React.Component {
     this.canvas.style.cursor = 'grab'
     this.map.on('mousemove', this.onMove)
     this.map.once('mouseup', this.onUp)
-    this.map.setPaintProperty('newtable', 'circle-color', 'transparent')
+    this.map.setPaintProperty('selectedLocation', 'circle-color', 'transparent')
   }
 
   onMove = (e) => {
     if (!this.isDragging) return
     const lngLat = e.lngLat
-    this.updateTableLocation(lngLat)
+    this.setSelectedLocation(lngLat)
     this.canvas.style.cursor = 'grabbing'
   }
 
@@ -66,8 +65,8 @@ class NewTableFeatureLayer extends React.Component {
     this.canvas.style.cursor = ''
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
-    renderPopup(this.newtable.features[0], this.map, 20, this.history)
-    this.map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
+    renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
+    this.map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
   }
 
 
@@ -75,36 +74,35 @@ class NewTableFeatureLayer extends React.Component {
   componentDidMount() {
     const map = this.props.map
 
-    map.addSource('newtable', { type: 'geojson', data: this.newtable })
-    map.addLayer({ id: 'newtable', source: 'newtable', type: 'circle', paint: this.circleStyle })
-    map.setFilter('newtable', ['==', '-', ''])
+    map.addSource('selectedLocation', { type: 'geojson', data: this.selectedLocation })
+    map.addLayer({ id: 'selectedLocation', source: 'selectedLocation', type: 'circle', paint: this.circleStyle })
+    map.setFilter('selectedLocation', ['==', '-', ''])
 
     map.on('moveend', () => {
       if (!this.props.active || this.props.confirmed) { return }
-      const newtable = this.map.queryRenderedFeatures({ layers: ['newtable'] })
-      if (newtable.length === 0) {
-        this.updateTableLocation(this.map.getCenter())
-        renderPopup(this.newtable.features[0], this.map, 20, this.history)
+      const selectedLocation = this.map.queryRenderedFeatures({ layers: ['selectedLocation'] })
+      if (selectedLocation.length === 0) {
+        this.setSelectedLocation(this.map.getCenter())
+        renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
       }
     })
 
     map.on('click', (e) => {
-      console.log('MAP CLICKED', )
       if (!this.props.active || this.props.confirmed) { return }
-      this.updateTableLocation(e.lngLat)
-      renderPopup(this.newtable.features[0], this.map, 20, this.history)
+      this.setSelectedLocation(e.lngLat)
+      renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
     })
 
     map.on('mousedown', this.mouseDown)
 
-    map.on('mouseenter', 'newtable', () => {
+    map.on('mouseenter', 'selectedLocation', () => {
       if (!this.props.active || this.props.confirmed) { return }
       this.canvas.style.cursor = 'move'
       this.isCursorOverPoint = true
       map.dragPan.disable()
     })
 
-    map.on('mouseleave', 'newtable', () => {
+    map.on('mouseleave', 'selectedLocation', () => {
       if (!this.props.active || this.props.confirmed) { return }
       this.canvas.style.cursor = ''
       this.isCursorOverPoint = false
@@ -115,37 +113,37 @@ class NewTableFeatureLayer extends React.Component {
 
 
   componentDidUpdate(prevProps) {
-    const { active, confirmed, editing, editLngLat, map } = this.props
+    const { active, confirmed, editing, lngLatToEdit, map } = this.props
 
     if (active) {
-      this.map.setFilter('newtable', null)
+      this.map.setFilter('selectedLocation', null)
     } else {
       removePopup()
-      this.map.setFilter('newtable', ['==', '-', ''])
+      this.map.setFilter('selectedLocation', ['==', '-', ''])
       return
     }
 
     if (editing) {
-      this.updateTableLocation(getLngLatFromLngLat(editLngLat))
+      this.setSelectedLocation(getLngLatFromLngLat(lngLatToEdit))
     } else {
-      const newtables = this.map.queryRenderedFeatures({ layers: ['newtable'] })
-      if (newtables.length === 0) { this.updateTableLocation(this.map.getCenter()) }
+      const selectedLocations = this.map.queryRenderedFeatures({ layers: ['selectedLocation'] })
+      if (selectedLocations.length === 0) { this.setSelectedLocation(this.map.getCenter()) }
     }
 
     if (confirmed) {
-      map.setPaintProperty('newtable', 'circle-color', '#00ff1d')
+      map.setPaintProperty('selectedLocation', 'circle-color', '#00ff1d')
       removePopup()
     } else {
-      map.setPaintProperty('newtable', 'circle-color', '#e9ff00')
-      renderPopup(this.newtable.features[0], this.map, 20, this.history)
+      map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
+      renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
     }
 
-    const lngLat = getLngLatFromGeometry(this.newtable.features[0].geometry)
+    const lngLat = getLngLatFromGeometry(this.selectedLocation.features[0].geometry)
     this.props.setLngLatForNew(lngLat)
   }
 
   componentWillUnmount() {
-    this.map.removeSource('tables')
+    this.map.removeSource('selectedLocation')
   }
 
 
@@ -160,9 +158,9 @@ const mapStateToProps = (state) => ({
   active: state.tableform.location.active,
   confirmed: state.tableform.location.confirmed,
   editing: state.tableform.editing,
-  editLngLat: state.tableform.editLngLat
+  lngLatToEdit: state.tableform.lngLatToEdit
 })
 
-const ConnectedNewTableFeatureLayer = connect(mapStateToProps, { setLngLatForNew })(NewTableFeatureLayer)
+const ConnectedSelectLocationFeatureLayer = connect(mapStateToProps, { setLngLatForNew })(SelectLocationFeatureLayer)
 
-export default ConnectedNewTableFeatureLayer
+export default ConnectedSelectLocationFeatureLayer

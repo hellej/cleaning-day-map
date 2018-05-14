@@ -5,7 +5,7 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { LngLat } from 'mapbox-gl'
 
 import Popup from './maplayers/Popup'
-import PopupNewTable from './maplayers/PopupNewTable'
+import PopupSelectLocation from './maplayers/PopupSelectLocation'
 
 
 
@@ -39,9 +39,9 @@ export const renderPopup = (feature, map, offset, history) => {
   removePopup()
 
   const coordinates = feature.geometry.coordinates.slice()
-  const newtablepopup = feature.properties ? false : true
+  const newFeaturePopup = feature.properties ? false : true
 
-  newtablepopup ?
+  newFeaturePopup ?
     popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false, offset: offset, anchor: 'top' })
     : popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: true, offset: offset })
 
@@ -53,9 +53,9 @@ export const renderPopup = (feature, map, offset, history) => {
   popupObj.on('close', function (e) {
   })
 
-  newtablepopup ?
-    ReactDOM.render(<PopupNewTable newtable={feature} history={history} />, document.getElementById('popup'))
-    : ReactDOM.render(<Popup table={feature} />, document.getElementById('popup'))
+  newFeaturePopup ?
+    ReactDOM.render(<PopupSelectLocation history={history} />, document.getElementById('popup'))
+    : ReactDOM.render(<Popup feature={feature} />, document.getElementById('popup'))
 }
 
 

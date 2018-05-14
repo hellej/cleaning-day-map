@@ -1,32 +1,30 @@
 
-const initialTables = []
+const initialFeatures = []
 
-const textFilteredTablesReducer = (store = initialTables, action) => {
+const textFilteredTablesReducer = (store = initialFeatures, action) => {
 
   let featuresToUpdate
 
   switch (action.type) {
 
-    case 'INIT_TABLES':
-      return action.tables.features
+    case 'INIT_FEATURES':
+      return action.featureCollection.features
 
     case 'SET_FILTER':
-      return filterTables(action.tables, action.filter)
+      return filterFeatures(action.features, action.filter)
 
-    case 'ADD_TABLE':
-      featuresToUpdate = store.concat(action.tableFeature)
-      return featuresToUpdate
+    case 'ADD_FEATURE':
+      return store.concat(action.newFeature)
 
-    case 'REMOVE_TABLE':
-      featuresToUpdate = store.filter(table => table.properties.id !== action.id)
-      return featuresToUpdate
+    case 'REMOVE_FEATURE':
+      return store.filter(feature => feature.properties.id !== action.id)
 
-    case 'LIKE_TABLE':
-    case 'UNLIKE_TABLE':
-      featuresToUpdate = store.map(table =>
-        table.properties.id !== action.id
-          ? table
-          : { ...table, properties: { ...table.properties, likes: action.likes } })
+    case 'LIKE_FEATURE':
+    case 'UNLIKE_FEATURE':
+      featuresToUpdate = store.map(feature =>
+        feature.properties.id !== action.id
+          ? feature
+          : { ...feature, properties: { ...feature.properties, likes: action.likes } })
       return featuresToUpdate
 
     default:
@@ -34,8 +32,8 @@ const textFilteredTablesReducer = (store = initialTables, action) => {
   }
 }
 
-const filterTables = (tables, filter) => {
-  return tables.filter(table => (table.properties.description.concat(table.properties.title).toLowerCase()
+const filterFeatures = (features, filter) => {
+  return features.filter(feature => (feature.properties.description.concat(feature.properties.title).toLowerCase()
     .includes(filter.toLowerCase())))
 }
 

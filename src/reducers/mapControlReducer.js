@@ -3,15 +3,15 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 const initialControl = {
   center: null,
   zoom: null,
-  selectedTable: null,
-  mouseOnTable: null,
+  selectedFeature: null,
+  mouseOnFeature: null,
   mapLoaded: false,
   layerLoaded: false,
-  reloadTables: []
+  reloadFeatures: []
 }
 
 const mapControlReducer = (store = initialControl, action) => {
-  let selectedTable, center = null
+  let selectedFeature, center = null
 
   switch (action.type) {
     case 'SET_ZOOM_TO':
@@ -19,35 +19,31 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, center, zoom: action.zoom }
 
     case 'RESET_CAMERA':
-      return { ...initialControl, selectedTable: store.selectedTable }
+      return { ...initialControl, selectedFeature: store.selectedFeature }
 
     case 'SET_CAMERA':
       return { ...store, center: action.camera.center, zoom: action.camera.zoom }
 
     case 'TOGGLE_SELECTION':
-      if (store.selectedTable === action.id) {
-        selectedTable = null
-      } else selectedTable = action.id
-      return { ...store, selectedTable }
+      if (store.selectedFeature === action.id) {
+        selectedFeature = null
+      } else selectedFeature = action.id
+      return { ...store, selectedFeature }
 
-    case 'UNSELECT_TABLE':
-      return { ...store, selectedTable: null }
+    case 'UNSELECT_FEATURE':
+      return { ...store, selectedFeature: null }
 
-    case 'MOUSEON_TABLE':
-      return { ...store, mouseOnTable: action.table.properties.id }
+    case 'MOUSEON_FEATURE':
+      return { ...store, mouseOnFeature: action.feature.properties.id }
 
-    case 'MOUSEOUT_TABLE':
-      return { ...store, mouseOnTable: null }
+    case 'MOUSEOUT_FEATURE':
+      return { ...store, mouseOnFeature: null }
 
     case 'SET_MAP_LOADED':
       return { ...store, mapLoaded: true }
 
     case 'SET_LAYER_LOADED':
       return { ...store, layerLoaded: true }
-
-    // case 'LIKE_TABLE':
-    // case 'UNLIKE_TABLE':
-    //   return { ...store, reloadTables: store.reloadTables.concat(action.id) }
 
     default:
       return store
@@ -93,23 +89,23 @@ export const resetCamera = (feature) => {
   }
 }
 
-export const selectTable = (tableprops) => {
-  const id = tableprops.properties ? tableprops.properties.id : tableprops.id
+export const selectFeature = (feature) => {
+  const id = feature.properties ? feature.properties.id : feature.id
   return { type: 'TOGGLE_SELECTION', id }
 }
 
-export const unselectTable = (e) => {
+export const unselectFeature = (e) => {
   return async (dispatch) => {
-    dispatch({ type: 'UNSELECT_TABLE' })
+    dispatch({ type: 'UNSELECT_FEATURE' })
   }
 }
 
-export const mouseOnTable = (table) => {
-  return { type: 'MOUSEON_TABLE', table }
+export const mouseOnFeature = (feature) => {
+  return { type: 'MOUSEON_FEATURE', feature }
 }
 
-export const mouseOutTable = () => {
-  return { type: 'MOUSEOUT_TABLE' }
+export const mouseOutFeature = () => {
+  return { type: 'MOUSEOUT_FEATURE' }
 }
 
 export const setMapLoaded = () => {

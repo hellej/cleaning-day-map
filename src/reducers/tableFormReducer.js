@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { addTable } from './tablesReducer'
+import { addFeature } from './tablesReducer'
 import { zoomToFeature } from './mapControlReducer'
 
 const initialForm = {
@@ -15,7 +15,7 @@ const initialForm = {
     lngLat: { lng: null, lat: null },
     confirmed: false
   },
-  editLngLat: { lng: null, lat: null },
+  lngLatToEdit: { lng: null, lat: null },
   error: null
 }
 
@@ -29,7 +29,7 @@ const phoneScreen = (window) => {
 
 const tableFormReducer = (store = initialForm, action) => {
 
-  let active, confirmed, lngLat, location, editLngLat
+  let active, confirmed, lngLat, location, lngLatToEdit
 
   switch (action.type) {
     case 'UPDATE_FORM':
@@ -54,8 +54,8 @@ const tableFormReducer = (store = initialForm, action) => {
 
     case 'CONFIRM_LOCATION':
       location = store.location
-      editLngLat = store.location.lngLat
-      return { ...store, editLngLat, location: { ...location, confirmed: true } }
+      lngLatToEdit = store.location.lngLat
+      return { ...store, lngLatToEdit, location: { ...location, confirmed: true } }
 
     case 'SET_LOCINPUT_UNACTIVE':
       location = store.location
@@ -65,11 +65,11 @@ const tableFormReducer = (store = initialForm, action) => {
       return initialForm
 
     case 'START_EDITING': {
-      const { id, title, description, phonenum, openhours } = action.table.properties
-      const coords = action.table.geometry.coordinates
-      const editLngLat = { lng: coords[0].toFixed(6), lat: coords[1].toFixed(6) }
-      const location = { active: true, confirmed: true, lngLat: { ...editLngLat } }
-      return { editing: true, id, title, description, phonenum, openhours, location, editLngLat, error: null }
+      const { id, title, description, phonenum, openhours } = action.feature.properties
+      const coords = action.feature.geometry.coordinates
+      const lngLatToEdit = { lng: coords[0].toFixed(6), lat: coords[1].toFixed(6) }
+      const location = { active: true, confirmed: true, lngLat: { ...lngLatToEdit } }
+      return { editing: true, id, title, description, phonenum, openhours, location, lngLatToEdit, error: null }
     }
 
     case 'STOP_EDITING':
@@ -140,21 +140,21 @@ export const handleSubmit = (e, history, form, loggedInUser) => {
   }
   return (dispatch) => {
     const props = { ...form, user: loggedInUser.id }
-    dispatch(addTable(props))
+    dispatch(addFeature(props))
     dispatch({ type: 'EMPTY_FORM', form })
     history.push('/')
   }
 }
 
-export const startEditing = (table, loggedInUser, e, history) => {
+export const startEditing = (feature, loggedInUser, e, history) => {
   return async (dispatch) => {
     if (e) {
       e.stopPropagation()
       e.preventDefault()
     }
     dispatch({ type: 'EMPTY_FORM' })
-    dispatch({ type: 'START_EDITING', table })
-    dispatch(zoomToFeature(table.geometry, 15))
+    dispatch({ type: 'START_EDITING', feature })
+    dispatch(zoomToFeature(feature.geometry, 15))
     history.push('/edittable')
   }
 }

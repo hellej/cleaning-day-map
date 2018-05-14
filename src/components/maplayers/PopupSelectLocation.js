@@ -10,7 +10,7 @@ const StyledPopupDiv = styled.div`
 margin: -1px -3px -3px -3px;
 `
 
-class PopupNewTable extends React.Component {
+class PopupSelectLocation extends React.Component {
   componentDidMount() {
     this.unsubscribe = store.subscribe(() =>
       this.forceUpdate()
@@ -32,6 +32,6 @@ class PopupNewTable extends React.Component {
   }
 }
 
-export default PopupNewTable
+export default PopupSelectLocation
 
 

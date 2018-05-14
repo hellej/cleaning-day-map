@@ -15,9 +15,9 @@ import userStateReducer from './reducers/userReducer'
 
 const reducer = combineReducers({
   notification: notificationReducer,
-  tables: tablesReducer,
-  mapFiltTables: mapFilteredTablesReducer,
-  textFiltTables: textFilteredTablesReducer,
+  tablesCollection: tablesReducer,
+  mapFiltFeatures: mapFilteredTablesReducer,
+  textFiltFeatures: textFilteredTablesReducer,
   filter: filterReducer,
   mapControl: mapControlReducer,
   tableform: tableFormReducer,

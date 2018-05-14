@@ -36,8 +36,8 @@ const userStateReducer = (store = initialUserState, action) => {
     case 'EMPTY_LOGIN_FORM':
       return { ...store, loginForm: { ...initialUserState.loginForm } }
 
-    case 'LIKE_TABLE':
-    case 'UNLIKE_TABLE':
+    case 'LIKE_FEATURE':
+    case 'UNLIKE_FEATURE':
       return { ...store, loggedInUser: { ...store.loggedInUser, likes: action.userLikes } }
 
     default:
@@ -105,7 +105,7 @@ export const submitSignUp = (e, history, form) => {
       dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
     } catch (error) {
-      console.log('Error in creating profile: ', error)
+      console.log('Error in creating profile: \n', error)
       dispatch({ type: 'UPDATE_SIGNUP_FORM', name: 'error', value: error })
       dispatch(showNotification({ type: 'alert', text: error.message }, 6))
     }
@@ -138,14 +138,14 @@ export const setLoggedInUser = (authUser) => {
         await database.ref(`/users/${authUser.uid}`).set(user)
         dispatch({ type: 'SET_USER_LOGGED_IN', user })
       } catch (error) {
-        console.log('Error in logging in anonymous user: ', error)
+        console.log('Error in logging in anonymous user: \n', error)
       }
     } else try {
       const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
       const user = { ...userRef.val(), anonymous: false }
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
     } catch (error) {
-      console.log('Error in logging in: ', error)
+      console.log('Error in logging in: \n', error)
     }
   }
 }
@@ -163,7 +163,7 @@ export const logOut = () => {
       dispatch({ type: 'SET_USER_LOGGED_OUT' })
       dispatch(showNotification({ type: 'alert', text: 'Logged out' }, 4))
     } catch (error) {
-      console.log('Error in logOut: ', error)
+      console.log('Error in logging out: \n', error)
     }
   }
 }

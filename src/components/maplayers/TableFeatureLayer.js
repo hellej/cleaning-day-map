@@ -2,8 +2,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { renderPopup, getRenderedFeaturesFromQuery } from './../mapboxhelper'
-import { setMapFiltTablesList } from './../../reducers/mapFilteredTablesReducer'
-import { unselectTable, selectTable } from './../../reducers/mapControlReducer'
+import { setMapFilteredFeatures } from './../../reducers/mapFilteredTablesReducer'
+import { unselectFeature, selectFeature } from './../../reducers/mapControlReducer'
 import { setLayerLoaded } from './../../reducers/mapControlReducer'
 
 class TableFeatureLayer extends React.Component {
@@ -25,76 +25,79 @@ class TableFeatureLayer extends React.Component {
     'circle-stroke-width': 2
   }
 
+  layerID = 'tables'
+
   componentDidMount() {
-    const { tables, map } = this.props
+    const { featuresCollection, map } = this.props
 
-    map.addSource('tables', { type: 'geojson', data: tables })
-    map.addLayer({ id: 'tables', source: 'tables', type: 'circle', paint: this.circleStyle })
-    map.addLayer({ id: 'mouseOnTable', source: 'tables', type: 'circle', paint: this.circleStyleMouseOn })
-    map.addLayer({ id: 'selectedTable', source: 'tables', type: 'circle', paint: this.circleStyleSelect })
-    map.setFilter('mouseOnTable', ['==', '-', ''])
-    map.setFilter('selectedTable', ['==', '-', ''])
+    map.addSource(this.layerID, { type: 'geojson', data: featuresCollection })
+    map.addLayer({ id: this.layerID, source: this.layerID, type: 'circle', paint: this.circleStyle })
+    map.addLayer({ id: 'mouseOnFeature', source: this.layerID, type: 'circle', paint: this.circleStyleMouseOn })
+    map.addLayer({ id: 'selectedFeature', source: this.layerID, type: 'circle', paint: this.circleStyleSelect })
+    map.setFilter('mouseOnFeature', ['==', '-', ''])
+    map.setFilter('selectedFeature', ['==', '-', ''])
 
-    map.on('click', 'tables', (e) => {
-      const table = e.features[0]
-      renderPopup(table, map)
-      this.props.selectTable(e.features[0])
+    map.on('click', this.layerID, (e) => {
+      const feature = e.features[0]
+      renderPopup(feature, map)
+      this.props.selectFeature(e.features[0])
     })
-    map.on('click', (e) => { this.props.unselectTable(e) })
-    map.on('mouseenter', 'tables', () => { map.getCanvas().style.cursor = 'pointer' })
-    map.on('mouseleave', 'tables', () => { map.getCanvas().style.cursor = '' })
+    map.on('click', (e) => { this.props.unselectFeature(e) })
+    map.on('mouseenter', this.layerID, () => { map.getCanvas().style.cursor = 'pointer' })
+    map.on('mouseleave', this.layerID, () => { map.getCanvas().style.cursor = '' })
 
     map.on('load', () => {
-      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
+      this.props.setMapFilteredFeatures(getRenderedFeaturesFromQuery(map, this.layerID))
     })
 
     map.on('moveend', () => {
-      this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
+      this.props.setMapFilteredFeatures(getRenderedFeaturesFromQuery(map, this.layerID))
     })
 
   }
 
   componentDidUpdate(prevProps) {
-    const { map, tables, textFiltTables, selectedTable, mouseOnTable, reloadTables } = this.props
+    const { map, featuresCollection, textFiltFeatures,
+      selectedFeature, mouseOnFeature, reloadFeatures } = this.props
 
     // SET LAYER LOADED AFTER INITIALIZATION
-    if (prevProps.textFiltTables.length === 0 && textFiltTables.length > 0) {
+    if (prevProps.textFiltFeatures.length === 0 && textFiltFeatures.length > 0) {
       this.props.setLayerLoaded()
     }
 
     // RELOAD TABLES TO MAP (NEW TABLE / UPDATED TABLE)
-    if (tables.features.length !== prevProps.tables.features.length || prevProps.reloadTables.length !== reloadTables.length) {
-      //console.log('Redraw tables layer', this.props.tables)
-      map.getSource('tables').setData(this.props.tables)
+    if (featuresCollection.features.length !== prevProps.featuresCollection.features.length ||
+      prevProps.reloadFeatures.length !== reloadFeatures.length) {
+      map.getSource(this.layerID).setData(featuresCollection)
     }
 
     // UPDATE FILTERED TABLES
-    if (prevProps.textFiltTables.length !== textFiltTables.length) {
-      if (textFiltTables.length > 0) {
-        map.setFilter('tables', ['match', ['get', 'id'],
-          textFiltTables.map(table => table.properties.id), true, false])
-      } else { map.setFilter('tables', ['==', '-', '']) }
+    if (prevProps.textFiltFeatures.length !== textFiltFeatures.length) {
+      if (textFiltFeatures.length > 0) {
+        map.setFilter(this.layerID, ['match', ['get', 'id'],
+          textFiltFeatures.map(feature => feature.properties.id), true, false])
+      } else { map.setFilter(this.layerID, ['==', '-', '']) }
       setTimeout(() => {
-        this.props.setMapFiltTablesList(getRenderedFeaturesFromQuery(map, 'tables'))
+        this.props.setMapFilteredFeatures(getRenderedFeaturesFromQuery(map, this.layerID))
       }, 100)
     }
 
     //COLOR SELECTED TABLE
-    if (selectedTable) {
-      map.setFilter('selectedTable', ['match', ['get', 'id'], selectedTable, true, false])
-    } else { map.setFilter('selectedTable', ['==', '-', '']) }
+    if (selectedFeature) {
+      map.setFilter('selectedFeature', ['match', ['get', 'id'], selectedFeature, true, false])
+    } else { map.setFilter('selectedFeature', ['==', '-', '']) }
 
     //COLOR HOVERED TABLE
-    if (mouseOnTable) {
-      map.setFilter('mouseOnTable', ['match', ['get', 'id'], mouseOnTable, true, false])
-    } else { map.setFilter('mouseOnTable', ['==', '-', '']) }
+    if (mouseOnFeature) {
+      map.setFilter('mouseOnFeature', ['match', ['get', 'id'], mouseOnFeature, true, false])
+    } else { map.setFilter('mouseOnFeature', ['==', '-', '']) }
 
   }
 
   componentWillUnmount() {
     const { map } = this.props
-    map.removeSource('tables')
-    map.removeLayer('tables')
+    map.removeSource(this.layerID)
+    map.removeLayer(this.layerID)
   }
 
 
@@ -106,13 +109,13 @@ class TableFeatureLayer extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-  tables: state.tables,
-  textFiltTables: state.textFiltTables,
-  selectedTable: state.mapControl.selectedTable,
-  mouseOnTable: state.mapControl.mouseOnTable,
-  reloadTables: state.mapControl.reloadTables
+  featuresCollection: state.tablesCollection,
+  textFiltFeatures: state.textFiltFeatures,
+  selectedFeature: state.mapControl.selectedFeature,
+  mouseOnFeature: state.mapControl.mouseOnFeature,
+  reloadFeatures: state.mapControl.reloadFeatures
 })
-const mapDispatchToProps = { setMapFiltTablesList, unselectTable, selectTable, setLayerLoaded }
+const mapDispatchToProps = { setMapFilteredFeatures, unselectFeature, selectFeature, setLayerLoaded }
 
 const ConnectedTableFeatureLayer = connect(mapStateToProps, mapDispatchToProps)(TableFeatureLayer)
 
