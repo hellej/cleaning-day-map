@@ -45,6 +45,9 @@ const mapControlReducer = (store = initialControl, action) => {
     case 'SET_LAYER_LOADED':
       return { ...store, layerLoaded: true }
 
+    case 'UPDATE_FEATURE':
+      return { ...store, reloadFeatures: store.reloadFeatures.concat(action.id) }
+
     default:
       return store
   }
