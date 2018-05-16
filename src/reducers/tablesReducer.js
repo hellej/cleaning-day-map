@@ -25,6 +25,13 @@ const tablesReducer = (store = initialFeatureCollection, action) => {
       featuresToUpdate = store.features.filter(feature => feature.properties.id !== action.id)
       return { ...store, features: featuresToUpdate }
 
+    case 'UPDATE_FEATURE':
+      featuresToUpdate = store.features.map(feature =>
+        feature.properties.id === action.id
+          ? action.editedFeature
+          : feature)
+      return { ...store, features: featuresToUpdate }
+
     case 'LIKE_FEATURE':
     case 'UNLIKE_FEATURE':
       featuresToUpdate = store.features.map(feature =>
@@ -37,6 +44,7 @@ const tablesReducer = (store = initialFeatureCollection, action) => {
       return store
   }
 }
+
 
 export const tablesInitialization = () => {
   return async (dispatch) => {
@@ -56,7 +64,6 @@ export const tablesInitialization = () => {
 }
 
 
-
 export const addFeature = (props) => {
   return async (dispatch) => {
     const newFeature = createGeoJSON(props)
@@ -70,9 +77,31 @@ export const addFeature = (props) => {
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
       dispatch(selectFeature(newFeature))
       dispatch(zoomToFeature(geometry, 16))
+      dispatch({ type: 'EMPTY_TABLEFORM' })
     } catch (error) {
       console.log('Error in saving new table: \n', error)
       dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
+    }
+  }
+}
+
+export const editFeature = (props, history) => {
+  return async (dispatch) => {
+    const id = props.id
+    try {
+      const featureLikesRef = await database.ref(`/tables/${id}/properties/likes`).once('value')
+      props.likes = featureLikesRef.val() ? featureLikesRef.val() : props.likes
+      const editedFeature = createGeoJSON(props)
+      console.log('editedFeature', editedFeature)
+      database.ref(`/tables/${id}`).set(editedFeature)
+      dispatch({ type: 'UPDATE_FEATURE', id, editedFeature })
+      dispatch(selectFeature(editedFeature))
+      dispatch(showNotification({ type: 'success', text: 'Table saved succesfully' }, 4))
+      dispatch({ type: 'EMPTY_TABLEFORM' })
+      history.push('/')
+    } catch (error) {
+      console.log('Error in saving new table: \n', error)
+      dispatch(showNotification({ type: 'alert', text: "Couldn't save table" }, 6))
     }
   }
 }
@@ -102,7 +131,6 @@ export const removeFeature = (feature, loggedInUser, e) => {
     }
   }
 }
-
 
 export const toggleLikeTable = (feature, loggedInUser, e) => {
   return async (dispatch) => {

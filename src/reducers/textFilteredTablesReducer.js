@@ -19,6 +19,13 @@ const textFilteredTablesReducer = (store = initialFeatures, action) => {
     case 'REMOVE_FEATURE':
       return store.filter(feature => feature.properties.id !== action.id)
 
+    case 'UPDATE_FEATURE':
+      featuresToUpdate = store.map(feature =>
+        feature.properties.id === action.id
+          ? action.editedFeature
+          : feature)
+      return featuresToUpdate
+
     case 'LIKE_FEATURE':
     case 'UNLIKE_FEATURE':
       featuresToUpdate = store.map(feature =>

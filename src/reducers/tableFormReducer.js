@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { addFeature } from './tablesReducer'
+import { addFeature, editFeature } from './tablesReducer'
 import { zoomToFeature } from './mapControlReducer'
 
 const initialForm = {
@@ -62,7 +62,7 @@ const tableFormReducer = (store = initialForm, action) => {
       location = store.location
       return { ...store, location: { ...location, active: false, confirmed: false } }
 
-    case 'EMPTY_FORM':
+    case 'EMPTY_TABLEFORM':
       return initialForm
 
     case 'START_EDITING': {
@@ -126,7 +126,7 @@ export const closeForm = (history, editing) => {
     dispatch({ type: 'STOP_EDITING' })
     history.push('/')
     if (editing) {
-      dispatch({ type: 'EMPTY_FORM' })
+      dispatch({ type: 'EMPTY_TABLEFORM' })
     }
   }
 }
@@ -143,7 +143,6 @@ export const handleSubmitNew = (e, history, form, loggedInUser) => {
   return (dispatch) => {
     const props = { ...form, user: loggedInUser.id }
     dispatch(addFeature(props))
-    dispatch({ type: 'EMPTY_FORM', form })
     history.push('/')
   }
 }
@@ -154,7 +153,7 @@ export const startEditing = (feature, loggedInUser, e, history) => {
       e.stopPropagation()
       e.preventDefault()
     }
-    dispatch({ type: 'EMPTY_FORM' })
+    dispatch({ type: 'EMPTY_TABLEFORM' })
     dispatch({ type: 'START_EDITING', feature })
     dispatch(zoomToFeature(feature.geometry, 15))
     history.push('/edittable')
@@ -164,15 +163,13 @@ export const startEditing = (feature, loggedInUser, e, history) => {
 export const handleSubmitEdits = (e, history, form, loggedInUser) => {
   return async (dispatch) => {
     const error = validateEdits(form, loggedInUser)
-    console.log('validation error: ', error)
     console.log('table to save: ', form)
     if (error) {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
       return
-    } else {
-      console.log('READY TO SAVE EDITS...', )
     }
+    dispatch(editFeature(form, history))
   }
 }
 

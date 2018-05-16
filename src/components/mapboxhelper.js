@@ -81,12 +81,13 @@ export const createGeoJSON = (props) => {
       coordinates: [Number(props.location.lngLat.lng), Number(props.location.lngLat.lat)]
     },
     properties: {
-      title: props.title,
       description: props.description,
-      phonenum: props.phonenum,
+      id: props.id ? props.id : '',
+      image: '',
+      likes: props.likes ? props.likes : 0,
       openhours: props.openhours,
-      image: 'url?',
-      likes: 0,
+      phonenum: props.phonenum,
+      title: props.title,
       user: props.user
     }
   }
