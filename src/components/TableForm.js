@@ -6,7 +6,7 @@ import { Button, LocationInput } from './Buttons'
 import { StyledFormButtonDiv } from './StyledLayout'
 
 import { showNotification } from './../reducers/notificationReducer'
-import { handleFormChange, handleSubmit, setLocationInputActive, closeForm, handleSave } from './../reducers/tableFormReducer'
+import { handleFormChange, handleSubmitNew, setLocationInputActive, closeForm, handleSubmitEdits } from './../reducers/tableFormReducer'
 
 
 
@@ -21,8 +21,8 @@ class TableForm extends React.Component {
 
   render() {
 
-    const { tableform, loggedInUser, handleFormChange, handleSubmit,
-      history, setLocationInputActive, closeForm, handleSave } = this.props
+    const { tableform, loggedInUser, handleFormChange, handleSubmitNew,
+      history, setLocationInputActive, closeForm, handleSubmitEdits } = this.props
     const { editing, title, description, phonenum, openhours, location } = tableform
 
     return (
@@ -66,11 +66,11 @@ class TableForm extends React.Component {
         </form>
         {editing
           ? <StyledFormButtonDiv>
-            <Button submit onClick={(e) => handleSave(e, history, tableform, loggedInUser)}> Save Table </Button>
+            <Button submit onClick={(e) => handleSubmitEdits(e, history, tableform, loggedInUser)}> Save Table </Button>
             <Button cancel onClick={() => closeForm(history, editing)}> Cancel </Button>
           </StyledFormButtonDiv>
           : <StyledFormButtonDiv>
-            <Button submit onClick={(e) => handleSubmit(e, history, tableform, loggedInUser)}> Add Table </Button>
+            <Button submit onClick={(e) => handleSubmitNew(e, history, tableform, loggedInUser)}> Add Table </Button>
             <Button cancel onClick={() => closeForm(history, editing)}> Cancel </Button>
           </StyledFormButtonDiv>
         }
@@ -89,10 +89,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showNotification,
   handleFormChange,
-  handleSubmit,
   closeForm,
   setLocationInputActive,
-  handleSave
+  handleSubmitNew,
+  handleSubmitEdits
 }
 
 const connectedTableForm = connect(mapStateToProps, mapDispatchToProps)(TableForm)

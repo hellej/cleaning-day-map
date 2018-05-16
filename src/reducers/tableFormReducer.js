@@ -6,6 +6,7 @@ import { zoomToFeature } from './mapControlReducer'
 const initialForm = {
   editing: false,
   id: null,
+  user: null,
   title: '',
   description: '',
   phonenum: '',
@@ -66,10 +67,11 @@ const tableFormReducer = (store = initialForm, action) => {
 
     case 'START_EDITING': {
       const { id, title, description, phonenum, openhours } = action.feature.properties
+      const user = action.feature.properties.user ? action.feature.properties.user : null
       const coords = action.feature.geometry.coordinates
       const lngLatToEdit = { lng: coords[0].toFixed(6), lat: coords[1].toFixed(6) }
       const location = { active: true, confirmed: true, lngLat: { ...lngLatToEdit } }
-      return { editing: true, id, title, description, phonenum, openhours, location, lngLatToEdit, error: null }
+      return { editing: true, id, user, title, description, phonenum, openhours, location, lngLatToEdit, error: null }
     }
 
     case 'STOP_EDITING':
@@ -129,7 +131,7 @@ export const closeForm = (history, editing) => {
   }
 }
 
-export const handleSubmit = (e, history, form, loggedInUser) => {
+export const handleSubmitNew = (e, history, form, loggedInUser) => {
   e.preventDefault()
   const error = validate(form, loggedInUser)
   if (error) {
@@ -159,34 +161,34 @@ export const startEditing = (feature, loggedInUser, e, history) => {
   }
 }
 
-export const handleSave = (e, history, form, loggedInUser) => {
+export const handleSubmitEdits = (e, history, form, loggedInUser) => {
   return async (dispatch) => {
-    const error = validate(form, loggedInUser)
+    const error = validateEdits(form, loggedInUser)
     console.log('validation error: ', error)
     console.log('table to save: ', form)
-    console.log('user saving: ', loggedInUser)
     if (error) {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
       return
+    } else {
+      console.log('READY TO SAVE EDITS...', )
     }
   }
 }
 
 
 const validate = (form, loggedInUser) => {
-  if (!loggedInUser) {
-    return 'You must log in first'
-  }
-  if (!form.title || form.title.trim() === '') {
-    return 'Title is missing'
-  }
-  if (!form.description || form.description.trim() === '') {
-    return 'Description is missing'
-  }
-  if (!form.location.confirmed) {
-    return 'Location must be confirmed first'
-  }
+  if (!loggedInUser) return 'You must log in first'
+  if (!form.title || form.title.trim() === '') return 'Title is missing'
+  if (!form.description || form.description.trim() === '') return 'Description is missing'
+  if (!form.location.confirmed) return 'Location must be confirmed first'
+  return null
+}
+
+const validateEdits = (form, loggedInUser) => {
+  const error = validate(form, loggedInUser)
+  if (error) return error
+  if (!form.user || form.user !== loggedInUser.id) return "Can't edit someone elses table"
   return null
 }
 
