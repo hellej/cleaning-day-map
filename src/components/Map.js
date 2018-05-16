@@ -37,19 +37,19 @@ class Map extends React.Component {
       trackResize: true
     })
 
+    this.map.on('load', () => {
+      this.props.setMapLoaded()
+      console.log('map loaded')
+      this.map.addControl(new MapboxGl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
+      }))
+    })
+
     this.map.on('render', () => {
       if (!this.state.isReady) {
         this.setState({ isReady: true })
         this.setState({ camera: { zoom: this.map.getZoom(), center: this.map.getCenter() } })
       }
-    })
-
-    this.map.on('load', () => {
-      this.map.addControl(new MapboxGl.GeolocateControl({
-        positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
-      }))
-      console.log('map loaded')
-      this.props.setMapLoaded()
     })
 
     this.map.on('moveend', () => {
