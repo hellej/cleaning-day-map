@@ -64,7 +64,7 @@ export const tablesInitialization = () => {
 }
 
 
-export const addFeature = (props) => {
+export const addFeature = (props, history) => {
   return async (dispatch) => {
     const newFeature = createGeoJSON(props)
     const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
@@ -78,6 +78,7 @@ export const addFeature = (props) => {
       dispatch(selectFeature(newFeature))
       dispatch(zoomToFeature(geometry, 16))
       dispatch({ type: 'EMPTY_TABLEFORM' })
+      history.push('/')
     } catch (error) {
       console.log('Error in saving new table: \n', error)
       dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))

@@ -142,8 +142,7 @@ export const handleSubmitNew = (e, history, form, loggedInUser) => {
   }
   return (dispatch) => {
     const props = { ...form, user: loggedInUser.id }
-    dispatch(addFeature(props))
-    history.push('/')
+    dispatch(addFeature(props, history))
   }
 }
 
