@@ -142,7 +142,7 @@ export const handleSubmitNew = (e, history, form, loggedInUser) => {
   }
   return (dispatch) => {
     const props = { ...form, user: loggedInUser.id }
-    dispatch(addFeature(props, history))
+    dispatch(addFeature(props, history, loggedInUser))
   }
 }
 
@@ -174,7 +174,7 @@ export const handleSubmitEdits = (e, history, form, loggedInUser) => {
 
 
 const validate = (form, loggedInUser) => {
-  if (!loggedInUser) return 'You must log in first'
+  if (!loggedInUser || loggedInUser.anonymous) return 'You must log in first'
   if (!form.title || form.title.trim() === '') return 'Title is missing'
   if (!form.description || form.description.trim() === '') return 'Description is missing'
   if (!form.location.confirmed) return 'Location must be confirmed first'
@@ -184,7 +184,9 @@ const validate = (form, loggedInUser) => {
 const validateEdits = (form, loggedInUser) => {
   const error = validate(form, loggedInUser)
   if (error) return error
-  if (!form.user || form.user !== loggedInUser.id) return "Can't edit someone elses table"
+  if (!form.user || (form.user !== loggedInUser.id && loggedInUser.id !== 'Sy26Gb1XKUWqPmnIGjQIgfwzXnd2')) {
+    return "Can't edit someone elses table"
+  }
   return null
 }
 

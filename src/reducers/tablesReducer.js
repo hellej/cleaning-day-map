@@ -64,7 +64,7 @@ export const tablesInitialization = () => {
 }
 
 
-export const addFeature = (props, history) => {
+export const addFeature = (props, history, loggedInUser) => {
   return async (dispatch) => {
     const newFeature = createGeoJSON(props)
     const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
@@ -74,6 +74,9 @@ export const addFeature = (props, history) => {
       database.ref(`/tables/${ref.key}/properties/id`).set(ref.key)
       newFeature.properties.id = ref.key
       dispatch({ type: 'ADD_FEATURE', newFeature })
+      const userTablesFer = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
+      const userTables = userTablesFer.val() ? userTablesFer.val().concat(ref.key) : [ref.key]
+      database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
       dispatch(selectFeature(newFeature))
       dispatch(zoomToFeature(geometry, 16))
@@ -121,10 +124,15 @@ export const removeFeature = (feature, loggedInUser, e) => {
     }
     const ok = window.confirm(`Remove table: ${feature.properties.title} ?`)
     if (ok === false) return
+    const id = feature.properties.id
 
     try {
-      await database.ref('tables').child(feature.properties.id).remove()
-      dispatch({ type: 'REMOVE_FEATURE', id: feature.properties.id })
+      await database.ref('tables').child(id).remove()
+      const userTablesRef = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
+      let userTables = userTablesRef.val()
+      userTables = userTables.filter(featureId => featureId !== id)
+      await database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
+      dispatch({ type: 'REMOVE_FEATURE', id })
       dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
     } catch (error) {
       dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))

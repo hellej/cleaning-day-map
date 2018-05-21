@@ -11,14 +11,15 @@ const initialUserState = {
 
 const userStateReducer = (store = initialUserState, action) => {
 
-  let loggedInUser, user, likes
+  let loggedInUser, user, likes, tables
 
   switch (action.type) {
 
     case 'SET_USER_LOGGED_IN':
       user = action.user
-      likes = user.likes ? user.likes : null
-      loggedInUser = { id: user.id, anonymous: user.anonymous, name: user.name, email: user.email, likes }
+      likes = user.likes ? user.likes : []
+      tables = user.likes ? user.tables : []
+      loggedInUser = { id: user.id, anonymous: user.anonymous, name: user.name, email: user.email, likes, tables }
       return { ...store, loggedInUser }
 
     case 'SET_USER_LOGGED_OUT':
@@ -39,6 +40,14 @@ const userStateReducer = (store = initialUserState, action) => {
     case 'LIKE_FEATURE':
     case 'UNLIKE_FEATURE':
       return { ...store, loggedInUser: { ...store.loggedInUser, likes: action.userLikes } }
+
+    case 'ADD_FEATURE':
+      tables = store.loggedInUser.tables.concat(action.newFeature.properties.id)
+      return { ...store, loggedInUser: { ...store.loggedInUser, tables } }
+
+    case 'REMOVE_FEATURE':
+      tables = store.loggedInUser.tables.filter((featureId => featureId !== action.id))
+      return { ...store, loggedInUser: { ...store.loggedInUser, tables } }
 
     default:
       return store
@@ -98,9 +107,8 @@ export const submitSignUp = (e, history, form) => {
     try {
       const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
       await authUser.updateProfile({ displayName: form.username })
-      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [] }
+      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [], tables: [] }
       await database.ref(`/users/${authUser.uid}`).set(user)
-      dispatch(setLoggedInUser(authUser))
       dispatch(showNotification({ type: 'success', text: `Sign up successfull, welcome ${form.username}!` }, 6))
       dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
@@ -117,11 +125,10 @@ export const submitLogin = (e, history, form) => {
     e.preventDefault()
     try {
       await auth.doSignInWithEmailAndPassword(form.email, form.password)
-      const user = await auth.currentUser()
-      dispatch(showNotification({ type: 'success', text: `Signed in, welcome ${user.displayName}!` }, 6))
       dispatch({ type: 'EMPTY_LOGIN_FORM' })
       history.push('/')
     } catch (error) {
+      console.log('Error in logging in: \n', error)
       dispatch({ type: 'UPDATE_LOGIN_FORM', name: 'error', value: error })
       dispatch(showNotification({ type: 'alert', text: error.message }, 6))
     }
@@ -132,9 +139,14 @@ export const setLoggedInUser = (authUser) => {
   return async (dispatch) => {
     if (authUser.isAnonymous) {
       try {
-        const userLikesRef = await database.ref(`/users/${authUser.uid}/likes`).once('value')
-        const userLikes = userLikesRef.val()
-        const user = { id: authUser.uid, anonymous: true, name: null, email: null, likes: userLikes }
+        const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
+        const user = {
+          ...userRef.val(),
+          id: authUser.uid,
+          anonymous: true,
+          name: null,
+          email: null
+        }
         await database.ref(`/users/${authUser.uid}`).set(user)
         dispatch({ type: 'SET_USER_LOGGED_IN', user })
       } catch (error) {
@@ -144,17 +156,13 @@ export const setLoggedInUser = (authUser) => {
       const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
       const user = { ...userRef.val(), anonymous: false }
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
+      dispatch(showNotification({ type: 'success', text: `Signed in, welcome ${user.name}!` }, 6))
     } catch (error) {
       console.log('Error in logging in: \n', error)
     }
   }
 }
 
-export const setUserLoggedOut = (user) => {
-  return (dispatch) => {
-    dispatch({ type: 'SET_USER_LOGGED_OUT' })
-  }
-}
 
 export const logOut = () => {
   return async (dispatch) => {
