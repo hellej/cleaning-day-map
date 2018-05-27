@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import history from './../history'
 
 import styled from 'styled-components'
 
@@ -35,8 +36,8 @@ class FocusDimLayer extends React.Component {
 
 
   componentDidMount() {
-    this.setState({ location: this.props.history.location.pathname })
-    this.props.history.listen((location) => {
+    this.setState({ location: history.location.pathname })
+    history.listen((location) => {
       this.setState({ location: location.pathname })
     })
   }

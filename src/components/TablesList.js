@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
+import history from './../history'
+
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
 import { removeFeature, toggleLikeTable } from './../reducers/tablesReducer'
@@ -17,7 +19,7 @@ const StyledTablesListContainer = StyledToolContainer.extend`
   font-size: 13px;
   letter-spacing: 0.2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  `
+`
 const StyledFilterDiv = styled.div`
   margin: 0;
   background: rgba(255,255,255,0.95);
@@ -27,7 +29,7 @@ const StyledFilterDiv = styled.div`
   z-index: 2;
   border-radius: 20px;
   padding: 6px 13px;
-  `
+`
 const StyledFilteredStatsDiv = styled.div`
   font-size: 9px; 
   padding: ${props => props.notables ? '4px 3px 4px 7px' : '4px 3px 8px 7px'};
@@ -36,7 +38,6 @@ const StyledFilteredStatsDiv = styled.div`
   color: grey;
   font-style: italic;
 `
-
 const StyledTableDiv = styled.div`
   padding: 9px 6px 7px 9px;
   border-radius: 7px; 
@@ -60,7 +61,7 @@ const StyledTableDiv = styled.div`
     box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
   }
   `}
-  `
+`
 const StyledTitleDiv = styled.div`
   margin: 0px 0px 0px 0px;
   padding: 0px;
@@ -77,55 +78,25 @@ const StyledLikes = styled.span`
 `
 
 
-class TablesList extends React.Component {
 
-  componentWillReceiveProps(nextProps) {
-    const locationChanged = nextProps.location !== this.props.location
-    if (locationChanged) { this.props.history.push('/') }
-  }
-
-  handleCloseClick = (e) => {
-    e.preventDefault()
-    this.props.history.push('/')
-  }
-
-  render() {
-    const { loggedInUser, history, features, selectedFeature, filter, mapFiltFeatures, allFeatures } = this.props
+const FilteredStats = ({ features, mapFiltFeatures, allFeatures }) => {
+  if (features.length === 0) {
     return (
-      <div>
-        <StyledTablesListContainer>
-          <StyledFilterDiv>
-            <Input filterinput
-              placeholder='Filter results'
-              value={filter}
-              onChange={(e) => this.props.handleFilterChange(e, allFeatures)} />
-            <Button cancel onClick={this.handleCloseClick}> Close </Button>
-          </StyledFilterDiv>
-          <FilteredStats features={features} mapFiltFeatures={mapFiltFeatures} allFeatures={allFeatures} />
-          {features.map(feature =>
-            <Table
-              key={feature.properties.id}
-              feature={feature}
-              loggedInUser={loggedInUser}
-              history={history}
-              selected={selectedFeature === feature.properties.id}
-              selectFeature={this.props.selectFeature}
-              zoomToFeature={this.props.zoomToFeature}
-              mouseOnFeature={this.props.mouseOnFeature}
-              mouseOutFeature={this.props.mouseOutFeature}
-              removeFeature={this.props.removeFeature}
-              toggleLikeTable={this.props.toggleLikeTable}
-              startEditing={this.props.startEditing}
-            />
-          )}
-        </StyledTablesListContainer>
-      </div>
+      <StyledFilteredStatsDiv notables>
+        <i>No tables to show within the map</i>
+      </StyledFilteredStatsDiv>
     )
   }
+  return (
+    <StyledFilteredStatsDiv>
+      {features.length} filtered from total {allFeatures.length} tables:
+    </StyledFilteredStatsDiv>
+  )
 }
 
+
 const Table = (props) => {
-  const { feature, loggedInUser, history, selected, zoomToFeature, selectFeature,
+  const { feature, loggedInUser, selected, zoomToFeature, selectFeature,
     mouseOnFeature, mouseOutFeature, removeFeature, toggleLikeTable, startEditing } = props
 
   const liked = loggedInUser && loggedInUser.likes &&
@@ -143,27 +114,57 @@ const Table = (props) => {
       </StyledTitleDiv>
       <StyledDescriptionDiv> {feature.properties.description} </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(feature.geometry, 16, e)}>Zoom</TableDivButton>
-      <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e, history)}>Edit</TableDivButton>
+      <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
       <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
     </StyledTableDiv>
   )
 }
 
-const FilteredStats = ({ features, mapFiltFeatures, allFeatures }) => {
-  if (features.length === 0) {
+
+class TablesList extends React.Component {
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location !== this.props.location) history.push('/')
+  }
+
+  handleCloseClick = (e) => {
+    e.preventDefault()
+    history.push('/')
+  }
+
+  render() {
+    const { loggedInUser, features, selectedFeature, filter, mapFiltFeatures, allFeatures } = this.props
     return (
-      <StyledFilteredStatsDiv notables>
-        <i>No tables to show within the map</i>
-      </StyledFilteredStatsDiv>
+      <div>
+        <StyledTablesListContainer>
+          <StyledFilterDiv>
+            <Input filterinput
+              placeholder='Filter results'
+              value={filter}
+              onChange={(e) => this.props.handleFilterChange(e, allFeatures)} />
+            <Button cancel onClick={this.handleCloseClick}> Close </Button>
+          </StyledFilterDiv>
+          <FilteredStats features={features} mapFiltFeatures={mapFiltFeatures} allFeatures={allFeatures} />
+          {features.map(feature =>
+            <Table
+              key={feature.properties.id}
+              feature={feature}
+              loggedInUser={loggedInUser}
+              selected={selectedFeature === feature.properties.id}
+              selectFeature={this.props.selectFeature}
+              zoomToFeature={this.props.zoomToFeature}
+              mouseOnFeature={this.props.mouseOnFeature}
+              mouseOutFeature={this.props.mouseOutFeature}
+              removeFeature={this.props.removeFeature}
+              toggleLikeTable={this.props.toggleLikeTable}
+              startEditing={this.props.startEditing}
+            />
+          )}
+        </StyledTablesListContainer>
+      </div>
     )
   }
-  return (
-    <StyledFilteredStatsDiv>
-      {features.length} filtered from total {allFeatures.length} tables:
-    </StyledFilteredStatsDiv>
-  )
 }
-
 
 
 const getCommonObjects = (array1, array2) => {

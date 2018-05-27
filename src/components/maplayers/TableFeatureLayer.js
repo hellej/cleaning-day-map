@@ -1,10 +1,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { renderPopup, getRenderedFeaturesFromQuery } from './../mapboxhelper'
+import { getRenderedFeaturesFromQuery } from './../mapboxhelper'
 import { setMapFilteredFeatures } from './../../reducers/mapFilteredTablesReducer'
 import { unselectFeature, selectFeature } from './../../reducers/mapControlReducer'
 import { setLayerLoaded } from './../../reducers/mapControlReducer'
+import { setMapFeaturePopup } from './../../reducers/mapPopupReducer'
 
 class TableFeatureLayer extends React.Component {
 
@@ -37,12 +38,10 @@ class TableFeatureLayer extends React.Component {
     map.setFilter('mouseOnFeature', ['==', '-', ''])
     map.setFilter('selectedFeature', ['==', '-', ''])
 
-    map.on('click', this.layerID, (e) => {
-      const feature = e.features[0]
-      renderPopup(feature, map)
-      this.props.selectFeature(e.features[0])
-    })
     map.on('click', (e) => { this.props.unselectFeature(e) })
+    map.on('click', this.layerID, (e) => {
+      this.props.setMapFeaturePopup(e.features[0], map)
+    })
     map.on('mouseenter', this.layerID, () => { map.getCanvas().style.cursor = 'pointer' })
     map.on('mouseleave', this.layerID, () => { map.getCanvas().style.cursor = '' })
 
@@ -115,7 +114,13 @@ const mapStateToProps = (state) => ({
   mouseOnFeature: state.mapControl.mouseOnFeature,
   reloadFeatures: state.mapControl.reloadFeatures
 })
-const mapDispatchToProps = { setMapFilteredFeatures, unselectFeature, selectFeature, setLayerLoaded }
+const mapDispatchToProps = {
+  setMapFilteredFeatures,
+  unselectFeature,
+  selectFeature,
+  setLayerLoaded,
+  setMapFeaturePopup
+}
 
 const ConnectedTableFeatureLayer = connect(mapStateToProps, mapDispatchToProps)(TableFeatureLayer)
 

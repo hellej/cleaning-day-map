@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import history from './../history'
 
 import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
 import { FormContainer, Input } from './FormElements'
-import { showNotification } from './../reducers/notificationReducer'
 import { handleSignUpFormChange, submitSignUp, openLoginForm, closeSignUpForm } from './../reducers/userReducer'
 
 const StyledError = styled.div`
@@ -18,13 +18,12 @@ padding: 5px 0px;
 class SignUpForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
-    const locationChanged = nextProps.location !== this.props.location
-    if (locationChanged) { this.props.history.push('/') }
+    if (nextProps.location !== this.props.location) { history.push('/') } //toggle form visibility by clicking the menu link
   }
 
   render() {
 
-    const { handleSignUpFormChange, history, signUpForm, submitSignUp, closeSignUpForm, openLoginForm } = this.props
+    const { signUpForm, handleSignUpFormChange, submitSignUp, closeSignUpForm, openLoginForm } = this.props
     const { username, email, passwordOne, passwordTwo, error } = signUpForm
     const isInvalid = passwordOne !== passwordTwo || passwordOne === '' || username === ''
 
@@ -61,9 +60,9 @@ class SignUpForm extends React.Component {
           />
           {error && <StyledError>{error.message}</StyledError>}
           <StyledLoginButtonDiv>
-            <Button submit disabled={isInvalid} onClick={(e) => submitSignUp(e, history, signUpForm)}> Sign Up </Button>
-            <Button signup onClick={(e) => openLoginForm(e, history)}> Sign In </Button>
-            <Button cancel onClick={(e) => closeSignUpForm(e, history)}> Cancel </Button>
+            <Button submit disabled={isInvalid} onClick={(e) => submitSignUp(e, signUpForm)}> Sign Up </Button>
+            <Button signup onClick={(e) => openLoginForm(e)}> Sign In </Button>
+            <Button cancel onClick={(e) => closeSignUpForm(e)}> Cancel </Button>
           </StyledLoginButtonDiv>
         </form>
       </FormContainer>
@@ -78,7 +77,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  showNotification,
   handleSignUpFormChange,
   submitSignUp,
   closeSignUpForm,

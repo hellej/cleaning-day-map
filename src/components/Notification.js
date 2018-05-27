@@ -37,15 +37,14 @@ ${props => props.type === 'load' && css`
   display: flex;
   align-items: center;
   justify-content: center;
-  //text-align: center;
-  //vertical-align: middle;
-  //line-height: normal;
+  pointer-events: none;
+  z-index: 1;
 `}
 `
 
 
 const Notification = (props) => {
-  if (props.notification.text === null) { return null }
+  if (props.notification.text === null) return null
 
   return (
     <StyledNotificationDiv {...props.notification}>

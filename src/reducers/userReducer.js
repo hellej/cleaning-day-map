@@ -1,6 +1,8 @@
 
 import { showNotification } from './notificationReducer'
-import { auth, database } from './../firebase/index'
+import { auth, database, firebase } from './../firebase/index'
+import history from './../history'
+
 
 const initialUserState = {
   loggedInUser: null,
@@ -55,6 +57,20 @@ const userStateReducer = (store = initialUserState, action) => {
 
 }
 
+export const startListeningToLoggedInUser = () => {
+  return async (dispatch) => {
+    firebase.auth.onAuthStateChanged(user => {
+      if (user) {
+        dispatch(setLoggedInUser(user))
+        console.log('User state change: \nanynomous: ', user.isAnonymous, '\n', user.uid, '\n', user.displayName, '\n', user.email, '\n')
+      } else {
+        firebase.auth.signInAnonymously()
+          .catch(error => { console.log('Error in anynomous sign in: \n', error) })
+      }
+    })
+  }
+}
+
 
 export const handleSignUpFormChange = (e) => {
   return { type: 'UPDATE_SIGNUP_FORM', name: e.target.name, value: e.target.value }
@@ -71,20 +87,20 @@ export const emptyLoginForm = () => {
 }
 
 
-export const closeSignUpForm = (e, history) => {
+export const closeSignUpForm = (e) => {
   e.preventDefault()
   return (dispatch) => {
     history.push('/')
   }
 }
-export const closeLoginForm = (e, history) => {
+export const closeLoginForm = (e) => {
   e.preventDefault()
   return (dispatch) => {
     history.push('/')
   }
 }
 
-export const openSignUpForm = (e, history) => {
+export const openSignUpForm = (e) => {
   e.preventDefault()
   return (dispatch) => {
     dispatch({ type: 'EMPTY_LOGIN_FORM' })
@@ -92,7 +108,7 @@ export const openSignUpForm = (e, history) => {
   }
 }
 
-export const openLoginForm = (e, history) => {
+export const openLoginForm = (e) => {
   e.preventDefault()
   return (dispatch) => {
     dispatch({ type: 'EMPTY_SIGNUP_FORM' })
@@ -101,7 +117,7 @@ export const openLoginForm = (e, history) => {
 }
 
 
-export const submitSignUp = (e, history, form) => {
+export const submitSignUp = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {
@@ -109,7 +125,7 @@ export const submitSignUp = (e, history, form) => {
       await authUser.updateProfile({ displayName: form.username })
       const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [], tables: [] }
       await database.ref(`/users/${authUser.uid}`).set(user)
-      dispatch(showNotification({ type: 'success', text: `Sign up successfull, welcome ${form.username}!` }, 6))
+      //dispatch(showNotification({ type: 'success', text: `Sign up successfull, welcome ${form.username}!` }, 6))
       dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
     } catch (error) {
@@ -120,7 +136,7 @@ export const submitSignUp = (e, history, form) => {
   }
 }
 
-export const submitLogin = (e, history, form) => {
+export const submitLogin = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {

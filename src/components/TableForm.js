@@ -10,19 +10,17 @@ import { handleFormChange, handleSubmitNew, setLocationInputActive, closeForm, h
 
 
 
-
 class TableForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
-    const locationChanged = nextProps.location !== this.props.location
-    const { history, closeForm, tableform } = this.props
-    if (locationChanged) { closeForm(history, tableform.editing) }
+    const { closeForm, tableform } = this.props
+    if (nextProps.location !== this.props.location) { closeForm(tableform.editing) } //toggle form visibility by clicking the nav link
   }
 
   render() {
 
     const { tableform, loggedInUser, handleFormChange, handleSubmitNew,
-      history, setLocationInputActive, closeForm, handleSubmitEdits } = this.props
+      setLocationInputActive, closeForm, handleSubmitEdits } = this.props
     const { editing, title, description, phonenum, openhours, location } = tableform
 
     return (
@@ -60,18 +58,18 @@ class TableForm extends React.Component {
           <LocationInput
             active={location.active}
             confirmed={location.confirmed}
-            onClick={() => setLocationInputActive(history, tableform)}>
+            onClick={() => setLocationInputActive(tableform)}>
             {location.active ? location.lngLat.lng + '\xa0\xa0' + location.lngLat.lat : 'Set Location'}
           </LocationInput>
         </form>
         {editing
           ? <StyledFormButtonDiv>
-            <Button submit onClick={(e) => handleSubmitEdits(e, history, tableform, loggedInUser)}> Save Table </Button>
-            <Button cancel onClick={() => closeForm(history, editing)}> Cancel </Button>
+            <Button submit onClick={(e) => handleSubmitEdits(e, tableform, loggedInUser)}> Save Table </Button>
+            <Button cancel onClick={() => closeForm(editing)}> Cancel </Button>
           </StyledFormButtonDiv>
           : <StyledFormButtonDiv>
-            <Button submit onClick={(e) => handleSubmitNew(e, history, tableform, loggedInUser)}> Add Table </Button>
-            <Button cancel onClick={() => closeForm(history, editing)}> Cancel </Button>
+            <Button submit onClick={(e) => handleSubmitNew(e, tableform, loggedInUser)}> Add Table </Button>
+            <Button cancel onClick={() => closeForm(editing)}> Cancel </Button>
           </StyledFormButtonDiv>
         }
       </FormContainer>

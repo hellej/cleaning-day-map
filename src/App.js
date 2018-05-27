@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { firebase } from './firebase/index'
+import history from './history'
 
 import { StyledNavLink, StyledNavLinkButton } from './components/Buttons'
 import { StyledNavLinkContainer } from './components/StyledLayout'
 
 import { showLoadNotification } from './reducers/notificationReducer'
 import { tablesInitialization } from './reducers/tablesReducer'
-import { logOut, setLoggedInUser, setUserLoggedOut } from './reducers/userReducer'
+import { logOut, startListeningToLoggedInUser } from './reducers/userReducer'
+
 import Map from './components/Map'
 import TableFeatureLayer from './components/maplayers/TableFeatureLayer'
 import SelectLocationFeatureLayer from './components/maplayers/SelectLocationFeatureLayer'
@@ -19,55 +20,42 @@ import TablesList from './components/TablesList'
 import Notification from './components/Notification'
 import MapDimLayer from './components/MapDimLayer'
 
+
 class App extends Component {
 
   componentDidMount = async () => {
     this.props.showLoadNotification()
     this.props.tablesInitialization()
-
-    firebase.auth.onAuthStateChanged(user => {
-      if (user) {
-        this.props.setLoggedInUser(user)
-        console.log('User state change: \nanynomous: ', user.isAnonymous, '\n', user.uid, '\n', user.displayName, '\n', user.email, '\n')
-      } else {
-        firebase.auth.signInAnonymously().catch(error => {
-          console.log('Error in anynomous sign in: \n', error)
-        })
-      }
-    })
+    this.props.startListeningToLoggedInUser()
   }
 
   render() {
+    const loggedIn = this.props.loggedInUser && !this.props.loggedInUser.anonymous
     const tableFormState = this.props.editing
       ? { name: 'Edit Table', path: '/edittable' }
       : { name: 'Add Table', path: '/addtable' }
+
     return (
-      <Router>
+      <Router history={history}>
         <div>
-          <Route render={({ history }) =>
-            <Map>
-              <MapDimLayer history={history} />
-              <TableFeatureLayer />
-              <SelectLocationFeatureLayer history={history} />
-            </Map>} />
+          <Map>
+            <MapDimLayer />
+            <TableFeatureLayer />
+            <SelectLocationFeatureLayer />
+          </Map>
 
           <StyledNavLinkContainer>
             <StyledNavLink to='/filtertables' activeClassName={'active'} > List Tables </StyledNavLink>
             <StyledNavLink to={tableFormState.path} activeClassName={'active'} > {tableFormState.name} </StyledNavLink>
-            {this.props.loggedInUser && !this.props.loggedInUser.anonymous
+            {loggedIn
               ? <StyledNavLinkButton onClick={this.props.logOut} > Logout </StyledNavLinkButton>
-              : <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>
-            }
+              : <StyledNavLink to='/login' activeClassName={'active'} > Login </StyledNavLink>}
           </StyledNavLinkContainer>
 
-          <Route path='/filtertables' render={({ history, location }) =>
-            <TablesList history={history} location={location} />} />
-          <Route exact path={tableFormState.path} render={({ history, location }) =>
-            <TableForm history={history} location={location} />} />
-          <Route path='/login' render={({ history, location }) =>
-            <LoginForm history={history} location={location} />} />
-          <Route path='/signup' render={({ history, location }) =>
-            <SignUpForm history={history} location={location} />} />
+          <Route path='/filtertables' render={({ location }) => <TablesList location={location} />} />
+          <Route exact path={tableFormState.path} render={({ location }) => <TableForm location={location} />} />
+          <Route path='/login' render={({ location }) => <LoginForm location={location} />} />
+          <Route path='/signup' render={({ location }) => <SignUpForm location={location} />} />
           <Notification />
         </div>
       </Router>
@@ -84,9 +72,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   tablesInitialization,
-  setLoggedInUser,
+  startListeningToLoggedInUser,
   logOut,
-  setUserLoggedOut,
   showLoadNotification
 }
 

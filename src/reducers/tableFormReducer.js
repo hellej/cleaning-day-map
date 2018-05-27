@@ -2,6 +2,7 @@
 import { showNotification } from './notificationReducer'
 import { addFeature, editFeature } from './tablesReducer'
 import { zoomToFeature } from './mapControlReducer'
+import history from './../history'
 
 const initialForm = {
   editing: false,
@@ -94,7 +95,7 @@ export const setLngLatForNew = (lngLat) => {
   return { type: 'SET_LNGLAT_2NEW', lngLat }
 }
 
-export const setLocationInputActive = (history, form) => {
+export const setLocationInputActive = (form) => {
   return async (dispatch) => {
     await new Promise(resolve => setTimeout(resolve, 400))
     dispatch({ type: 'SET_LOCINPUT_ACTIVE' })
@@ -107,7 +108,7 @@ export const setLocationInputActive = (history, form) => {
   }
 }
 
-export const confirmLocation = (history) => {
+export const confirmLocation = () => {
   return async (dispatch) => {
     dispatch({ type: 'CONFIRM_LOCATION' })
     const path = history.location.pathname
@@ -120,7 +121,7 @@ export const confirmLocation = (history) => {
   }
 }
 
-export const closeForm = (history, editing) => {
+export const closeForm = (editing) => {
   return (dispatch) => {
     dispatch({ type: 'SET_LOCINPUT_UNACTIVE' })
     dispatch({ type: 'STOP_EDITING' })
@@ -131,7 +132,7 @@ export const closeForm = (history, editing) => {
   }
 }
 
-export const handleSubmitNew = (e, history, form, loggedInUser) => {
+export const handleSubmitNew = (e, form, loggedInUser) => {
   e.preventDefault()
   const error = validate(form, loggedInUser)
   if (error) {
@@ -146,7 +147,7 @@ export const handleSubmitNew = (e, history, form, loggedInUser) => {
   }
 }
 
-export const startEditing = (feature, loggedInUser, e, history) => {
+export const startEditing = (feature, loggedInUser, e) => {
   return async (dispatch) => {
     if (e) {
       e.stopPropagation()
@@ -159,7 +160,7 @@ export const startEditing = (feature, loggedInUser, e, history) => {
   }
 }
 
-export const handleSubmitEdits = (e, history, form, loggedInUser) => {
+export const handleSubmitEdits = (e, form, loggedInUser) => {
   return async (dispatch) => {
     const error = validateEdits(form, loggedInUser)
     console.log('table to save: ', form)
