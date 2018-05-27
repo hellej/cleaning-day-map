@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { setLngLatForNew } from './../../reducers/tableFormReducer'
-import { renderPopup, removePopup, getLngLatFromGeometry, getLngLatFromLngLat } from './../mapboxhelper'
+import { getLngLatFromGeometry, getLngLatFromLngLat } from './../mapboxhelper'
+import { setMapFeaturePopup, closePopup } from './../../reducers/mapPopupReducer'
 
 class SelectLocationFeatureLayer extends React.Component {
 
   map = this.props.map
   canvas = this.props.map.getCanvasContainer()
-  history = this.props.history
   isCursorOverPoint = false
   isDragging = false
   confirmed = false
@@ -45,7 +45,7 @@ class SelectLocationFeatureLayer extends React.Component {
   mouseDown = () => {
     if (!this.props.active || this.props.confirmed) return
     if (!this.isCursorOverPoint) return
-    removePopup()
+    this.props.closePopup()
     this.isDragging = true
     this.canvas.style.cursor = 'grab'
     this.map.on('mousemove', this.onMove)
@@ -65,7 +65,7 @@ class SelectLocationFeatureLayer extends React.Component {
     this.canvas.style.cursor = ''
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
-    renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
+    this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
     this.map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
   }
 
@@ -83,14 +83,14 @@ class SelectLocationFeatureLayer extends React.Component {
       const selectedLocation = this.map.queryRenderedFeatures({ layers: ['selectedLocation'] })
       if (selectedLocation.length === 0) {
         this.setSelectedLocation(this.map.getCenter())
-        renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
+        this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
       }
     })
 
     map.on('click', (e) => {
       if (!this.props.active || this.props.confirmed) { return }
       this.setSelectedLocation(e.lngLat)
-      renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
+      this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
     })
 
     map.on('mousedown', this.mouseDown)
@@ -118,7 +118,7 @@ class SelectLocationFeatureLayer extends React.Component {
     if (active) {
       this.map.setFilter('selectedLocation', null)
     } else {
-      removePopup()
+      this.props.closePopup()
       this.map.setFilter('selectedLocation', ['==', '-', ''])
       return
     }
@@ -132,10 +132,10 @@ class SelectLocationFeatureLayer extends React.Component {
 
     if (confirmed) {
       map.setPaintProperty('selectedLocation', 'circle-color', '#00ff1d')
-      removePopup()
+      this.props.closePopup()
     } else {
       map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
-      renderPopup(this.selectedLocation.features[0], this.map, 20, this.history)
+      this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
     }
 
     const lngLat = getLngLatFromGeometry(this.selectedLocation.features[0].geometry)
@@ -145,7 +145,6 @@ class SelectLocationFeatureLayer extends React.Component {
   componentWillUnmount() {
     this.map.removeSource('selectedLocation')
   }
-
 
   render() {
     return null
@@ -161,6 +160,12 @@ const mapStateToProps = (state) => ({
   lngLatToEdit: state.tableform.lngLatToEdit
 })
 
-const ConnectedSelectLocationFeatureLayer = connect(mapStateToProps, { setLngLatForNew })(SelectLocationFeatureLayer)
+const mapDispatchToProps = {
+  setLngLatForNew,
+  setMapFeaturePopup,
+  closePopup
+}
+
+const ConnectedSelectLocationFeatureLayer = connect(mapStateToProps, mapDispatchToProps)(SelectLocationFeatureLayer)
 
 export default ConnectedSelectLocationFeatureLayer

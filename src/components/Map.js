@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { setCamera, resetCamera, setMapLoaded } from './../reducers/mapControlReducer'
 import { equalCenter } from './mapboxhelper'
 
-MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token needed to use the map'
+MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token is needed in order to use the map'
 
 
 class Map extends React.Component {

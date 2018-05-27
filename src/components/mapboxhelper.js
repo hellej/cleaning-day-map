@@ -1,12 +1,5 @@
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { LngLat } from 'mapbox-gl'
-
-import Popup from './maplayers/Popup'
-import PopupSelectLocation from './maplayers/PopupSelectLocation'
-
 
 
 export const getUniqueFeatures = (array, comparatorProperty) => {
@@ -25,37 +18,6 @@ export const getUniqueFeatures = (array, comparatorProperty) => {
 export const getRenderedFeaturesFromQuery = (map, id) => {
   const layerfeatures = map.queryRenderedFeatures({ layers: [id] })
   return getUniqueFeatures(layerfeatures, 'id')
-}
-
-
-
-let popupObj = null
-
-export const removePopup = () => {
-  if (popupObj) { popupObj.remove() }
-}
-
-export const renderPopup = (feature, map, offset, history) => {
-  removePopup()
-
-  const coordinates = feature.geometry.coordinates.slice()
-  const newFeaturePopup = feature.properties ? false : true
-
-  newFeaturePopup ?
-    popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: false, offset: offset, anchor: 'top' })
-    : popupObj = new MapboxGl.Popup({ closeOnClick: true, closeButton: true, offset: offset })
-
-  popupObj
-    .setLngLat(coordinates)
-    .setHTML('<div id="popup" </div>')
-    .addTo(map)
-
-  popupObj.on('close', function (e) {
-  })
-
-  newFeaturePopup ?
-    ReactDOM.render(<PopupSelectLocation history={history} />, document.getElementById('popup'))
-    : ReactDOM.render(<Popup feature={feature} />, document.getElementById('popup'))
 }
 
 

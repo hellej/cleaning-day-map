@@ -11,6 +11,7 @@ import mapControlReducer from './reducers/mapControlReducer'
 import notificationReducer from './reducers/notificationReducer'
 import tableFormReducer from './reducers/tableFormReducer'
 import userStateReducer from './reducers/userReducer'
+import mapPopupReducer from './reducers/mapPopupReducer'
 
 
 const reducer = combineReducers({
@@ -21,7 +22,8 @@ const reducer = combineReducers({
   filter: filterReducer,
   mapControl: mapControlReducer,
   tableform: tableFormReducer,
-  userState: userStateReducer
+  userState: userStateReducer,
+  mapPopup: mapPopupReducer
 })
 
 const store = createStore(
