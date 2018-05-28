@@ -65,7 +65,7 @@ class SelectLocationFeatureLayer extends React.Component {
     this.canvas.style.cursor = ''
     this.isDragging = false
     this.map.off('mousemove', this.onMove)
-    this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
+    this.props.setMapFeaturePopup(this.selectedLocation.features[0], 20)
     this.map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
   }
 
@@ -83,14 +83,14 @@ class SelectLocationFeatureLayer extends React.Component {
       const selectedLocation = this.map.queryRenderedFeatures({ layers: ['selectedLocation'] })
       if (selectedLocation.length === 0) {
         this.setSelectedLocation(this.map.getCenter())
-        this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
+        this.props.setMapFeaturePopup(this.selectedLocation.features[0], 20)
       }
     })
 
     map.on('click', (e) => {
       if (!this.props.active || this.props.confirmed) { return }
       this.setSelectedLocation(e.lngLat)
-      this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
+      this.props.setMapFeaturePopup(this.selectedLocation.features[0], 20)
     })
 
     map.on('mousedown', this.mouseDown)
@@ -135,7 +135,7 @@ class SelectLocationFeatureLayer extends React.Component {
       this.props.closePopup()
     } else {
       map.setPaintProperty('selectedLocation', 'circle-color', '#e9ff00')
-      this.props.setMapFeaturePopup(this.selectedLocation.features[0], this.map, 20)
+      this.props.setMapFeaturePopup(this.selectedLocation.features[0], 20)
     }
 
     const lngLat = getLngLatFromGeometry(this.selectedLocation.features[0].geometry)

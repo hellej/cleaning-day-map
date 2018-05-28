@@ -4,6 +4,8 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 const initialMapPopups = { featurePopup: null, selectLocationPopup: null }
 let mbPopup
+let mapRef
+
 
 const mapPopupReducer = (store = initialMapPopups, action) => {
   let feature = null
@@ -32,7 +34,7 @@ const mapPopupReducer = (store = initialMapPopups, action) => {
 }
 
 
-export const setMapFeaturePopup = (feature, map, offset) => {
+export const setMapFeaturePopup = (feature, offset) => {
   return async (dispatch) => {
     if (mbPopup) {
       mbPopup.remove()
@@ -49,7 +51,7 @@ export const setMapFeaturePopup = (feature, map, offset) => {
     mbPopup
       .setLngLat(coordinates)
       .setHTML('<div id="popup" </div>')
-      .addTo(map)
+      .addTo(mapRef)
 
     selectLocationPopup
       ? dispatch({ type: 'SET_SELECTLOC_POPUP', feature })
@@ -63,6 +65,9 @@ export const closePopup = () => {
   }
 }
 
+export const setMapReferenceForPopups = (map) => {
+  if (!mapRef) mapRef = map
+}
 
 
 

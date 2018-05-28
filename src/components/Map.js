@@ -3,6 +3,7 @@ import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 import { connect } from 'react-redux'
 import { setCamera, resetCamera, setMapLoaded } from './../reducers/mapControlReducer'
 import { equalCenter } from './mapboxhelper'
+import { setMapReferenceForPopups } from '../reducers/mapPopupReducer'
 
 MapboxGl.accessToken = process.env.REACT_APP_MB_ACCESS || 'Mapbox token is needed in order to use the map'
 
@@ -39,6 +40,7 @@ class Map extends React.Component {
 
     this.map.on('load', () => {
       this.props.setMapLoaded()
+      setMapReferenceForPopups(this.map)
       console.log('map loaded')
       this.map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true

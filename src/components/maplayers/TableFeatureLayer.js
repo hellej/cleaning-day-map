@@ -38,7 +38,7 @@ class TableFeatureLayer extends React.Component {
     map.setFilter('selectedFeature', ['==', '-', ''])
 
     map.on('click', this.layerID, (e) => {
-      this.props.setMapFeaturePopup(e.features[0], map)
+      this.props.setMapFeaturePopup(e.features[0])
     })
     map.on('mouseenter', this.layerID, () => { map.getCanvas().style.cursor = 'pointer' })
     map.on('mouseleave', this.layerID, () => { map.getCanvas().style.cursor = '' })
