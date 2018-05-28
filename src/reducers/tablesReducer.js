@@ -74,8 +74,8 @@ export const addFeature = (props, history, loggedInUser) => {
       database.ref(`/tables/${ref.key}/properties/id`).set(ref.key)
       newFeature.properties.id = ref.key
       dispatch({ type: 'ADD_FEATURE', newFeature })
-      const userTablesFer = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
-      const userTables = userTablesFer.val() ? userTablesFer.val().concat(ref.key) : [ref.key]
+      const userTablesRef = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
+      const userTables = userTablesRef.val() ? userTablesRef.val().concat(ref.key) : [ref.key]
       database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
       dispatch(zoomToFeature(geometry, 16))
@@ -127,7 +127,7 @@ export const removeFeature = (feature, loggedInUser, e) => {
     try {
       await database.ref('tables').child(id).remove()
       const userTablesRef = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
-      let userTables = userTablesRef.val()
+      let userTables = userTablesRef.val() ? userTablesRef.val() : []
       userTables = userTables.filter(featureId => featureId !== id)
       await database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch({ type: 'REMOVE_FEATURE', id })

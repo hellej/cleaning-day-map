@@ -13,7 +13,7 @@ const initialUserState = {
 
 const userStateReducer = (store = initialUserState, action) => {
 
-  let loggedInUser, user, likes, tables
+  let loggedInUser, user, likes, tables, usertables
 
   switch (action.type) {
 
@@ -44,11 +44,13 @@ const userStateReducer = (store = initialUserState, action) => {
       return { ...store, loggedInUser: { ...store.loggedInUser, likes: action.userLikes } }
 
     case 'ADD_FEATURE':
-      tables = store.loggedInUser.tables.concat(action.newFeature.properties.id)
+      usertables = store.loggedInUser.tables ? store.loggedInUser.tables : []
+      tables = usertables.concat(action.newFeature.properties.id)
       return { ...store, loggedInUser: { ...store.loggedInUser, tables } }
 
     case 'REMOVE_FEATURE':
-      tables = store.loggedInUser.tables.filter((featureId => featureId !== action.id))
+      usertables = store.loggedInUser.tables ? store.loggedInUser.tables : []
+      tables = usertables.filter((featureId => featureId !== action.id))
       return { ...store, loggedInUser: { ...store.loggedInUser, tables } }
 
     default:
