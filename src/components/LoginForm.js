@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import history from './../history'
+import history, { sameHistoryLocation } from './../history'
 
 import { Button } from './Buttons'
 import { StyledLoginButtonDiv } from './StyledLayout'
@@ -10,16 +10,16 @@ import { handleLoginFormChange, submitLogin, closeLoginForm, openSignUpForm } fr
 
 
 const StyledError = styled.div`
-font-size: 13px
-font-style: italic;
-padding: 5px 0px;
+  font-size: 13px
+  font-style: italic;
+  padding: 5px 0px;
 `
 
 
 class LoginForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location !== this.props.location) { history.push('/') } //toggle form visibility by clicking the menu link
+    if (sameHistoryLocation(this.props, nextProps)) { history.push('/') } //toggle form visibility by clicking the menu link
   }
 
   render() {

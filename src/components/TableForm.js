@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { sameHistoryLocation } from './../history'
 
 import { FormContainer, Input, Textarea } from './FormElements'
 import { Button, LocationInput } from './Buttons'
@@ -14,7 +15,7 @@ class TableForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const { closeForm, tableform } = this.props
-    if (nextProps.location !== this.props.location) { closeForm(tableform.editing) } //toggle form visibility by clicking the nav link
+    if (sameHistoryLocation(this.props, nextProps)) { closeForm(tableform.editing) } //toggle form visibility by clicking the nav link
   }
 
   render() {

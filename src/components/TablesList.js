@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-import history from './../history'
+import history, { sameHistoryLocation } from './../history'
 
 import { handleFilterChange } from './../reducers/filterReducer'
 import { zoomToFeature, selectFeature, unselectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
@@ -128,7 +128,7 @@ const Table = (props) => {
 class TablesList extends React.Component {
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location !== this.props.location) history.push('/')
+    if (sameHistoryLocation(this.props, nextProps)) history.push('/')
   }
 
   handleCloseClick = (e) => {
