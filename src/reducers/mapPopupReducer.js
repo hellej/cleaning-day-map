@@ -1,3 +1,4 @@
+
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
 
 
@@ -5,6 +6,7 @@ const initialMapPopups = { featurePopup: null, selectLocationPopup: null }
 let mbPopup
 
 const mapPopupReducer = (store = initialMapPopups, action) => {
+  let feature = null
 
   switch (action.type) {
     case 'SET_FEATURE_POPUP':
@@ -12,6 +14,14 @@ const mapPopupReducer = (store = initialMapPopups, action) => {
 
     case 'SET_SELECTLOC_POPUP':
       return { ...initialMapPopups, selectLocationPopup: action.feature }
+
+    case 'LIKE_FEATURE':
+    case 'UNLIKE_FEATURE':
+      feature = store.featurePopup
+      if (feature && feature.properties.id === action.id) {
+        feature.properties.likes = action.likes
+      }
+      return { ...initialMapPopups, featurePopup: feature }
 
     case 'CLOSE_POPUP':
       return initialMapPopups
