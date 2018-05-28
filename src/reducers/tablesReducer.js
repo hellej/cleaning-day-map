@@ -2,6 +2,7 @@ import { createGeoJSON } from './../components/mapboxhelper'
 import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
 import { zoomAndOpenFeature } from './mapControlReducer'
+import { setMapFeaturePopup, closePopup } from './mapPopupReducer'
 
 
 const initialFeatureCollection = {
@@ -99,6 +100,7 @@ export const editFeature = (props, history) => {
       dispatch({ type: 'UPDATE_FEATURE', id, editedFeature })
       dispatch(showNotification({ type: 'success', text: 'Table saved succesfully' }, 4))
       dispatch({ type: 'EMPTY_TABLEFORM' })
+      dispatch(setMapFeaturePopup(editedFeature))
       history.push('/')
     } catch (error) {
       console.log('Error in saving new table: \n', error)
@@ -130,6 +132,7 @@ export const removeFeature = (feature, loggedInUser, e) => {
       userTables = userTables.filter(featureId => featureId !== id)
       await database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch({ type: 'REMOVE_FEATURE', id })
+      dispatch(closePopup())
       dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
     } catch (error) {
       dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))
