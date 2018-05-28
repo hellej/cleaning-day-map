@@ -179,7 +179,7 @@ const validateRemove = (feature, loggedInUser) => {
     return 'You must log in first'
   }
   if (!feature.properties.user || feature.properties.user !== loggedInUser.id) {
-    return 'You cannot delete someone elses table'
+    return 'Cannot delete someone elses table'
   }
   return null
 }

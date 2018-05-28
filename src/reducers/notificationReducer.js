@@ -10,8 +10,10 @@ const notificationReducer = (store = initialNotification, action) => {
   switch (action.type) {
     case 'SHOWNOTIF':
       return { text: action.notification.text, type: action.notification.type }
+
     case 'RMNOTIF':
       return { ...initialNotification }
+
     case 'SET_MAP_LOADED':
       notification = store
       if (store.type === 'load') {

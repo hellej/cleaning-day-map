@@ -1,7 +1,7 @@
 
 import { showNotification } from './notificationReducer'
 import { addFeature, editFeature } from './tablesReducer'
-import { zoomToFeature } from './mapControlReducer'
+import { zoomToFeature, mouseOutFeature } from './mapControlReducer'
 import history from './../history'
 
 const initialForm = {
@@ -19,12 +19,6 @@ const initialForm = {
   },
   lngLatToEdit: { lng: null, lat: null },
   error: null
-}
-
-const phoneScreen = (window) => {
-  if (window.innerWidth < 640 && window.innerHeight < 900) {
-    return true
-  } return false
 }
 
 
@@ -99,7 +93,7 @@ export const setLocationInputActive = (form) => {
   return async (dispatch) => {
     await new Promise(resolve => setTimeout(resolve, 400))
     dispatch({ type: 'SET_LOCINPUT_ACTIVE' })
-    dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to desired location' }, 10))
+    dispatch(showNotification({ type: 'info', text: 'Drag or click the yellow point to a desired location' }, 10))
     if (phoneScreen(window)) {
       form.editing
         ? history.push('/edittable/location')
@@ -111,6 +105,7 @@ export const setLocationInputActive = (form) => {
 export const confirmLocation = () => {
   return async (dispatch) => {
     dispatch({ type: 'CONFIRM_LOCATION' })
+    dispatch(showNotification({ type: 'success', text: 'Location confirmed' }, 3))
     const path = history.location.pathname
     if (path !== '/addtable' && path !== '/edittable') {
       await new Promise(resolve => setTimeout(resolve, 400))
@@ -134,7 +129,7 @@ export const closeForm = (editing) => {
 
 export const handleSubmitNew = (e, form, loggedInUser) => {
   e.preventDefault()
-  const error = validate(form, loggedInUser)
+  const error = validateSubmitNew(form, loggedInUser)
   if (error) {
     return (dispatch) => {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
@@ -153,16 +148,25 @@ export const startEditing = (feature, loggedInUser, e) => {
       e.stopPropagation()
       e.preventDefault()
     }
+    const error = validateStartEditing(feature, loggedInUser)
+    if (error) {
+      dispatch(showNotification({ type: 'alert', text: error }, 4))
+      return
+    }
+
+    history.push('/')
+    await new Promise(resolve => setTimeout(resolve, 100))
     dispatch({ type: 'EMPTY_TABLEFORM' })
     dispatch({ type: 'START_EDITING', feature })
-    dispatch(zoomToFeature(feature.geometry, 15))
+    dispatch(mouseOutFeature())
+    dispatch(zoomToFeature(feature, 15))
     history.push('/edittable')
   }
 }
 
 export const handleSubmitEdits = (e, form, loggedInUser) => {
   return async (dispatch) => {
-    const error = validateEdits(form, loggedInUser)
+    const error = validateSubmitEdits(form, loggedInUser)
     console.log('table to save: ', form)
     if (error) {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
@@ -174,7 +178,7 @@ export const handleSubmitEdits = (e, form, loggedInUser) => {
 }
 
 
-const validate = (form, loggedInUser) => {
+const validateSubmitNew = (form, loggedInUser) => {
   if (!loggedInUser || loggedInUser.anonymous) return 'You must log in first'
   if (!form.title || form.title.trim() === '') return 'Title is missing'
   if (!form.description || form.description.trim() === '') return 'Description is missing'
@@ -182,14 +186,29 @@ const validate = (form, loggedInUser) => {
   return null
 }
 
-const validateEdits = (form, loggedInUser) => {
-  const error = validate(form, loggedInUser)
-  if (error) return error
-  if (!form.user || (form.user !== loggedInUser.id && loggedInUser.id !== 'Sy26Gb1XKUWqPmnIGjQIgfwzXnd2')) {
-    return "Can't edit someone elses table"
+const validateStartEditing = (feature, loggedInUser) => {
+  if ((!loggedInUser || loggedInUser.anonymous) && loggedInUser.id !== feature.properties.user) {
+    return 'You must log in first'
+  }
+  if (!feature.properties.user || feature.properties.user !== loggedInUser.id) {
+    return 'Cannot edit someone elses table'
   }
   return null
 }
 
+const validateSubmitEdits = (form, loggedInUser) => {
+  const error = validateSubmitNew(form, loggedInUser)
+  if (error) return error
+  if (!form.user || (form.user !== loggedInUser.id && loggedInUser.id !== 'Sy26Gb1XKUWqPmnIGjQIgfwzXnd2')) {
+    return 'Cannot edit someone elses table'
+  }
+  return null
+}
+
+const phoneScreen = (window) => {
+  if (window.innerWidth < 640 && window.innerHeight < 900) {
+    return true
+  } return false
+}
 
 export default tableFormReducer
