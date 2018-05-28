@@ -3,7 +3,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getRenderedFeaturesFromQuery } from './../mapboxhelper'
 import { setMapFilteredFeatures } from './../../reducers/mapFilteredTablesReducer'
-import { unselectFeature, selectFeature } from './../../reducers/mapControlReducer'
 import { setLayerLoaded } from './../../reducers/mapControlReducer'
 import { setMapFeaturePopup } from './../../reducers/mapPopupReducer'
 
@@ -38,7 +37,6 @@ class TableFeatureLayer extends React.Component {
     map.setFilter('mouseOnFeature', ['==', '-', ''])
     map.setFilter('selectedFeature', ['==', '-', ''])
 
-    map.on('click', (e) => { this.props.unselectFeature(e) })
     map.on('click', this.layerID, (e) => {
       this.props.setMapFeaturePopup(e.features[0], map)
     })
@@ -116,8 +114,6 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = {
   setMapFilteredFeatures,
-  unselectFeature,
-  selectFeature,
   setLayerLoaded,
   setMapFeaturePopup
 }

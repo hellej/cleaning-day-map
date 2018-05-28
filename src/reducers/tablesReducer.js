@@ -1,7 +1,7 @@
 import { createGeoJSON } from './../components/mapboxhelper'
 import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
-import { selectFeature, zoomToFeature } from './mapControlReducer'
+import { zoomToFeature } from './mapControlReducer'
 
 
 const initialFeatureCollection = {
@@ -78,7 +78,6 @@ export const addFeature = (props, history, loggedInUser) => {
       const userTables = userTablesFer.val() ? userTablesFer.val().concat(ref.key) : [ref.key]
       database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
-      dispatch(selectFeature(newFeature))
       dispatch(zoomToFeature(geometry, 16))
       dispatch({ type: 'EMPTY_TABLEFORM' })
       history.push('/')
@@ -99,7 +98,6 @@ export const editFeature = (props, history) => {
       console.log('editedFeature', editedFeature)
       database.ref(`/tables/${id}`).set(editedFeature)
       dispatch({ type: 'UPDATE_FEATURE', id, editedFeature })
-      dispatch(selectFeature(editedFeature))
       dispatch(showNotification({ type: 'success', text: 'Table saved succesfully' }, 4))
       dispatch({ type: 'EMPTY_TABLEFORM' })
       history.push('/')
@@ -144,8 +142,8 @@ export const removeFeature = (feature, loggedInUser, e) => {
 export const toggleLikeTable = (feature, loggedInUser, e) => {
   return async (dispatch) => {
     if (e) {
-      e.preventDefault()
       e.stopPropagation()
+      e.preventDefault()
     }
     const id = feature.properties.id
     const tableLikesDB = database.ref(`/tables/${id}/properties/likes`)

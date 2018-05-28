@@ -37,7 +37,7 @@ const mapControlReducer = (store = initialControl, action) => {
       return { ...store, mouseOnFeature: action.feature.properties.id }
 
     case 'MOUSEOUT_FEATURE':
-      return { ...store, mouseOnFeature: null }
+      return { ...store, mouseOnFeature: null, selectedFeature: null }
 
     case 'SET_MAP_LOADED':
       return { ...store, mapLoaded: true }
@@ -92,7 +92,8 @@ export const resetCamera = (feature) => {
   }
 }
 
-export const selectFeature = (feature) => {
+export const selectFeature = (feature, e) => {
+  if (e) e.stopPropagation()
   const id = feature.properties ? feature.properties.id : feature.id
   return { type: 'TOGGLE_SELECTION', id }
 }

@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import history from './../history'
 
 import { handleFilterChange } from './../reducers/filterReducer'
-import { zoomToFeature, selectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
+import { zoomToFeature, selectFeature, unselectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
 import { removeFeature, toggleLikeTable } from './../reducers/tablesReducer'
 import { startEditing } from './../reducers/tableFormReducer'
 
@@ -65,6 +65,7 @@ const StyledTableDiv = styled.div`
 const StyledTitleDiv = styled.div`
   margin: 0px 0px 0px 0px;
   padding: 0px;
+  font-weight: 600;
 `
 const StyledDescriptionDiv = styled.div`
   margin: 5px 0px 5px 0px;
@@ -96,7 +97,7 @@ const FilteredStats = ({ features, mapFiltFeatures, allFeatures }) => {
 
 
 const Table = (props) => {
-  const { feature, loggedInUser, selected, zoomToFeature, selectFeature,
+  const { feature, loggedInUser, selected, zoomToFeature, selectFeature, unselectFeature,
     mouseOnFeature, mouseOutFeature, removeFeature, toggleLikeTable, startEditing } = props
 
   const liked = loggedInUser && loggedInUser.likes &&
@@ -105,14 +106,17 @@ const Table = (props) => {
   return (
     <StyledTableDiv
       selected={selected}
-      onClick={() => selectFeature(feature)}
       onMouseEnter={() => mouseOnFeature(feature)}
       onMouseLeave={() => mouseOutFeature()}>
-      <StyledTitleDiv><b>{feature.properties.title}</b>
+      <StyledTitleDiv>{feature.properties.title}
         <LikedHeart liked={liked} size={13} onClick={(e) => toggleLikeTable(feature, loggedInUser, e)} />
         <StyledLikes>{feature.properties.likes}</StyledLikes>
       </StyledTitleDiv>
-      <StyledDescriptionDiv> {feature.properties.description} </StyledDescriptionDiv>
+      <StyledDescriptionDiv
+        onMouseDown={() => selectFeature(feature)}
+        onMouseUp={() => unselectFeature()}>
+        {feature.properties.description}
+      </StyledDescriptionDiv>
       <TableDivButton onClick={(e) => zoomToFeature(feature.geometry, 16, e)}>Zoom</TableDivButton>
       <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
       <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
@@ -152,6 +156,7 @@ class TablesList extends React.Component {
               loggedInUser={loggedInUser}
               selected={selectedFeature === feature.properties.id}
               selectFeature={this.props.selectFeature}
+              unselectFeature={this.props.unselectFeature}
               zoomToFeature={this.props.zoomToFeature}
               mouseOnFeature={this.props.mouseOnFeature}
               mouseOutFeature={this.props.mouseOutFeature}
@@ -189,6 +194,7 @@ const mapDispatchToProps = {
   handleFilterChange,
   zoomToFeature,
   selectFeature,
+  unselectFeature,
   mouseOnFeature,
   mouseOutFeature,
   removeFeature,
