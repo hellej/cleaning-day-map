@@ -45,13 +45,14 @@ ${props => props.cancel && css`
 
 export const TableDivButton = styled.button`
   border-radius: 4px;
-  margin: 0px 5px 0px 0px;
+  margin: 0px 7px 0px 0px;
   border: 1px solid transparent;
-  background: rgba(0, 0, 0, 0.06);
-  padding: 1px 4px;
-  font-weight: 450;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 2px 4px;
+  font-weight: 400;
   cursor: pointer;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 -2px 3px 0 rgba(50, 50, 50, 0.05), 0 2px 3px 0 rgba(50, 50, 50, 0.15);
   transition-duration: 0.15s;
   &:hover { 
     background: rgba(0, 0, 0, 0.27);
@@ -73,7 +74,7 @@ export const TableDivButton = styled.button`
 export const LikedHeart = styled(FaHeartO) `
   color: ${props => props.liked === 1 ? 'red' : 'black'};
   cursor: pointer;
-  position: absolute;
+  position: ${props => props.position ? props.position : 'absolute'};
   top: 10px;
   margin: 0px 0px 0px 10px;
   transition-duration: 0.2s;

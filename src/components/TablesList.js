@@ -68,7 +68,11 @@ const StyledTitleDiv = styled.div`
   font-weight: 600;
 `
 const StyledDescriptionDiv = styled.div`
-  margin: 5px 0px 5px 0px;
+  margin: 5px 0px 8px 0px;
+  padding: 0px;
+`
+const StyledButtonDiv = styled.div`
+  margin: 0px 0px 3px 0px;
   padding: 0px;
 `
 const StyledLikes = styled.span`
@@ -117,9 +121,11 @@ const Table = (props) => {
         onMouseUp={() => unselectFeature()}>
         {feature.properties.description}
       </StyledDescriptionDiv>
-      <TableDivButton onClick={(e) => zoomAndOpenFeature(feature, 16, e)}>Zoom</TableDivButton>
-      <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
-      <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
+      <StyledButtonDiv>
+        <TableDivButton onClick={(e) => zoomAndOpenFeature(feature, 16, e)}>Zoom</TableDivButton>
+        <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
+        <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
+      </StyledButtonDiv>
     </StyledTableDiv>
   )
 }

@@ -10,15 +10,16 @@ const StyledPopupTitle = styled.div`
   font-weight: bold;
   font-size: 13px;
   color: black
+  padding-right: 5px;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
   line-height: 130%;
 `
 const StyledInfo = styled.div`
-margin 4px 0px 4px 0px;
-font-size: 13px;
-line-height: 120%;
-color: black;
+  margin 4px 0px 4px 0px;
+  font-size: 13px;
+  line-height: 120%;
+  color: black;
 `
 const StyledPopupButtonDiv = styled.div`
   margin: 9px 0px 0px -5px;
@@ -51,7 +52,7 @@ class MapFeaturePopup extends React.Component {
         <StyledPopupButtonDiv>
           <LikedHeart
             position={'static'}
-            liked={liked} size={13}
+            liked={liked} size={15}
             onClick={(e) => toggleLikeTable(feature, loggedInUser, e)} />
           <StyledLikes>{feature.properties.likes}</StyledLikes>
           <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
