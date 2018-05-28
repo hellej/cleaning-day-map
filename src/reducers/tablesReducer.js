@@ -1,7 +1,7 @@
 import { createGeoJSON } from './../components/mapboxhelper'
 import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
-import { zoomToFeature } from './mapControlReducer'
+import { zoomAndOpenFeature } from './mapControlReducer'
 
 
 const initialFeatureCollection = {
@@ -67,7 +67,6 @@ export const tablesInitialization = () => {
 export const addFeature = (props, history, loggedInUser) => {
   return async (dispatch) => {
     const newFeature = createGeoJSON(props)
-    const geometry = { coordinates: [props.location.lngLat.lng, props.location.lngLat.lat] }
 
     try {
       const ref = await database.ref('/tables').push(newFeature)
@@ -78,8 +77,8 @@ export const addFeature = (props, history, loggedInUser) => {
       const userTables = userTablesRef.val() ? userTablesRef.val().concat(ref.key) : [ref.key]
       database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
-      dispatch(zoomToFeature(geometry, 16))
       dispatch({ type: 'EMPTY_TABLEFORM' })
+      dispatch(zoomAndOpenFeature(newFeature, 16))
       history.push('/')
     } catch (error) {
       console.log('Error in saving new table: \n', error)

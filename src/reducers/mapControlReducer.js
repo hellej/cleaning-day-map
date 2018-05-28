@@ -1,4 +1,6 @@
 import MapboxGl from 'mapbox-gl/dist/mapbox-gl.js'
+import { setMapFeaturePopup } from './mapPopupReducer'
+
 
 const initialControl = {
   center: null,
@@ -55,10 +57,11 @@ const mapControlReducer = (store = initialControl, action) => {
   }
 }
 
-export const zoomToFeature = (geometry, zoom, e) => {
+export const zoomToFeature = (feature, zoom, e) => {
   return async (dispatch) => {
     if (e) e.stopPropagation()
     const zoomTo = zoom ? zoom : 13
+    const geometry = feature.geometry
     let center
 
     geometry.lng
@@ -76,7 +79,13 @@ export const zoomToFeature = (geometry, zoom, e) => {
       center: null,
       zoom: zoomTo
     })
+  }
+}
 
+export const zoomAndOpenFeature = (feature, zoom, e) => {
+  return async (dispatch) => {
+    dispatch(zoomToFeature(feature, zoom, e))
+    dispatch(setMapFeaturePopup(feature))
   }
 }
 

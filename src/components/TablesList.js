@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import history, { sameHistoryLocation } from './../history'
 
 import { handleFilterChange } from './../reducers/filterReducer'
-import { zoomToFeature, selectFeature, unselectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
+import { zoomAndOpenFeature, selectFeature, unselectFeature, mouseOnFeature, mouseOutFeature } from './../reducers/mapControlReducer'
 import { removeFeature, toggleLikeTable } from './../reducers/tablesReducer'
 import { startEditing } from './../reducers/tableFormReducer'
 
@@ -97,7 +97,7 @@ const FilteredStats = ({ features, mapFiltFeatures, allFeatures }) => {
 
 
 const Table = (props) => {
-  const { feature, loggedInUser, selected, zoomToFeature, selectFeature, unselectFeature,
+  const { feature, loggedInUser, selected, zoomAndOpenFeature, selectFeature, unselectFeature,
     mouseOnFeature, mouseOutFeature, removeFeature, toggleLikeTable, startEditing } = props
 
   const liked = loggedInUser && loggedInUser.likes &&
@@ -117,7 +117,7 @@ const Table = (props) => {
         onMouseUp={() => unselectFeature()}>
         {feature.properties.description}
       </StyledDescriptionDiv>
-      <TableDivButton onClick={(e) => zoomToFeature(feature.geometry, 16, e)}>Zoom</TableDivButton>
+      <TableDivButton onClick={(e) => zoomAndOpenFeature(feature, 16, e)}>Zoom</TableDivButton>
       <TableDivButton onClick={(e) => startEditing(feature, loggedInUser, e)}>Edit</TableDivButton>
       <TableDivButton onClick={(e) => removeFeature(feature, loggedInUser, e)}>Delete</TableDivButton>
     </StyledTableDiv>
@@ -157,7 +157,7 @@ class TablesList extends React.Component {
               selected={selectedFeature === feature.properties.id}
               selectFeature={this.props.selectFeature}
               unselectFeature={this.props.unselectFeature}
-              zoomToFeature={this.props.zoomToFeature}
+              zoomAndOpenFeature={this.props.zoomAndOpenFeature}
               mouseOnFeature={this.props.mouseOnFeature}
               mouseOutFeature={this.props.mouseOutFeature}
               removeFeature={this.props.removeFeature}
@@ -192,7 +192,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   handleFilterChange,
-  zoomToFeature,
+  zoomAndOpenFeature,
   selectFeature,
   unselectFeature,
   mouseOnFeature,
