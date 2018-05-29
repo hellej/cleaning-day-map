@@ -177,9 +177,7 @@ export const toggleLikeTable = (feature, loggedInUser, e) => {
 
 
 const validateRemove = (feature, loggedInUser) => {
-  if ((!loggedInUser || loggedInUser.anonymous) && loggedInUser.id !== feature.properties.user) {
-    return 'You must log in first'
-  }
+  if (!loggedInUser || loggedInUser.anonymous) return 'You must log in first'
   if (!feature.properties.user || feature.properties.user !== loggedInUser.id) {
     return 'Cannot delete someone elses table'
   }

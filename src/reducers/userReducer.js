@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { auth, database, firebase } from './../firebase/index'
+import { auth, db, firebase } from './../firebase/index'
 import history from './../history'
 
 
@@ -123,11 +123,11 @@ export const submitSignUp = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {
+      dispatch(showNotification({ type: 'load', text: 'Signing up...' }, 5))
       const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
       await authUser.updateProfile({ displayName: form.username })
       const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [], tables: [] }
-      await database.ref(`/users/${authUser.uid}`).set(user)
-      //dispatch(showNotification({ type: 'success', text: `Sign up successfull, welcome ${form.username}!` }, 6))
+      await db.ref(`/users/${authUser.uid}`).set(user)
       dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
     } catch (error) {
@@ -142,6 +142,7 @@ export const submitLogin = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {
+      dispatch(showNotification({ type: 'load', text: 'Logging in...' }, 5))
       await auth.doSignInWithEmailAndPassword(form.email, form.password)
       dispatch({ type: 'EMPTY_LOGIN_FORM' })
       history.push('/')
@@ -155,24 +156,34 @@ export const submitLogin = (e, form) => {
 
 export const setLoggedInUser = (authUser) => {
   return async (dispatch) => {
+    console.log('AUTH USER: ', authUser)
+    let dbUserRef = await db.ref(`/users/${authUser.uid}`).once('value')
     if (authUser.isAnonymous) {
       try {
-        const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
         const user = {
-          ...userRef.val(),
+          ...dbUserRef.val(),
           id: authUser.uid,
           anonymous: true,
           name: null,
           email: null
         }
-        await database.ref(`/users/${authUser.uid}`).set(user)
+        await db.ref(`/users/${authUser.uid}`).set(user)
         dispatch({ type: 'SET_USER_LOGGED_IN', user })
       } catch (error) {
         console.log('Error in logging in anonymous user: \n', error)
       }
     } else try {
-      const userRef = await database.ref(`/users/${authUser.uid}`).once('value')
-      const user = { ...userRef.val(), anonymous: false }
+      for (let i = 1; i < 5; i++) {
+        console.log('try no: ', i)
+        dbUserRef = await db.ref(`/users/${authUser.uid}`).once('value')
+        if (dbUserRef.val()) break
+        await new Promise(resolve => setTimeout(resolve, 200))
+      }
+      if (!dbUserRef.val()) {
+        history.push('/')
+        window.location.reload(true)
+      }
+      const user = { ...dbUserRef.val(), anonymous: false }
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
       dispatch(showNotification({ type: 'success', text: `Signed in, welcome ${user.name}!` }, 6))
     } catch (error) {
