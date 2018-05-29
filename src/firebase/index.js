@@ -1,10 +1,13 @@
 import * as auth from './auth'
 import * as firebase from './firebase'
-import { database } from './database'
-
+import { db } from './database'
+import * as featureService from './db/features'
+import * as userService from './db/users'
 
 export {
   auth,
-  database,
-  firebase
+  db,
+  firebase,
+  featureService,
+  userService
 }

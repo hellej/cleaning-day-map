@@ -1,4 +1,4 @@
-import { database } from './firebase'
+import { db } from './firebase'
 
 
-export { database }
+export { db }

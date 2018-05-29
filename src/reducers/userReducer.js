@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { auth, db, firebase } from './../firebase/index'
+import { auth, db, firebase, userService } from './../firebase/index'
 import history from './../history'
 
 
@@ -61,12 +61,14 @@ const userStateReducer = (store = initialUserState, action) => {
 
 export const startListeningToLoggedInUser = () => {
   return async (dispatch) => {
-    firebase.auth.onAuthStateChanged(user => {
-      if (user) {
-        dispatch(setLoggedInUser(user))
-        console.log('User state change: \nanynomous: ', user.isAnonymous, '\n', user.uid, '\n', user.displayName, '\n', user.email, '\n')
+    firebase.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        authUser.isAnonymous
+          ? dispatch(setLoggedInAnonymous(authUser))
+          : dispatch(setLoggedInUser(authUser))
+        console.log('User state change: \nanynomous: ', authUser.isAnonymous, '\n', authUser.uid, '\n', authUser.displayName, '\n', authUser.email, '\n')
       } else {
-        firebase.auth.signInAnonymously()
+        auth.doSignInAnonymously()
           .catch(error => { console.log('Error in anynomous sign in: \n', error) })
       }
     })
@@ -123,14 +125,12 @@ export const submitSignUp = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {
-      dispatch(showNotification({ type: 'load', text: 'Signing up...' }, 5))
-      const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
-      await authUser.updateProfile({ displayName: form.username })
-      const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [], tables: [] }
-      await db.ref(`/users/${authUser.uid}`).set(user)
-      dispatch({ type: 'EMPTY_SIGNUP_FORM' })
       history.push('/')
+      dispatch(showNotification({ type: 'load', text: 'Signing up...' }, 5))
+      await userService.handleSignUp(form)
+      dispatch({ type: 'EMPTY_SIGNUP_FORM' })
     } catch (error) {
+      history.push('/signup')
       console.log('Error in creating profile: \n', error)
       dispatch({ type: 'UPDATE_SIGNUP_FORM', name: 'error', value: error })
       dispatch(showNotification({ type: 'alert', text: error.message }, 6))
@@ -142,11 +142,12 @@ export const submitLogin = (e, form) => {
   return async (dispatch) => {
     e.preventDefault()
     try {
-      dispatch(showNotification({ type: 'load', text: 'Logging in...' }, 5))
-      await auth.doSignInWithEmailAndPassword(form.email, form.password)
-      dispatch({ type: 'EMPTY_LOGIN_FORM' })
       history.push('/')
+      dispatch(showNotification({ type: 'load', text: 'Logging in...' }, 5))
+      await userService.handleSignIn(form.email, form.password)
+      dispatch({ type: 'EMPTY_LOGIN_FORM' })
     } catch (error) {
+      history.push('/login')
       console.log('Error in logging in: \n', error)
       dispatch({ type: 'UPDATE_LOGIN_FORM', name: 'error', value: error })
       dispatch(showNotification({ type: 'alert', text: error.message }, 6))
@@ -154,36 +155,41 @@ export const submitLogin = (e, form) => {
   }
 }
 
+export const setLoggedInAnonymous = (authUser) => {
+  return async (dispatch) => {
+    const anonymousUser = await userService.getUser(authUser.uid)
+    try {
+      const user = {
+        ...anonymousUser,
+        id: authUser.uid,
+        anonymous: true,
+        name: null,
+        email: null
+      }
+      await db.ref(`/users/${authUser.uid}`).set(user)
+      dispatch({ type: 'SET_USER_LOGGED_IN', user })
+    } catch (error) {
+      console.log('Error in logging in anonymous user: \n', error)
+    }
+  }
+}
+
 export const setLoggedInUser = (authUser) => {
   return async (dispatch) => {
-    console.log('AUTH USER: ', authUser)
-    let dbUserRef = await db.ref(`/users/${authUser.uid}`).once('value')
-    if (authUser.isAnonymous) {
-      try {
-        const user = {
-          ...dbUserRef.val(),
-          id: authUser.uid,
-          anonymous: true,
-          name: null,
-          email: null
+    try {
+      let user = await userService.getUser(authUser.uid)
+      if (!user) {
+        for (let i = 1; i < 5; i++) {
+          await new Promise(resolve => setTimeout(resolve, 150))
+          user = await userService.getUser(authUser.uid)
+          if (user) break
         }
-        await db.ref(`/users/${authUser.uid}`).set(user)
-        dispatch({ type: 'SET_USER_LOGGED_IN', user })
-      } catch (error) {
-        console.log('Error in logging in anonymous user: \n', error)
+        if (!user) {
+          history.push('/')
+          dispatch(showNotification({ type: 'error', text: 'Could not load user profile' }, 4))
+        }
       }
-    } else try {
-      for (let i = 1; i < 5; i++) {
-        console.log('try no: ', i)
-        dbUserRef = await db.ref(`/users/${authUser.uid}`).once('value')
-        if (dbUserRef.val()) break
-        await new Promise(resolve => setTimeout(resolve, 200))
-      }
-      if (!dbUserRef.val()) {
-        history.push('/')
-        window.location.reload(true)
-      }
-      const user = { ...dbUserRef.val(), anonymous: false }
+      user = { ...user, anonymous: false }
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
       dispatch(showNotification({ type: 'success', text: `Signed in, welcome ${user.name}!` }, 6))
     } catch (error) {
@@ -191,7 +197,6 @@ export const setLoggedInUser = (authUser) => {
     }
   }
 }
-
 
 export const logOut = () => {
   return async (dispatch) => {

@@ -1,9 +1,9 @@
 import { createGeoJSON } from './../components/mapboxhelper'
-import { database } from './../firebase/index'
 import { showNotification } from './notificationReducer'
 import { zoomAndOpenFeature } from './mapControlReducer'
 import { setMapFeaturePopup, closePopup } from './mapPopupReducer'
-
+import { featureService } from './../firebase/index'
+import history from './../history'
 
 const initialFeatureCollection = {
   type: 'FeatureCollection',
@@ -50,61 +50,46 @@ const tablesReducer = (store = initialFeatureCollection, action) => {
 export const tablesInitialization = () => {
   return async (dispatch) => {
     try {
-      const snapshot = await database.ref('tables').once('value')
-      const features = Object.values(snapshot.val())
-      const featureCollection = {
-        type: 'FeatureCollection',
-        features: features
-      }
+      const featureCollection = await featureService.onceGetAllAsCollection()
       dispatch({ type: 'INIT_FEATURES', featureCollection })
     } catch (error) {
       console.log('Error in tables initialization: \n', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't load tables" }, 7))
+      dispatch(showNotification({ type: 'alert', text: 'Could not load tables' }, 7))
     }
   }
 }
 
 
-export const addFeature = (props, history, loggedInUser) => {
+export const addFeature = (props, loggedInUser) => {
   return async (dispatch) => {
     const newFeature = createGeoJSON(props)
-
     try {
-      const ref = await database.ref('/tables').push(newFeature)
-      database.ref(`/tables/${ref.key}/properties/id`).set(ref.key)
-      newFeature.properties.id = ref.key
+      newFeature.properties.id = await featureService.addFeature(newFeature, loggedInUser)
       dispatch({ type: 'ADD_FEATURE', newFeature })
-      const userTablesRef = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
-      const userTables = userTablesRef.val() ? userTablesRef.val().concat(ref.key) : [ref.key]
-      database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
       dispatch(showNotification({ type: 'success', text: 'New table added to database' }, 4))
       dispatch({ type: 'EMPTY_TABLEFORM' })
       dispatch(zoomAndOpenFeature(newFeature, 16))
-      history.push('/')
     } catch (error) {
+      history.push('/addtable')
       console.log('Error in saving new table: \n', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't add table" }, 6))
+      dispatch(showNotification({ type: 'alert', text: 'Could not add table' }, 6))
     }
   }
 }
 
-export const editFeature = (props, history) => {
+export const editFeature = (props) => {
   return async (dispatch) => {
-    const id = props.id
     try {
-      const featureLikesRef = await database.ref(`/tables/${id}/properties/likes`).once('value')
-      props.likes = featureLikesRef.val() ? featureLikesRef.val() : props.likes
-      const editedFeature = createGeoJSON(props)
-      console.log('editedFeature', editedFeature)
-      database.ref(`/tables/${id}`).set(editedFeature)
-      dispatch({ type: 'UPDATE_FEATURE', id, editedFeature })
+      const editedFeature = await featureService.updateFeature(props)
+      dispatch({ type: 'UPDATE_FEATURE', id: props.id, editedFeature })
       dispatch(showNotification({ type: 'success', text: 'Table saved succesfully' }, 4))
       dispatch({ type: 'EMPTY_TABLEFORM' })
       dispatch(setMapFeaturePopup(editedFeature))
       history.push('/')
     } catch (error) {
+      history.push('/addtable')
       console.log('Error in saving new table: \n', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't save table" }, 6))
+      dispatch(showNotification({ type: 'alert', text: 'Could not save table' }, 6))
     }
   }
 }
@@ -123,19 +108,16 @@ export const removeFeature = (feature, loggedInUser, e) => {
     }
     const ok = window.confirm(`Remove table: ${feature.properties.title} ?`)
     if (ok === false) return
+
     const id = feature.properties.id
 
     try {
-      await database.ref('tables').child(id).remove()
-      const userTablesRef = await database.ref(`/users/${loggedInUser.id}/tables`).once('value')
-      let userTables = userTablesRef.val() ? userTablesRef.val() : []
-      userTables = userTables.filter(featureId => featureId !== id)
-      await database.ref(`/users/${loggedInUser.id}/tables`).set(userTables)
+      await featureService.removeFeature(id, loggedInUser)
       dispatch({ type: 'REMOVE_FEATURE', id })
       dispatch(closePopup())
       dispatch(showNotification({ type: 'success', text: 'Table removed' }, 4))
     } catch (error) {
-      dispatch(showNotification({ type: 'alert', text: "Couldn't remove table" }, 6))
+      dispatch(showNotification({ type: 'alert', text: 'Could not remove table' }, 6))
       console.log('Error in removing table: \n', error)
     }
   }
@@ -143,34 +125,31 @@ export const removeFeature = (feature, loggedInUser, e) => {
 
 export const toggleLikeTable = (feature, loggedInUser, e) => {
   return async (dispatch) => {
-    if (e) {
-      e.stopPropagation()
-      e.preventDefault()
-    }
-    const id = feature.properties.id
-    const tableLikesDB = database.ref(`/tables/${id}/properties/likes`)
-    const userLikesDB = database.ref(`/users/${loggedInUser.id}/likes`)
-    const likedBefore = loggedInUser.likes !== null && loggedInUser.likes.indexOf(id) !== -1
+    if (e) e.stopPropagation()
 
     try {
-      const tableLikesRef = await tableLikesDB.once('value')
-      let tableLikes = tableLikesRef.val()
-      let userLikes = loggedInUser.likes
-
-      if (likedBefore) {
-        userLikes = userLikes !== null ? userLikes.filter(tableid => tableid !== id) : []
-        dispatch({ type: 'UNLIKE_FEATURE', id, likes: tableLikes - 1, uid: loggedInUser.id, userLikes })
-        tableLikesDB.set(tableLikes - 1)
-        userLikesDB.set(userLikes)
+      const id = feature.properties.id
+      const likedChangeSet = await featureService.toggleLikeFeature(feature, loggedInUser)
+      if (likedChangeSet.likedBefore) {
+        dispatch({
+          type: 'UNLIKE_FEATURE',
+          id,
+          likes: likedChangeSet.tableLikes,
+          uid: loggedInUser.id,
+          userLikes: likedChangeSet.userLikes
+        })
       } else {
-        userLikes ? userLikes.push(id) : userLikes = [id]
-        dispatch({ type: 'LIKE_FEATURE', id, likes: tableLikes + 1, uid: loggedInUser.id, userLikes })
-        tableLikesDB.set(tableLikes + 1)
-        userLikesDB.set(userLikes)
+        dispatch({
+          type: 'LIKE_FEATURE',
+          id,
+          likes: likedChangeSet.tableLikes,
+          uid: loggedInUser.id,
+          userLikes: likedChangeSet.userLikes
+        })
       }
     } catch (error) {
       console.log('Error in like table: \n', error)
-      dispatch(showNotification({ type: 'alert', text: "Couldn't like table" }, 6))
+      dispatch(showNotification({ type: 'alert', text: 'Could not like table' }, 6))
     }
   }
 }
