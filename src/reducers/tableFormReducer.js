@@ -25,7 +25,7 @@ const initialForm = {
 
 const tableFormReducer = (store = initialForm, action) => {
 
-  let active, confirmed, lngLat, location, lngLatToEdit
+  let active, confirmed, lngLat, location, lngLatToEdit, id
 
   switch (action.type) {
     case 'UPDATE_FORM':
@@ -68,6 +68,12 @@ const tableFormReducer = (store = initialForm, action) => {
       const location = { active: true, confirmed: true, lngLat: { ...lngLatToEdit } }
       return { editing: true, id, user, title, description, phonenum, openhours, location, lngLatToEdit, error: null }
     }
+
+    case 'REMOVE_FEATURE':
+      id = store.id
+      if (id && id === action.id) return initialForm
+      return store
+
 
     case 'STOP_EDITING':
       return { ...store, editing: false }
