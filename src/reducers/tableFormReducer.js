@@ -74,7 +74,6 @@ const tableFormReducer = (store = initialForm, action) => {
       if (id && id === action.id) return initialForm
       return store
 
-
     case 'STOP_EDITING':
       return { ...store, editing: false }
 
@@ -134,15 +133,15 @@ export const closeForm = (editing) => {
 }
 
 export const handleSubmitNew = (e, form, loggedInUser) => {
-  e.preventDefault()
-  const error = validateSubmitNew(form, loggedInUser)
-  if (error) {
-    return (dispatch) => {
+  return (dispatch) => {
+    e.preventDefault()
+    const error = validateSubmitNew(form, loggedInUser)
+    if (error) {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
+      return
     }
-  }
-  return (dispatch) => {
+    dispatch(showNotification({ type: 'load', text: 'Creating feature...' }, 5))
     const props = { ...form, user: loggedInUser.id }
     dispatch(addFeature(props, history, loggedInUser))
   }
@@ -162,23 +161,23 @@ export const startEditing = (feature, loggedInUser, e) => {
 
     history.push('/')
     await new Promise(resolve => setTimeout(resolve, 100))
+    history.push('/edittable')
     dispatch({ type: 'EMPTY_TABLEFORM' })
     dispatch({ type: 'START_EDITING', feature })
     dispatch(mouseOutFeature())
     dispatch(zoomToFeature(feature, 15))
-    history.push('/edittable')
   }
 }
 
 export const handleSubmitEdits = (e, form, loggedInUser) => {
   return async (dispatch) => {
     const error = validateSubmitEdits(form, loggedInUser)
-    console.log('table to save: ', form)
     if (error) {
       dispatch(showNotification({ type: 'alert', text: error }, 4))
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
       return
     }
+    dispatch(showNotification({ type: 'load', text: 'Saving edits...' }, 5))
     dispatch(editFeature(form, history))
   }
 }
