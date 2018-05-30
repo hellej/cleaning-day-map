@@ -10,22 +10,22 @@ describe('Page navigation', () => {
   })
 
   it('Loads the feature list', () => {
-    cy.visit('http://localhost:3000/filtertables')
+    cy.visit('/filtertables')
     cy.contains('Kledjuja ja pyörä')
   })
 
   it('Loads the add feature form', () => {
-    cy.visit('http://localhost:3000/addtable')
+    cy.visit('/addtable')
     cy.contains('Set Location')
   })
 
   it('Loads the login page', () => {
-    cy.visit('http://localhost:3000/login')
+    cy.visit('/login')
     cy.contains('Sign Up')
   })
 
   it('Loads the sign up page', () => {
-    cy.visit('http://localhost:3000/signup')
+    cy.visit('/signup')
     cy.contains('Sign In')
   })
 

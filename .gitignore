@@ -32,5 +32,7 @@ README.1.md
 /src/drafts
 
 # cypress
-/cypress/integration/examples
 /cypress/examples
+
+# utils
+/utils

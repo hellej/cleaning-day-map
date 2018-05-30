@@ -1,12 +1,8 @@
 
 describe('Login', () => {
 
-  // before(() => {
-  //   cy.visit('localhost:3000/')
-  // })
-
   it('With empty login fields, login button is disabled', () => {
-    cy.visit('localhost:3000/')
+    cy.visit('/')
     cy.contains('Login').click()
 
     cy.url().should('include', '/login')

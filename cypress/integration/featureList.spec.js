@@ -28,7 +28,7 @@ describe('Feature list', () => {
 
 
 const logIn = () => {
-  cy.visit('localhost:3000/')
+  cy.visit('/')
   cy.contains('Login').click()
   cy.get('input[name="email"]')
     .clear()

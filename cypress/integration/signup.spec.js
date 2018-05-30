@@ -3,7 +3,7 @@ describe('Sign up', () => {
 
   it('Produces error if email is invalid', () => {
 
-    cy.visit('localhost:3000/signup')
+    cy.visit('/signup')
 
     cy.get('input[name="username"]')
       .clear()
