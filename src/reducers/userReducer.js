@@ -201,7 +201,7 @@ export const setLoggedInUser = (authUser) => {
 export const logOut = () => {
   return async (dispatch) => {
     try {
-      await auth.doSignOut()
+      await userService.signOut()
       dispatch({ type: 'SET_USER_LOGGED_OUT' })
       dispatch(showNotification({ type: 'alert', text: 'Logged out' }, 4))
     } catch (error) {
