@@ -1,9 +1,11 @@
 
 describe('Sign up', () => {
 
-  it('Produces error if email is invalid', () => {
-
+  before(() => {
     cy.visit('/signup')
+  })
+
+  it('Produces error if email is invalid', () => {
 
     cy.get('input[name="username"]')
       .clear()
@@ -16,18 +18,30 @@ describe('Sign up', () => {
       .should('have.value', 'timonsahkoposti')
 
     cy.get('input[name="passwordOne"]')
-      .clear()
       .type('salaisuudet')
+    cy.get('input[name="passwordOne"]')
       .should('have.value', 'salaisuudet')
 
     cy.get('input[name="passwordTwo"]')
-      .clear()
       .type('salaisuudet')
+    cy.get('input[name="passwordTwo"]')
       .should('have.value', 'salaisuudet')
 
-    cy.get('button').contains('Sign Up').click()
+    cy.contains('Sign Up').click()
+    // cy.get('button').contains('Sign Up').click()
     cy.contains('badly formatted')
-    cy.wait(2000)
+    cy.wait(1000)
 
   })
+
+  after(() => {
+    cy.wait(2000)
+    cy.get('body').then(($body) => {
+      if ($body.text().includes('Logout')) {
+        console.log('CONTAINS LOGOUT', )
+        cy.contains('Logout').click()
+      }
+    })
+  })
+
 })

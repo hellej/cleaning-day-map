@@ -36,8 +36,7 @@ describe('Login', () => {
       .type('salaisuudet')
 
     cy.get('button').contains('Login').click()
-    cy.contains('welcome')
-    cy.contains('Jose')
+    cy.contains('Logout')
     cy.wait(2000)
   })
 
@@ -49,6 +48,5 @@ describe('Login', () => {
   after(() => {
 
   })
-
 
 })

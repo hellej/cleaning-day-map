@@ -16,9 +16,7 @@ describe('Feature list', () => {
     cy.contains('Zoom').click()
     cy.wait(3000)
     cy.contains('Aamulla')
-
   })
-
 
   after(() => {
     cy.contains('Logout').click()
@@ -37,16 +35,6 @@ const logIn = () => {
     .clear()
     .type('salaisuudet')
   cy.get('button').contains('Login').click()
-  cy.wait(3000)
-  cy.contains('welcome')
-  cy.contains('Jose')
+  cy.contains('Logout')
+  cy.wait(2000)
 }
-
-
-// cy.get('body').then(($body) => {
-//   if ($body.text().includes('Logout')) {
-//     console.log('CONTAINS LOGOUT', )
-//     cy.contains('Logout').click()
-//   }
-//   console.log('LOGGING IN', )
-// })
