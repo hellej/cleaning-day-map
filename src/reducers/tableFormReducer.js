@@ -141,9 +141,10 @@ export const handleSubmitNew = (e, form, loggedInUser) => {
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
       return
     }
+    history.push('/')
     dispatch(showNotification({ type: 'load', text: 'Creating feature...' }, 5))
     const props = { ...form, user: loggedInUser.id }
-    dispatch(addFeature(props, history, loggedInUser))
+    dispatch(addFeature(props, loggedInUser))
   }
 }
 
@@ -177,8 +178,9 @@ export const handleSubmitEdits = (e, form, loggedInUser) => {
       dispatch({ type: 'SET_TABLEFORM_ERROR', error })
       return
     }
+    history.push('/')
     dispatch(showNotification({ type: 'load', text: 'Saving edits...' }, 5))
-    dispatch(editFeature(form, history))
+    dispatch(editFeature(form))
   }
 }
 
