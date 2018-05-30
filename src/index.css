@@ -26,7 +26,7 @@ body {
 .mapboxgl-popup-content {
   overflow-y: auto;
   overflow-x: auto;
-  max-width: 135px;
+  max-width: 145px;
   max-height: 200px;
   background: rgba(255,255,255,.95);
   border-radius: 5px;
