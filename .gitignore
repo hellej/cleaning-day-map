@@ -25,6 +25,12 @@ README.1.md
 
 # firebase
 /src/firebase/config.js
+/deploy.sh
+/database.rules.json
 
 # drafts
 /src/drafts
+
+# cypress
+/cypress/integration/examples
+/cypress/examples
