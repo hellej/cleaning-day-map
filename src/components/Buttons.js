@@ -17,7 +17,7 @@ export const Button = styled.button`
   text-decoration: none;
   transition-duration: 0.2s;
   -webkit-transition-duration: 0.2s; /* Safari */
-  @media (max-width: 380px) {
+  @media (max-width: 370px) {
     font-size: 12px;
     padding: 5px 8px;
   }
@@ -44,7 +44,7 @@ ${props => props.cancel && css`
   &:hover { 
     border: 1px solid red;
     box-shadow: inset 0 0 2px red; } 
-  @media (max-width: 380px) {
+  @media (max-width: 370px) {
     font-size: 12px;
     padding: 3px 3px;
   }
@@ -120,7 +120,7 @@ export const StyledNavLink = styled(NavLink).attrs({
     border-color: black;
     background: black;
   }
-  @media (max-width: 380px) {
+  @media (max-width: 370px) {
     font-size: 12px;
     padding: 4px 7px;
   }
@@ -142,7 +142,7 @@ export const StyledNavLinkButton = styled.div`
   transition-duration: 0.2s;
   -webkit-transition-duration: 0.2s; /* Safari */
   &:hover { box-shadow: inset 0 0 0 1px black;  }
-  @media (max-width: 380px) {
+  @media (max-width: 370px) {
     padding: 4px 7px;
     font-size: 12px;
   }
@@ -160,7 +160,7 @@ export const LocationInput = styled.div`
   letter-spacing: 3px;
   line-height: 14px;
   margin: 12px auto;
-  padding: 9px 16px;
+  padding: 9px 4px;
   text-align: center;
   transition-duration: 0.2s;
   -webkit-transition-duration: 0.2s; /* Safari */
