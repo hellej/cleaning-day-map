@@ -48,17 +48,15 @@ const StyledTableDiv = styled.div`
   transition: box-shadow 0.15s;
   background: rgba(255, 255, 255,0.5);
   z-index: 2;
-  box-shadow: 0 -2px 3px 0 rgba(50, 50, 50, 0.1), 0 2px 3px 0 rgba(50, 50, 50, 0.1);
+  box-shadow: 0 -1px 3px 0 rgba(50, 50, 50, 0.1), 0 2px 3px 0 rgba(50, 50, 50, 0.1);
   &:hover {
     z-index: 4;
-    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.1), 0 3px 7px 0 rgba(0, 0, 0, 0.25);
+    box-shadow: 0 -1px 5px 0 rgba(0, 0, 0, 0.1), 0 3px 5px 0 rgba(0, 0, 0, 0.2);
   }
   ${props => props.selected && css`
-  //background: rgba(255, 214, 247,0.8);
-  box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
   z-index: 3;
   &:hover {
-    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.35);
+    box-shadow: 0 -1px 7px 0 rgba(0, 0, 0, 0.15), 0 4px 7px 0 rgba(0, 0, 0, 0.25);
   }
   `}
 `

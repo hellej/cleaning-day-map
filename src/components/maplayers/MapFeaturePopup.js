@@ -22,7 +22,7 @@ const StyledInfo = styled.div`
   color: black;
 `
 const StyledPopupButtonDiv = styled.div`
-  margin: 9px 0px 0px -5px;
+  margin: 9px -8px 0px -5px;
   padding: 0px;
   font-weight: 600;
 `
