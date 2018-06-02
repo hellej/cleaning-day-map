@@ -1,19 +1,32 @@
 
 import { db } from './../firebase'
-import { auth } from './../index'
+import { auth } from './../firebase'
+
 
 export const onceGetUsers = () => db.ref('users').once('value')
 
-
 export const handleSignUp = async (form) => {
-  const authUser = await auth.doCreateUserWithEmailAndPassword(form.email, form.passwordOne)
-  await authUser.updateProfile({ displayName: form.username })
-  const user = { id: authUser.uid, name: authUser.displayName, email: authUser.email, likes: [], tables: [] }
-  await db.ref(`/users/${authUser.uid}`).set(user)
+  const createUserRef = await auth.createUserWithEmailAndPassword(form.email, form.passwordOne)
+  const user = createUserRef.user
+  await user.updateProfile({ displayName: form.username })
+  const dbUser = { id: user.uid, name: form.username, email: form.email, likes: [], tables: [] }
+  await db.ref(`/users/${user.uid}`).set(dbUser)
 }
 
 export const handleSignIn = async (email, password) => {
-  await auth.doSignInWithEmailAndPassword(email, password)
+  await auth.signInWithEmailAndPassword(email, password)
+}
+
+export const signInAnonymously = async (email, password) => {
+  auth.signInAnonymously()
+}
+
+export const onAuthStateChanged = (user) => {
+  return auth.onAuthStateChanged(user)
+}
+
+export const getCurrentUser = () => {
+  return auth.currentUser
 }
 
 export const setUser = async (id, user) => {
@@ -30,7 +43,7 @@ export const removeUser = async (id) => {
 }
 
 export const signOut = async (id) => {
-  await auth.doSignOut()
+  await auth.signOut()
 }
 
 export const getAll = async (id) => {
@@ -48,3 +61,8 @@ export const removeAnonymous = async (id) => {
   }
 }
 
+export const doPasswordReset = (email) =>
+  auth.sendPasswordResetEmail(email)
+
+export const doPasswordUpdate = (password) =>
+  auth.currentUser.updatePassword(password)

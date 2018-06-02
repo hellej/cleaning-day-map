@@ -1,6 +1,6 @@
 
 import { showNotification } from './notificationReducer'
-import { auth, db, firebase, userService } from './../firebase/index'
+import { userService } from './../firebase/index'
 import history from './../history'
 
 
@@ -61,15 +61,14 @@ const userStateReducer = (store = initialUserState, action) => {
 
 export const startListeningToLoggedInUser = () => {
   return async (dispatch) => {
-    firebase.auth.onAuthStateChanged(authUser => {
+    userService.onAuthStateChanged(authUser => {
       if (authUser) {
         authUser.isAnonymous
           ? dispatch(setLoggedInAnonymous(authUser))
           : dispatch(setLoggedInUser(authUser))
         console.log('User state change: \nanynomous: ', authUser.isAnonymous, '\n', authUser.uid, '\n', authUser.displayName, '\n', authUser.email, '\n')
       } else {
-        auth.doSignInAnonymously()
-          .catch(error => { console.log('Error in anynomous sign in: \n', error) })
+        userService.signInAnonymously()
       }
     })
   }
@@ -166,7 +165,7 @@ export const setLoggedInAnonymous = (authUser) => {
         name: null,
         email: null
       }
-      await db.ref(`/users/${authUser.uid}`).set(user)
+      await userService.setUser(authUser.uid, user)
       dispatch({ type: 'SET_USER_LOGGED_IN', user })
     } catch (error) {
       console.log('Error in logging in anonymous user: \n', error)
