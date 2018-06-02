@@ -13,10 +13,15 @@ const notificationReducer = (store = initialNotification, action) => {
       return initialNotification
 
     case 'SET_MAP_LOADED':
-      if (!store.text) return initialNotification
-      return { type: 'load', text: 'Loading points...' }
+      if (!store.text) return store
+      if (store.text.search(/Signed/) !== -1) return store
+      if (store.text.search(/points/) !== -1) return { type: 'load', text: 'Loading points...' }
+      return initialNotification
 
     case 'SET_LAYER_LOADED':
+      if (!store.text) return store
+      if (store.text.search(/Signed/) !== -1) return store
+      if (store.text.search(/map/) !== -1) return { type: 'load', text: 'Loading map...' }
       return initialNotification
 
     default:
