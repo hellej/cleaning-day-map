@@ -18,6 +18,7 @@ class Map extends React.Component {
     }
   }
 
+  initialCenter = new MapboxGl.LngLat(24.935486, 60.215779)
   resizeTimeout = null
   map = null
 
@@ -32,7 +33,7 @@ class Map extends React.Component {
     this.map = new MapboxGl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/streets-v9',
-      center: [24.9213, 60.17673],
+      center: [24.935486, 60.215779],
       zoom: 10,
       boxZoom: false,
       trackResize: true
