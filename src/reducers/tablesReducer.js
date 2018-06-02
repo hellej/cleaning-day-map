@@ -1,6 +1,6 @@
 import { createGeoJSON } from './../components/mapboxhelper'
 import { showNotification } from './notificationReducer'
-import { zoomAndOpenFeature } from './mapControlReducer'
+import { zoomAndOpenFeature, setLayerLoaded } from './mapControlReducer'
 import { setMapFeaturePopup, closePopup } from './mapPopupReducer'
 import { featureService } from './../firebase/index'
 import history from './../history'
@@ -51,6 +51,7 @@ export const tablesInitialization = () => {
   return async (dispatch) => {
     try {
       const featureCollection = await featureService.onceGetAllAsCollection()
+      dispatch(setLayerLoaded())
       dispatch({ type: 'INIT_FEATURES', featureCollection })
     } catch (error) {
       console.log('Error in tables initialization: \n', error)

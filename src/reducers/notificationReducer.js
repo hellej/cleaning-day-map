@@ -5,29 +5,20 @@ let notifTimeout
 
 const notificationReducer = (store = initialNotification, action) => {
 
-  let notification = null
-
   switch (action.type) {
     case 'SHOWNOTIF':
       return { text: action.notification.text, type: action.notification.type }
 
     case 'RMNOTIF':
-      return { ...initialNotification }
+      return initialNotification
 
     case 'SET_MAP_LOADED':
-      notification = store
-      if (store.type === 'load') {
-        store.text.indexOf('points') === -1 ? notification = initialNotification
-          : notification.text = 'Loading points...'
-      }
-      return notification
+      if (!store.text) return initialNotification
+      return { type: 'load', text: 'Loading points...' }
+
     case 'SET_LAYER_LOADED':
-      notification = store
-      if (store.type === 'load') {
-        store.text.indexOf('map') === -1 ? notification = initialNotification
-          : notification.text = 'Loading map...'
-      }
-      return notification
+      return initialNotification
+
     default:
       return store
   }

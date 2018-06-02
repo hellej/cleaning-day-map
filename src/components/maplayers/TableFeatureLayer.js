@@ -3,7 +3,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getRenderedFeaturesFromQuery } from './../mapboxhelper'
 import { setMapFilteredFeatures } from './../../reducers/mapFilteredTablesReducer'
-import { setLayerLoaded } from './../../reducers/mapControlReducer'
 import { setMapFeaturePopup } from './../../reducers/mapPopupReducer'
 
 class TableFeatureLayer extends React.Component {
@@ -57,11 +56,6 @@ class TableFeatureLayer extends React.Component {
     const { map, featuresCollection, textFiltFeatures,
       selectedFeature, mouseOnFeature, reloadFeatures } = this.props
 
-    // SET LAYER LOADED AFTER INITIALIZATION
-    if (prevProps.textFiltFeatures.length === 0 && textFiltFeatures.length > 0) {
-      this.props.setLayerLoaded()
-    }
-
     // RELOAD TABLES TO MAP (NEW TABLE / UPDATED TABLE)
     if (featuresCollection.features.length !== prevProps.featuresCollection.features.length ||
       prevProps.reloadFeatures.length !== reloadFeatures.length) {
@@ -114,7 +108,6 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = {
   setMapFilteredFeatures,
-  setLayerLoaded,
   setMapFeaturePopup
 }
 

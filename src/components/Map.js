@@ -39,8 +39,13 @@ class Map extends React.Component {
       trackResize: true
     })
 
+    this.map.on('style.load', () => {
+      console.log('map style loaded', )
+    })
+
     this.map.on('load', () => {
       this.props.setMapLoaded()
+      this.map.flyTo({ center: this.initialCenter, speed: 0.1, curve: 1, zoom: 10.2 })
       setMapReferenceForPopups(this.map)
       console.log('map loaded')
       this.map.addControl(new MapboxGl.GeolocateControl({
@@ -62,8 +67,13 @@ class Map extends React.Component {
   }
 
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (!this.map) { return }
+
+    if (!prevState.isReady && this.state.isReady) {
+      //this.props.setMapLoaded()
+      console.log('map ready', )
+    }
 
     // FLY TO FEATURE
     if (this.props.mapControl.center && !equalCenter(this.state.camera, this.props.mapControl)) {
