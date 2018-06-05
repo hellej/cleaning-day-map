@@ -17,7 +17,6 @@ const DimFocusLayer = styled.div`
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  touchAction: none;
   z-index: 1;
   transition: visibility 0.7s linear, opacity 0.7s linear;
   -webkit-transition-duration: 0.2s; /* Safari */

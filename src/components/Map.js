@@ -27,7 +27,6 @@ class Map extends React.Component {
     this.updateWindowDimensions()
     window.addEventListener('resize', this.updateWindowDimensions)
     window.addEventListener('orientationchange', this.updateWindowDimensions)
-
     this.mapContainer.addEventListener('touchmove', (e) => { e.preventDefault() }, { passive: false })
 
     this.map = new MapboxGl.Map({
@@ -44,13 +43,14 @@ class Map extends React.Component {
     })
 
     this.map.on('load', () => {
-      this.props.setMapLoaded()
       this.map.flyTo({ center: this.initialCenter, speed: 0.1, curve: 1, zoom: 10.2 })
+      this.props.setMapLoaded()
       setMapReferenceForPopups(this.map)
       console.log('map loaded')
       this.map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
+      this.map.touchZoomRotate.disableRotation()
     })
 
     this.map.on('render', () => {
