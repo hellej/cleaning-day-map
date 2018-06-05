@@ -1,7 +1,6 @@
 html, body {
   overflow: hidden;
   font-family: sans-serif;
-  touch-action: none;
   /* height: 100%; */
   /* these will override browser defaults for margin & padding:  */
   margin:0px;
@@ -9,7 +8,6 @@ html, body {
 }
 
 body {
-  touch-action: none;
   /* overflow-y: scroll; */
   position: relative;
 }
@@ -25,7 +23,7 @@ body {
 
 .mapboxgl-popup-content {
   overflow-y: auto;
-  overflow-x: auto;
+  /* overflow-x: auto; */
   max-width: 145px;
   max-height: 200px;
   background: rgba(255,255,255,.95);
