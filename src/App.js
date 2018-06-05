@@ -23,7 +23,7 @@ import MapDimLayer from './components/MapDimLayer'
 
 class App extends Component {
 
-  componentDidMount = async () => {
+  componentDidMount = () => {
     this.props.showLoadNotification()
     this.props.tablesInitialization()
     this.props.startListeningToLoggedInUser()
