@@ -14,7 +14,8 @@ class Map extends React.Component {
     super(props)
     this.state = {
       isReady: false,
-      camera: null
+      camera: null,
+      zoomEnabled: false
     }
   }
 
@@ -35,6 +36,7 @@ class Map extends React.Component {
       center: [24.935486, 60.215779],
       zoom: 10,
       boxZoom: false,
+      scrollZoom: false,
       trackResize: true
     })
 
@@ -43,14 +45,14 @@ class Map extends React.Component {
     })
 
     this.map.on('load', () => {
-      this.map.flyTo({ center: this.initialCenter, speed: 0.1, curve: 1, zoom: 10.2 })
+      console.log('map loaded')
+      this.map.flyTo({ center: this.initialCenter, speed: 0.1, curve: 1, zoom: 10.1, maxDuration: 1500 })
       this.props.setMapLoaded()
       setMapReferenceForPopups(this.map)
-      console.log('map loaded')
+      this.map.touchZoomRotate.disableRotation()
       this.map.addControl(new MapboxGl.GeolocateControl({
         positionOptions: { enableHighAccuracy: true }, trackUserLocation: true
       }))
-      this.map.touchZoomRotate.disableRotation()
     })
 
     this.map.on('render', () => {
@@ -61,6 +63,10 @@ class Map extends React.Component {
     })
 
     this.map.on('moveend', () => {
+      if (!this.state.zoomEnabled) {
+        this.map.scrollZoom.enable()
+        this.setState({ scrollZoom: true })
+      }
       this.setState({ camera: { zoom: this.map.getZoom(), center: this.map.getCenter() } })
     })
 
